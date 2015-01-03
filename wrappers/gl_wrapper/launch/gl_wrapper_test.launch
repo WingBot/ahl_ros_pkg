@@ -1,0 +1,23 @@
+<launch>
+  <node pkg="gl_wrapper" type="gl_wrapper_test" name="gl_wrapper" output="screen">
+    <param name="camera/pos/x" value="1.5"/>
+    <param name="camera/pos/y" value="-0.5"/>
+    <param name="camera/pos/z" value="0.0"/>
+    <param name="camera/center/x" value="0.0"/>
+    <param name="camera/center/y" value="-0.5"/>
+    <param name="camera/center/z" value="0.5"/>
+    <param name="camera/up/x" value="0.0"/>
+    <param name="camera/up/y" value="0.0"/>
+    <param name="camera/up/z" value="1.0"/>
+
+    <param name="init_camera/pos/x" value="1.5"/>
+    <param name="init_camera/pos/y" value="-0.5"/>
+    <param name="init_camera/pos/z" value="0.0"/>
+    <param name="init_camera/center/x" value="0.0"/>
+    <param name="init_camera/center/y" value="-0.5"/>
+    <param name="init_camera/center/z" value="0.5"/>
+    <param name="init_camera/up/x" value="0.0"/>
+    <param name="init_camera/up/y" value="0.0"/>
+    <param name="init_camera/up/z" value="1.0"/>
+  </node>
+</launch>
