@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>neural_network</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <description>
     This package provides implementations of multi threaded neural_network.
   </description>
