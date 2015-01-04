@@ -83,7 +83,7 @@ void NeuralNetwork::init(const ConfigPtr& config)
   }
   else
   {
-    this->loadWeight();
+    this->loadWeight(config_->getW());
   }
 
   ActivationPtr activation;
@@ -151,15 +151,11 @@ void NeuralNetwork::save(const std::string& yaml)
     throw nn::Exception("NeuralNetwork::save", msg.str());
   }
 
-  ofs << "this file is a configuration file for neural_network package." << std::endl;
+  ofs << "#this file is a configuration file for neural_network package." << std::endl;
 
   ofs << std::endl;
 
-  ofs << "enable_back_propagation : ";
-  if(config_->enableBackPropagation())
-    ofs << "true" << std::endl;
-  else
-    ofs << "false" << std::endl;
+  ofs << "enable_back_propagation : false" << std::endl;
 
   ofs << "thread_num : " << config_->getThreadNum() << std::endl
       << "batch_size : " << config_->getBatchSize() << std::endl
@@ -203,7 +199,10 @@ void NeuralNetwork::save(const std::string& yaml)
   }
 }
 
-void NeuralNetwork::loadWeight()
+void NeuralNetwork::loadWeight(const std::vector<Eigen::MatrixXd>& w)
 {
-
+  for(unsigned int i = 0; i < w.size(); ++i)
+  {
+    layer_[i]->getWRef() = w[i];
+  }
 }

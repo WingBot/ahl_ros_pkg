@@ -79,6 +79,18 @@ void Config::init(const std::string& yaml_name)
     yaml_loader.loadValue("activation_type", activation_type_);
     yaml_loader.loadVector("layer", neuron_num_);
 
+    bool load_weight_success = true;
+
+    for(unsigned int i = 0; i < neuron_num_.size() - 1; ++i)
+    {
+      std::stringstream tag;
+      tag << "weight" << i;
+
+      Eigen::MatrixXd tmp;
+      load_weight_success &= yaml_loader.loadMatrix(tag.str(), tmp);
+      w_.push_back(tmp);
+    }
+
     if(thread_num_ == 0)
     {
       std::stringstream msg;
@@ -194,6 +206,16 @@ void Config::init(const std::string& yaml_name)
           << "        \"piecewise_linear\"" << std::endl
           << "        \"rectified_linear\"" << std::endl
           << "        Please modify \"" << yaml_name << "\"";
+
+      throw nn::Exception(src, msg.str());
+    }
+
+    if(!enable_back_propagation_ && !load_weight_success)
+    {
+      std::stringstream msg;
+      msg << "Could not load weight values and enable_back_propagation is \"false\"." << std::endl
+          << "        Please make enable_back_propagation \"true\" or" << std::endl
+          << "        use yaml file including weight values.";
 
       throw nn::Exception(src, msg.str());
     }

@@ -55,8 +55,11 @@ namespace std_utils
     YAMLLoader(const std::string& yaml);
 
     template<class T>
-    void loadValue(const std::string& tag, T& dst)
+    bool loadValue(const std::string& tag, T& dst)
     {
+      if(!doc_[tag])
+        return false;
+
       try
       {
         dst = doc_[tag].as<T>();
@@ -65,11 +68,16 @@ namespace std_utils
       {
         throw std_utils::Exception("YAMLLoader::loadValue", e.what());
       }
+
+      return true;
     }
 
     template<class T>
-    void loadVector(const std::string& tag, std::vector<T>& dst)
+    bool loadVector(const std::string& tag, std::vector<T>& dst)
     {
+      if(!doc_[tag])
+        return false;
+
       try
       {
         dst.resize(doc_[tag].size());
@@ -82,9 +90,12 @@ namespace std_utils
       {
         throw std_utils::Exception("YAMLLoader::loadVector", e.what());
       }
+
+      return true;
     }
 
-    void loadVector(const std::string& tag, Eigen::MatrixXd& dst);
+    bool loadVector(const std::string& tag, Eigen::MatrixXd& dst);
+    bool loadMatrix(const std::string& tag, Eigen::MatrixXd& dst);
 
   private:
     std::ifstream ifs_;

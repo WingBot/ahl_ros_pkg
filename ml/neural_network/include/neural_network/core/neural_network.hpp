@@ -70,7 +70,7 @@ namespace nn
 
   private:
     void save(const std::string& yaml);
-    void loadWeight();
+    void loadWeight(const std::vector<Eigen::MatrixXd>& w);
 
     bool initialized_;
     ConfigPtr config_;

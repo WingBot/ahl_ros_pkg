@@ -110,7 +110,7 @@ namespace nn
       return neuron_num_;
     }
 
-    const std::vector<Eigen::MatrixXd>& getWVector() const
+    const std::vector<Eigen::MatrixXd>& getW() const
     {
       return w_;
     }
@@ -134,9 +134,9 @@ namespace nn
     double reference_cost_; // If cost is smaller than reference_cost_, training will be finished.
     unsigned long max_iterations_; // If number of iteration is bigger than max_iterations_, training will be finished.
     unsigned long calc_cost_interval_; // Calculate cost per calc_cost_interval_ iterations.
+    std::string activation_type_;
     std::vector<unsigned int> neuron_num_; // Doesn't include neuron for "threshold term". Vector size means layer num, including input and output layers.
 
-    std::string activation_type_;
     std::vector<Eigen::MatrixXd> w_;
   };
 

@@ -53,8 +53,11 @@ YAMLLoader::YAMLLoader(const std::string& yaml)
   doc_ = YAML::Load(ifs_);
 }
 
-void YAMLLoader::loadVector(const std::string& tag, Eigen::MatrixXd& dst)
+bool YAMLLoader::loadVector(const std::string& tag, Eigen::MatrixXd& dst)
 {
+  if(!doc_[tag])
+    return false;
+
   try
   {
     dst.resize(doc_[tag].size(), 1);
@@ -67,4 +70,38 @@ void YAMLLoader::loadVector(const std::string& tag, Eigen::MatrixXd& dst)
   {
     throw std_utils::Exception("YAMLLoader::loadVector", e.what());
   }
+
+  return true;
+}
+
+bool YAMLLoader::loadMatrix(const std::string& tag, Eigen::MatrixXd& dst)
+{
+  if(!doc_[tag])
+    return false;
+
+  try
+  {
+    unsigned int rows = doc_[tag].size();
+    if(rows == 0)
+    {
+      throw std_utils::Exception("YAMLLoader::loadMatrix", "rows is zero.");
+    }
+    unsigned int cols = doc_[tag][0].size();
+
+    dst.resize(rows, cols);
+
+    for(unsigned int i = 0; i < rows; ++i)
+    {
+      for(unsigned int j = 0; j < cols; ++j)
+      {
+        dst.coeffRef(i, j) = doc_[tag][i][j].as<double>();
+      }
+    }
+  }
+  catch(YAML::Exception& e)
+  {
+    throw std_utils::Exception("YAMLLoader::loadVector", e.what());
+  }
+
+  return true;
 }

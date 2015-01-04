@@ -52,14 +52,14 @@ namespace nn
     Exception(const std::string& src, const std::string& msg)
       : src_(src), msg_(msg) {}
 
-    const char* what() const
+    std::string what()
     {
       std::stringstream ss;
       ss << "nn::Exception was thrown." << std::endl
          << "  src : " << src_ << std::endl
          << "  msg : " << msg_;
 
-      return ss.str().c_str();
+      return ss.str();
     }
 
   private:
@@ -73,14 +73,14 @@ namespace nn
     FatalException(const std::string& src, const std::string& msg)
       : src_(src), msg_(msg) {}
 
-    const char* what() const
+    std::string what()
     {
       std::stringstream ss;
       ss << "nn::FatalException was thrown." << std::endl
          << "  src : " << src_ << std::endl
          << "  msg : " << msg_;
 
-      return ss.str().c_str();
+      return ss.str();
     }
 
   private:
