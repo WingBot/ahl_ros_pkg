@@ -36,9 +36,15 @@
  *
  *********************************************************************/
 
+#include <ros/ros.h>
 #include "train_with_cg/hand_image_collector.hpp"
 
 using namespace train;
+
+HandImageCollector::HandImageCollector()
+{
+  ros::NodeHandle local_nh("~");
+}
 
 bool HandImageCollector::collect()
 {

@@ -63,6 +63,7 @@ add_executable(
     src/main.cpp
     src/display.cpp
     src/hand_image_collector.cpp
+    src/hand_pose.cpp
     src/quaternion.cpp
     src/euler_angles.cpp
 )

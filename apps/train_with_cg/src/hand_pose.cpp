@@ -37,6 +37,37 @@
  *********************************************************************/
 
 #include "train_with_cg/hand_pose.hpp"
+#include "train_with_cg/euler_angles.hpp"
+#include "train_with_cg/quaternion.hpp"
 
 using namespace train;
 
+HandPose::HandPose(bool use_quaternion,
+                   const std::vector<double>& euler_max, const std::vector<double>& euler_min, double euler_step,
+                   const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step)
+  : euler_max_(euler_max),
+    euler_min_(euler_min),
+    euler_step_(euler_step),
+    finger_max_(finger_max),
+    finger_min_(finger_min),
+    finger_step_(finger_step)
+{
+  if(use_quaternion)
+  {
+    orientation_ = QuaternionPtr(new Quaternion());
+  }
+  else
+  {
+    orientation_ = EulerAnglesPtr(new EulerAngles());
+  }
+}
+
+bool HandPose::update()
+{
+  return true;
+}
+
+bool HandPose::isSameAs(const HandPosePtr& hand_pose, double threshold)
+{
+  return true;
+}

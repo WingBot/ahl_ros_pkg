@@ -39,6 +39,7 @@
 #ifndef __TRAIN_WITH_CG_EULER_ANGLES_HPP
 #define __TRAIN_WITH_CG_EULER_ANGLES_HPP
 
+#include <boost/shared_ptr.hpp>
 #include "train_with_cg/orientation.hpp"
 
 namespace train
@@ -56,6 +57,7 @@ namespace train
     Eigen::MatrixXd euler_;
   };
 
+  typedef boost::shared_ptr<EulerAngles> EulerAnglesPtr;
 }
 
 #endif /* __TRAIN_WITH_CG_EULER_ANGLES_HPP */

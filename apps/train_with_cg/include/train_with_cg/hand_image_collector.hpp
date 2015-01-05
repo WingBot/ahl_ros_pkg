@@ -39,8 +39,10 @@
 #ifndef __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP
 #define __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
-
+#include "train_with_cg/hand_pose.hpp"
+#include "train_with_cg/depth_image_saver.hpp"
 
 namespace train
 {
@@ -48,9 +50,12 @@ namespace train
   class HandImageCollector
   {
   public:
+    HandImageCollector();
     bool collect();
   private:
-
+    HandPosePtr hand_pose_;
+    std::vector<HandPosePtr> scanned_pose_;
+    DepthImageSaverPtr depth_image_saver_;
   };
 
   typedef boost::shared_ptr<HandImageCollector> HandImageCollectorPtr;

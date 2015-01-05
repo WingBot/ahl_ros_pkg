@@ -39,6 +39,8 @@
 #ifndef __TRAIN_WITH_CG_DEPTH_IMAGE_SAVER_HPP
 #define __TRAIN_WITH_CG_DEPTH_IMAGE_SAVER_HPP
 
+#include <boost/shared_ptr.hpp>
+
 namespace train
 {
 
@@ -50,6 +52,7 @@ namespace train
 
   };
 
+  typedef boost::shared_ptr<DepthImageSaver> DepthImageSaverPtr;
 }
 
 #endif /* __TRAIN_WITH_CG_DEPTH_IMAGE_SAVER_HPP */

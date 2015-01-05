@@ -41,18 +41,45 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include "train_with_cg/orientation.hpp"
 
 namespace train
 {
 
+  class HandPose;
+  typedef boost::shared_ptr<HandPose> HandPosePtr;
+
   class HandPose
   {
   public:
+    HandPose(bool use_quaternion,
+             const std::vector<double>& euler_max, const std::vector<double>& euler_min, double euler_step,
+             const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step);
+             
+    bool update();
+    bool isSameAs(const HandPosePtr& hand_pose, double threshold);
+
+    const OrientationPtr& getOrientation() const
+    {
+      return orientation_;
+    }
+
+    const std::vector<double>& getFinger() const
+    {
+      return finger_;
+    }
 
   private:
-    std::vector<double> orientation_;
+    std::vector<double> euler_max_;
+    std::vector<double> euler_min_;
+    double euler_step_;
 
+    std::vector<double> finger_max_;
+    std::vector<double> finger_min_;
+    double finger_step_;
 
+    OrientationPtr orientation_;
+    std::vector<double> finger_;
   };
 
 }
