@@ -79,6 +79,10 @@ add_library(
     src/object/x_object.cpp
     src/object/x_deformable_object.cpp
     src/object/x_hand.cpp
+    src/object/x_right_hand.cpp
+    src/object/x_right_hand_impl.cpp
+    src/object/x_left_hand.cpp
+    src/object/x_left_hand_impl.cpp
     src/object/simple_object.cpp
     src/object/grid.cpp
     src/object/coordinate.cpp
