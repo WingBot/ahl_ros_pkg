@@ -39,6 +39,7 @@
 #ifndef __TRAIN_WITH_CG_ORIENTATION_HPP
 #define __TRAIN_WITH_CG_ORIENTATION_HPP
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
 
@@ -57,9 +58,6 @@ namespace train
     virtual void set(const Eigen::MatrixXd& orientation) = 0;
     virtual void set(double euler_x, double euler_y, double euler_z) = 0;
     virtual const Eigen::MatrixXd& getOrientation() const = 0;
-
-  private:
-
   };
 }
 

@@ -36,28 +36,43 @@
  *
  *********************************************************************/
 
-#ifndef __TRAIN_WITH_CG_EULER_ANGLES_HPP
-#define __TRAIN_WITH_CG_EULER_ANGLES_HPP
+#ifndef __TRAIN_WITH_CG_FINGERS_HPP
+#define __TRAIN_WITH_CG_FINGERS_HPP
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
-#include "train_with_cg/orientation.hpp"
+#include <Eigen/Dense>
 
 namespace train
 {
 
-  class EulerAngles : public Orientation
+  class Fingers;
+  typedef boost::shared_ptr<Fingers> FingersPtr;
+
+  class Fingers
   {
   public:
-    virtual bool isQuaternion();
-    virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
-    virtual void set(const Eigen::MatrixXd& orientation);
-    virtual void set(double euler_x, double euler_y, double euler_z);
-    virtual const Eigen::MatrixXd& getOrientation() const;
+    Fingers(const std::vector<double>& max, const std::vector<double>& min, double step);
+
+    void isSameAs(const FingersPtr& fingers);
+    void set(const Eigen::MatrixXd& angles);
+    void set(double angle0, double angle1, double angle2, double angle3, double angle4);
+
+    bool update();
+
+    const Eigen::MatrixXd& getAngles() const
+    {
+      return angles_;
+    }
+
   private:
-    Eigen::MatrixXd euler_;
+    Eigen::MatrixXd angles_;
+
+    std::vector<double> max_;
+    std::vector<double> min_;
+    double step_;
   };
 
-  typedef boost::shared_ptr<EulerAngles> EulerAnglesPtr;
 }
 
-#endif /* __TRAIN_WITH_CG_EULER_ANGLES_HPP */
+#endif /* __TRAIN_WITH_CG_FINGERS_HPP */

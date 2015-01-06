@@ -42,6 +42,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "train_with_cg/orientation.hpp"
+#include "train_with_cg/fingers.hpp"
 
 namespace train
 {
@@ -64,22 +65,14 @@ namespace train
       return orientation_;
     }
 
-    const std::vector<double>& getFinger() const
+    const FingersPtr& getFingers() const
     {
-      return finger_;
+      return fingers_;
     }
 
   private:
-    std::vector<double> euler_max_;
-    std::vector<double> euler_min_;
-    double euler_step_;
-
-    std::vector<double> finger_max_;
-    std::vector<double> finger_min_;
-    double finger_step_;
-
     OrientationPtr orientation_;
-    std::vector<double> finger_;
+    FingersPtr fingers_;
   };
 
 }

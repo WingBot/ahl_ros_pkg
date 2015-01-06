@@ -39,6 +39,7 @@
 #ifndef __TRAIN_WITH_CG_QUATERNION_HPP
 #define __TRAIN_WITH_CG_QUATERNION_HPP
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include "train_with_cg/orientation.hpp"
 
@@ -48,6 +49,7 @@ namespace train
   class Quaternion : public Orientation
   {
   public:
+    Quaternion(const std::vector<double>& max, const std::vector<double>& min, double step);
     virtual bool isQuaternion();
     virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
     virtual void set(const Eigen::MatrixXd& orientation);
@@ -56,6 +58,10 @@ namespace train
 
   private:
     Eigen::MatrixXd quaternion_; // x, y, z, w
+
+    std::vector<double> max_;
+    std::vector<double> min_;
+    double step_;
   };
 
   typedef boost::shared_ptr<Quaternion> QuaternionPtr;

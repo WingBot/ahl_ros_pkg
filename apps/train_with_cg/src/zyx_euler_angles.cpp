@@ -36,34 +36,36 @@
  *
  *********************************************************************/
 
-#include "train_with_cg/hand_pose.hpp"
 #include "train_with_cg/zyx_euler_angles.hpp"
-#include "train_with_cg/quaternion.hpp"
 
 using namespace train;
 
-HandPose::HandPose(bool use_quaternion,
-                   const std::vector<double>& euler_max, const std::vector<double>& euler_min, double euler_step,
-                   const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step)
+ZYXEulerAngles::ZYXEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step)
+  : max_(max), min_(min), step_(step)
 {
-  if(use_quaternion)
-  {
-    orientation_ = QuaternionPtr(new Quaternion(euler_max, euler_min, euler_step));
-  }
-  else
-  {
-    orientation_ = ZYXEulerAnglesPtr(new ZYXEulerAngles(euler_max, euler_min, euler_step));
-  }
-
-  fingers_ = FingersPtr(new Fingers(finger_max, finger_min, finger_step));
 }
 
-bool HandPose::update()
+bool ZYXEulerAngles::isQuaternion()
 {
-  return true;
+  return false;
 }
 
-bool HandPose::isSameAs(const HandPosePtr& hand_pose, double threshold)
+bool ZYXEulerAngles::isSameAs(const OrientationPtr& orientation, double threshold)
 {
-  return true;
+  return false;
+}
+
+void ZYXEulerAngles::set(const Eigen::MatrixXd& orientation)
+{
+
+}
+
+void ZYXEulerAngles::set(double euler_x, double euler_y, double euler_z)
+{
+
+}
+
+const Eigen::MatrixXd& ZYXEulerAngles::getOrientation() const
+{
+  return euler_;
 }

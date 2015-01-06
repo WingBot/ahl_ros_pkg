@@ -40,6 +40,11 @@
 
 using namespace train;
 
+Quaternion::Quaternion(const std::vector<double>& max, const std::vector<double>& min, double step)
+  : max_(max), min_(min), step_(step)
+{
+}
+
 bool Quaternion::isQuaternion()
 {
   return true;

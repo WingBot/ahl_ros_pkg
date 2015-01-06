@@ -64,8 +64,9 @@ add_executable(
     src/display.cpp
     src/hand_image_collector.cpp
     src/hand_pose.cpp
+    src/fingers.cpp
     src/quaternion.cpp
-    src/euler_angles.cpp
+    src/zyx_euler_angles.cpp
 )
 
 target_link_libraries(

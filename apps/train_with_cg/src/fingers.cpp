@@ -36,31 +36,31 @@
  *
  *********************************************************************/
 
-#include "train_with_cg/euler_angles.hpp"
+#include "train_with_cg/fingers.hpp"
 
 using namespace train;
 
-bool EulerAngles::isQuaternion()
+Fingers::Fingers(const std::vector<double>& max, const std::vector<double>& min, double step)
+  : max_(max), min_(min), step_(step)
 {
-  return false;
 }
 
-bool EulerAngles::isSameAs(const OrientationPtr& orientation, double threshold)
-{
-  return false;
-}
-
-void EulerAngles::set(const Eigen::MatrixXd& orientation)
+void Fingers::isSameAs(const FingersPtr& fingers)
 {
 
 }
 
-void EulerAngles::set(double euler_x, double euler_y, double euler_z)
+void Fingers::set(const Eigen::MatrixXd& angles)
+{
+  angles_ = angles;
+}
+
+void Fingers::set(double angle0, double angle1, double angle2, double angle3, double angle4)
 {
 
 }
 
-const Eigen::MatrixXd& EulerAngles::getOrientation() const
+bool Fingers::update()
 {
-  return euler_;
+  return true;
 }
