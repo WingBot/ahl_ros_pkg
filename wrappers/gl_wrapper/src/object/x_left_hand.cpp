@@ -45,8 +45,8 @@ void XLeftHand::display()
 
 }
 
-XLeftHandImplPtr& XLeftHand::getImpl()
+LeftHandPtr& XLeftHand::getLeftHand()
 {
-  static XLeftHandImplPtr impl;
-  return impl;
+  static LeftHandPtr left_hand;
+  return left_hand;
 }

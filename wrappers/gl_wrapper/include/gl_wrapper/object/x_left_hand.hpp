@@ -40,7 +40,7 @@
 #define __GL_WRAPPER_OBJECT_X_LEFT_HAND_HPP
 
 #include <boost/shared_ptr.hpp>
-#include "gl_wrapper/object/x_left_hand_impl.hpp"
+#include "gl_wrapper/object/x_hand.hpp"
 
 namespace gl_wrapper
 {
@@ -50,7 +50,7 @@ namespace gl_wrapper
   public:
     void display();
   private:
-    XLeftHandImplPtr& getImpl();
+    LeftHandPtr& getLeftHand();
   };
 
   typedef boost::shared_ptr<XLeftHand> XLeftHandPtr;
