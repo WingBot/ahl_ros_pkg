@@ -102,14 +102,13 @@ void Render::start(void (*display)())
 void Render::start()
 {
   boost::mutex::scoped_lock(Render::PARAM->mutex);
+
+  Render::CAMERA->look(Render::PARAM->window_w, Render::PARAM->window_h);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  Render::LIGHT->on();
-  Render::CAMERA->look(Render::PARAM->window_w, Render::PARAM->window_h);
-
   glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
   glPushMatrix();
+  glLoadIdentity();
 }
 
 void Render::end()

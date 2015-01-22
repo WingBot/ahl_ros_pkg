@@ -37,12 +37,37 @@
  *********************************************************************/
 
 #include "train_with_cg/fingers.hpp"
+#include "train_with_cg/exceptions.hpp"
 
 using namespace train;
 
 Fingers::Fingers(const std::vector<double>& max, const std::vector<double>& min, double step)
   : max_(max), min_(min), step_(step)
 {
+  angles_.resize(5, 1);
+
+  if(max.size() != angles_.rows())
+  {
+    std::stringstream msg;
+    msg << "The size of \"max\" vector is wrong." << std::endl
+        << "        size : " << max.size();
+
+    throw train::Exception("Fingers::Fingers", msg.str());
+  }
+
+  if(min.size() != angles_.rows())
+  {
+    std::stringstream msg;
+    msg << "The size of \"min\" vector is wrong." << std::endl
+        << "        size : " << min.size();
+
+    throw train::Exception("Fingers::Fingers", msg.str());
+  }
+
+  for(unsigned int i = 0; i < angles_.rows(); ++i)
+  {
+    angles_.coeffRef(i, 0) = min_[i];
+  }
 }
 
 void Fingers::isSameAs(const FingersPtr& fingers)

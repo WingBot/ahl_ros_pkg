@@ -40,13 +40,20 @@
 
 using namespace gl_wrapper;
 
+XRightHand::XRightHand(const std::string& config_name, double scale)
+  : config_name_(config_name), scale_(scale)
+{
+}
+
 void XRightHand::display()
 {
-
+  glScaled(scale_, scale_, scale_);
+  this->getRightHand()->display();
+  glScaled(1.0 / scale_, 1.0 / scale_, 1.0 / scale_);
 }
 
 RightHandPtr& XRightHand::getRightHand()
 {
-  static RightHandPtr right_hand;
+  static RightHandPtr right_hand = RightHandPtr(new RightHand(config_name_));
   return right_hand;
 }

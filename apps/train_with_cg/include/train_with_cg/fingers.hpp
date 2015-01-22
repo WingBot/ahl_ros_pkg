@@ -54,13 +54,13 @@ namespace train
   public:
     Fingers(const std::vector<double>& max, const std::vector<double>& min, double step);
 
-    void isSameAs(const FingersPtr& fingers);
-    void set(const Eigen::MatrixXd& angles);
-    void set(double angle0, double angle1, double angle2, double angle3, double angle4);
+    virtual ~Fingers() {}
+    virtual void isSameAs(const FingersPtr& fingers);
+    virtual void set(const Eigen::MatrixXd& angles);
+    virtual void set(double angle0, double angle1, double angle2, double angle3, double angle4);
+    virtual bool update();
 
-    bool update();
-
-    const Eigen::MatrixXd& getAngles() const
+    virtual const Eigen::MatrixXd& getAngles() const
     {
       return angles_;
     }

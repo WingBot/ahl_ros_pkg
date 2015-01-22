@@ -39,6 +39,7 @@
 #ifndef __GL_WRAPPER_OBJECT_X_RIGHT_HAND_HPP
 #define __GL_WRAPPER_OBJECT_X_RIGHT_HAND_HPP
 
+#include <string>
 #include <boost/shared_ptr.hpp>
 #include "gl_wrapper/object/x_hand.hpp"
 
@@ -48,8 +49,11 @@ namespace gl_wrapper
   class XRightHand
   {
   public:
+    XRightHand(const std::string& config_name, double scale);
     void display();
   private:
+    double scale_;
+    std::string config_name_;
     RightHandPtr& getRightHand();
   };
 

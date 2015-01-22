@@ -4,6 +4,7 @@
 #include <gl_wrapper/exception/exceptions.hpp>
 #include "train_with_cg/display.hpp"
 #include "train_with_cg/hand_image_collector.hpp"
+#include "train_with_cg/exceptions.hpp"
 
 using namespace train;
 
@@ -12,10 +13,12 @@ void train::display()
   try
   {
     gl_wrapper::Render::start();
-
+    gl_wrapper::Render::LIGHT->on();
     static HandImageCollectorPtr hand_image_collector = HandImageCollectorPtr(new HandImageCollector());
 
-    if(hand_image_collector->collect() == false)
+    hand_image_collector->collect();
+
+    if(hand_image_collector->finished())
     {
       ROS_INFO_STREAM("All hand images were collected.\nShutting down the process ...");
       ros::shutdown();
@@ -23,6 +26,16 @@ void train::display()
     }
 
     gl_wrapper::Render::end();
+  }
+  catch(train::FatalException& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+    exit(1);
+  }
+  catch(train::Exception& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+    exit(1);
   }
   catch(gl_wrapper::FatalException& e)
   {

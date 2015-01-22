@@ -10,6 +10,7 @@ void display()
   try
   {
     Render::start();
+    Render::LIGHT->on();
 
     static double t = 0.0;
     t += 0.03333;

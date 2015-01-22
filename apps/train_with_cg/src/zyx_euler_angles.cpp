@@ -37,12 +37,43 @@
  *********************************************************************/
 
 #include "train_with_cg/zyx_euler_angles.hpp"
+#include "train_with_cg/exceptions.hpp"
 
 using namespace train;
 
 ZYXEulerAngles::ZYXEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step)
   : max_(max), min_(min), step_(step)
 {
+  euler_ = Eigen::MatrixXd::Zero(3, 1);
+
+  if(max.size() != euler_.rows())
+  {
+    std::stringstream msg;
+    msg << "The size of \"max\" vector is wrong." << std::endl
+        << "        size : " << max.size();
+
+    throw train::Exception("ZYXEulerAngles::ZYXEulerAngles", msg.str());
+  }
+
+  if(min.size() != euler_.rows())
+  {
+    std::stringstream msg;
+    msg << "The size of \"min\" vector is wrong." << std::endl
+        << "        size : " << min.size();
+
+    throw train::Exception("ZYXEulerAngles::ZYXEulerAngles", msg.str());
+  }
+
+  for(unsigned int i = 0; i < min.size(); ++i)
+  {
+    euler_.coeffRef(i, 0) = min[i];
+  }
+
+  for(unsigned int i = 0; i < euler_.rows(); ++i)
+  {
+    step_size_.push_back(static_cast<unsigned int>((max_[i] - min_[i])/step_));
+    step_idx_.push_back(0);
+  }
 }
 
 bool ZYXEulerAngles::isQuaternion()
@@ -52,17 +83,58 @@ bool ZYXEulerAngles::isQuaternion()
 
 bool ZYXEulerAngles::isSameAs(const OrientationPtr& orientation, double threshold)
 {
+  double diff_x = euler_.coeff(0, 0) - orientation->getOrientation().coeff(0, 0);
+  double diff_y = euler_.coeff(1, 0) - orientation->getOrientation().coeff(1, 0);
+  double diff_z = euler_.coeff(2, 0) - orientation->getOrientation().coeff(2, 0);
+
+  bool is_same = true;
+
+  if(std::fabs(diff_x) > threshold)
+    is_same = false;
+
+  if(std::fabs(diff_y) > threshold)
+    is_same = false;
+
+  if(std::fabs(diff_z) > threshold)
+    is_same = false;
+
+  return is_same;
+}
+
+bool ZYXEulerAngles::update()
+{
+  if(this->isLast())
+    return false;
+
+
+
+  return true;
+}
+
+bool ZYXEulerAngles::isLast()
+{
   return false;
 }
 
 void ZYXEulerAngles::set(const Eigen::MatrixXd& orientation)
 {
+  if(orientation.rows() != 3)
+  {
+    std::stringstream msg;
+    msg << "The size of orientation matrix is wrong." << std::endl
+        << "        rows : " << orientation.rows();
 
+    throw train::Exception("ZYXEulerAngles::set", msg.str());
+  }
+
+  euler_ = orientation;
 }
 
 void ZYXEulerAngles::set(double euler_x, double euler_y, double euler_z)
 {
-
+  euler_.coeffRef(0, 0) = euler_x;
+  euler_.coeffRef(1, 0) = euler_y;
+  euler_.coeffRef(2, 0) = euler_z;
 }
 
 const Eigen::MatrixXd& ZYXEulerAngles::getOrientation() const

@@ -59,7 +59,7 @@ add_definitions(
 ##############################################################################
 
 add_executable(
-  train_with_cg
+  image_collector
     src/main.cpp
     src/display.cpp
     src/hand_image_collector.cpp
@@ -70,7 +70,7 @@ add_executable(
 )
 
 target_link_libraries(
-  train_with_cg
+  image_collector
     ${catkin_LIBRARIES}
 )
 
@@ -80,7 +80,7 @@ target_link_libraries(
 
 install(
   TARGETS
-    train_with_cg
+    image_collector
   ARCHIVE DESTINATION
     ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION

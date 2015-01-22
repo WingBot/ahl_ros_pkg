@@ -55,6 +55,8 @@ namespace train
 
     virtual bool isQuaternion() = 0;
     virtual bool isSameAs(const OrientationPtr& orientation, double threshold) = 0;
+    virtual bool update() = 0;
+    virtual bool isLast() = 0;
     virtual void set(const Eigen::MatrixXd& orientation) = 0;
     virtual void set(double euler_x, double euler_y, double euler_z) = 0;
     virtual const Eigen::MatrixXd& getOrientation() const = 0;

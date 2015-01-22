@@ -52,6 +52,8 @@ namespace train
     Quaternion(const std::vector<double>& max, const std::vector<double>& min, double step);
     virtual bool isQuaternion();
     virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
+    virtual bool update();
+    virtual bool isLast();
     virtual void set(const Eigen::MatrixXd& orientation);
     virtual void set(double euler_x, double euler_y, double euler_z);
     virtual const Eigen::MatrixXd& getOrientation() const;

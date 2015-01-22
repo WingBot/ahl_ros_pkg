@@ -59,6 +59,7 @@ namespace train
              
     bool update();
     bool isSameAs(const HandPosePtr& hand_pose, double threshold);
+    void copyTo(HandPosePtr& hand_pose);
 
     const OrientationPtr& getOrientation() const
     {

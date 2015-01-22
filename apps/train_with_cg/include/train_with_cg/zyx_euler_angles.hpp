@@ -51,6 +51,8 @@ namespace train
     ZYXEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step);
     virtual bool isQuaternion();
     virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
+    virtual bool update();
+    virtual bool isLast();
     virtual void set(const Eigen::MatrixXd& orientation);
     virtual void set(double euler_x, double euler_y, double euler_z);
     virtual const Eigen::MatrixXd& getOrientation() const;
@@ -61,6 +63,8 @@ namespace train
     std::vector<double> max_;
     std::vector<double> min_;
     double step_;
+    std::vector<unsigned int> step_size_;
+    std::vector<unsigned int> step_idx_;
   };
 
   typedef boost::shared_ptr<ZYXEulerAngles> ZYXEulerAnglesPtr;

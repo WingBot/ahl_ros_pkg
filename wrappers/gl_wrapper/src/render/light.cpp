@@ -52,16 +52,14 @@ Light::Light(const Eigen::Vector4d& pos, const Eigen::Vector4d& amb, const Eigen
     specular_[i] = spe.coeff(i);
   }
 
-  glLightfv(GL_LIGHT0 + Light::light_id, GL_AMBIENT, ambient_);
-  glLightfv(GL_LIGHT0 + Light::light_id, GL_DIFFUSE, diffuse_);
-  glLightfv(GL_LIGHT0 + Light::light_id, GL_SPECULAR, specular_);
-  this->on();
-
   ++Light::light_id;
 }
 
 void Light::on()
 {
+  glLightfv(GL_LIGHT0 + Light::light_id, GL_AMBIENT, ambient_);
+  glLightfv(GL_LIGHT0 + Light::light_id, GL_DIFFUSE, diffuse_);
+  glLightfv(GL_LIGHT0 + Light::light_id, GL_SPECULAR, specular_);
   glLightfv(GL_LIGHT0 + Light::light_id, GL_POSITION, pos_);
   glEnable(GL_LIGHT0 + Light::light_id);
   glEnable(GL_LIGHTING);

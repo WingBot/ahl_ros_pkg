@@ -37,12 +37,34 @@
  *********************************************************************/
 
 #include "train_with_cg/quaternion.hpp"
+#include "train_with_cg/exceptions.hpp"
 
 using namespace train;
 
 Quaternion::Quaternion(const std::vector<double>& max, const std::vector<double>& min, double step)
   : max_(max), min_(min), step_(step)
 {
+  quaternion_.resize(4, 1);
+
+  if(max.size() != 3)
+  {
+    std::stringstream msg;
+    msg << "The size of \"max\" vector is wrong." << std::endl
+        << "        size : " << max.size();
+
+    throw train::Exception("Quaternion::Quaternion", msg.str());
+  }
+
+  if(min.size() != 3)
+  {
+    std::stringstream msg;
+    msg << "The size of \"min\" vector is wrong." << std::endl
+        << "        size : " << min.size();
+
+    throw train::Exception("Quaternion::Quaternion", msg.str());
+  }
+
+  //TODO implement here.
 }
 
 bool Quaternion::isQuaternion()
@@ -55,9 +77,26 @@ bool Quaternion::isSameAs(const OrientationPtr& orientation, double threshold)
   return true;
 }
 
+bool Quaternion::update()
+{
+  return true;
+}
+
+bool Quaternion::isLast()
+{
+  return false;
+}
+
 void Quaternion::set(const Eigen::MatrixXd& orientation)
 {
+  if(orientation.rows() != 4)
+  {
+    std::stringstream msg;
+    msg << "The size of orientation matrix is wrong." << std::endl
+        << "        rows : " << orientation.rows();
 
+    throw train::Exception("Quaternion::set", msg.str());
+  }
 }
 
 void Quaternion::set(double euler_x, double euler_y, double euler_z)

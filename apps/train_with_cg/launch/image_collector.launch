@@ -1,0 +1,31 @@
+<launch>
+  <node pkg="train_with_cg" type="image_collector" name="image_collector" output="screen">
+    <param name="hand/scale" value="0.1"/>
+    <param name="hand/file_name" value="$(find train_with_cg)/cg/righthand.cfg"/>
+    <param name="hand/use_quaternion" value="false"/>
+
+    <param name="hand/euler/x_max" value="90.0"/>
+    <param name="hand/euler/y_max" value="90.0"/>
+    <param name="hand/euler/z_max" value="90.0"/>
+
+    <param name="hand/euler/x_min" value="0.0"/>
+    <param name="hand/euler/y_min" value="0.0"/>
+    <param name="hand/euler/z_min" value="0.0"/>
+
+    <param name="hand/euler/step" value="15.0"/>
+
+    <param name="hand/finger/1st_max" value="90.0"/>
+    <param name="hand/finger/2nd_max" value="90.0"/>
+    <param name="hand/finger/3rd_max" value="90.0"/>
+    <param name="hand/finger/4th_max" value="90.0"/>
+    <param name="hand/finger/5th_max" value="90.0"/>
+
+    <param name="hand/finger/1st_min" value="0.0"/>
+    <param name="hand/finger/2nd_min" value="0.0"/>
+    <param name="hand/finger/3rd_min" value="0.0"/>
+    <param name="hand/finger/4th_min" value="0.0"/>
+    <param name="hand/finger/5th_min" value="0.0"/>
+
+    <param name="hand/finger/step" value="15.0"/>
+  </node>
+</launch>

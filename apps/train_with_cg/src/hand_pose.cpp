@@ -67,3 +67,9 @@ bool HandPose::isSameAs(const HandPosePtr& hand_pose, double threshold)
 {
   return true;
 }
+
+void HandPose::copyTo(HandPosePtr& hand_pose)
+{
+//  hand_pose->getOrientation()->set(orientation_->getOrientation());
+//  hand_pose->getFingers()->set(fingers_->getAngles());
+}

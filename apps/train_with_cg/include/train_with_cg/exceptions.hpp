@@ -36,35 +36,57 @@
  *
  *********************************************************************/
 
-#ifndef __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP
-#define __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP
+#ifndef __TRAIN_WITH_CG_EXCEPTIONS_HPP
+#define __TRAIN_WITH_CG_EXCEPTIONS_HPP
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
-#include "gl_wrapper/object/x_hand.hpp"
-#include "train_with_cg/hand_pose.hpp"
-#include "train_with_cg/depth_image_saver.hpp"
+#include <iostream>
+#include <sstream>
 
 namespace train
 {
 
-  class HandImageCollector
+  class Exception
   {
   public:
-    HandImageCollector();
-    void collect();
-    bool finished();
-  private:
-    gl_wrapper::RightHandPtr& getRightHand();
+    Exception(const std::string& src, const std::string& msg)
+      : src_(src), msg_(msg) {}
 
-    double scale_;
-    std::string x_hand_file_name_;
-    HandPosePtr hand_pose_;
-    std::vector<HandPosePtr> scanned_pose_;
-    DepthImageSaverPtr depth_image_saver_;
+    std::string what()
+    {
+      std::stringstream msg;
+      msg << "train::Exception was thrown." << std::endl
+          << "  src : " << src_ << std::endl
+          << "  msg : " << msg_;
+
+      std::cerr << msg.str() << std::endl;
+    }
+
+  private:
+    std::string src_;
+    std::string msg_;
   };
 
-  typedef boost::shared_ptr<HandImageCollector> HandImageCollectorPtr;
+  class FatalException
+  {
+  public:
+    FatalException(const std::string& src, const std::string& msg)
+      : src_(src), msg_(msg) {}
+
+    std::string what()
+    {
+      std::stringstream msg;
+      msg << "train::FatalException was thrown." << std::endl
+          << "  src : " << src_ << std::endl
+          << "  msg : " << msg_;
+
+      std::cerr << msg.str() << std::endl;
+    }
+
+  private:
+    std::string src_;
+    std::string msg_;
+  };
+
 }
 
-#endif /* __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP */
+#endif /* __TRAIN_WITH_CG_EXCEPTIONS_HPP */

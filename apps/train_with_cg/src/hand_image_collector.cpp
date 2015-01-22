@@ -38,15 +38,124 @@
 
 #include <ros/ros.h>
 #include "train_with_cg/hand_image_collector.hpp"
+#include "train_with_cg/exceptions.hpp"
 
 using namespace train;
 
 HandImageCollector::HandImageCollector()
 {
   ros::NodeHandle local_nh("~");
+
+  local_nh.param<double>("hand/scale", scale_, 0.1);
+  local_nh.param<std::string>("hand/file_name", x_hand_file_name_, "");
+
+  bool use_quaternion = false;
+
+  local_nh.param<bool>("hand/use_quaternion", use_quaternion, false);
+
+  std::vector<double> euler_max(3);
+  std::vector<double> euler_min(3);
+  double euler_step = 0.0; // [deg]
+
+  local_nh.param<double>("hand/euler/x_max", euler_max[0], 90.0);
+  local_nh.param<double>("hand/euler/y_max", euler_max[1], 90.0);
+  local_nh.param<double>("hand/euler/z_max", euler_max[2], 90.0);
+  local_nh.param<double>("hand/euler/x_min", euler_min[0], 0.0);
+  local_nh.param<double>("hand/euler/y_min", euler_min[1], 0.0);
+  local_nh.param<double>("hand/euler/z_min", euler_min[2], 0.0);
+  local_nh.param<double>("hand/euler/step", euler_step, 15.0);
+
+  std::vector<double> finger_max(5);
+  std::vector<double> finger_min(5);
+  double finger_step = 0.0;
+
+  local_nh.param<double>("hand/finger/1st_max", finger_max[0], 90.0);
+  local_nh.param<double>("hand/finger/2nd_max", finger_max[1], 90.0);
+  local_nh.param<double>("hand/finger/3rd_max", finger_max[2], 90.0);
+  local_nh.param<double>("hand/finger/4th_max", finger_max[3], 90.0);
+  local_nh.param<double>("hand/finger/5th_max", finger_max[4], 90.0);
+  local_nh.param<double>("hand/finger/1st_min", finger_min[0], 0.0);
+  local_nh.param<double>("hand/finger/2nd_min", finger_min[1], 0.0);
+  local_nh.param<double>("hand/finger/3rd_min", finger_min[2], 0.0);
+  local_nh.param<double>("hand/finger/4th_min", finger_min[3], 0.0);
+  local_nh.param<double>("hand/finger/5th_min", finger_min[4], 0.0);
+  local_nh.param<double>("hand/finger/step", finger_step, 15.0);
+
+  for(unsigned int i = 0; i < euler_max.size(); ++i)
+  {
+    euler_max[i] = euler_max[i] / 180.0 * M_PI;
+    euler_min[i] = euler_min[i] / 180.0 * M_PI;
+  }
+  euler_step = euler_step / 180.0 * M_PI;
+
+  for(unsigned int i = 0; i < finger_max.size(); ++i)
+  {
+    finger_max[i] = finger_max[i] / 180.0 * M_PI;
+    finger_min[i] = finger_min[i] / 180.0 * M_PI;
+  }
+  finger_step = finger_step / 180.0 * M_PI;
+
+  hand_pose_ = HandPosePtr(
+    new HandPose(use_quaternion, euler_max, euler_min, euler_step, finger_max, finger_min, finger_step));
 }
 
-bool HandImageCollector::collect()
+void HandImageCollector::collect()
 {
-  return true;
+  hand_pose_->update();
+
+/*
+  for(unsigned int i = 0; i < scanned_pose_.size(); ++i)
+  {
+    if(hand_pose_->isSameAs(scanned_pose_[i], 0.001))
+      return;
+  }
+
+  HandPosePtr scanned_pose;
+  hand_pose_->copyTo(scanned_pose);
+  scanned_pose_.push_back(scanned_pose);
+*/
+
+  OrientationPtr orientation = hand_pose_->getOrientation();
+  FingersPtr fingers         = hand_pose_->getFingers();
+
+  if(orientation->isQuaternion())
+  {
+    double deg = 2.0 * std::acos(orientation->getOrientation().coeff(3, 0)) / M_PI * 180.0;
+
+    glRotated(deg,
+              orientation->getOrientation().coeff(0, 0),
+              orientation->getOrientation().coeff(1, 0),
+              orientation->getOrientation().coeff(2, 0));
+  }
+  else
+  {
+    double euler_z = orientation->getOrientation().coeff(2, 0) / M_PI * 180.0;
+    double euler_y = orientation->getOrientation().coeff(1, 0) / M_PI * 180.0;
+    double euler_x = orientation->getOrientation().coeff(0, 0) / M_PI * 180.0;
+
+    glRotated(euler_z, 0.0, 0.0, 1.0);
+    glRotated(euler_y, 0.0, 1.0, 0.0);
+    glRotated(euler_x, 1.0, 0.0, 0.0);
+  }
+
+  this->getRightHand()->rotate1stFinger(fingers->getAngles().coeffRef(0, 0));
+  this->getRightHand()->rotate2ndFinger(fingers->getAngles().coeffRef(1, 0));
+  this->getRightHand()->rotate3rdFinger(fingers->getAngles().coeffRef(2, 0));
+  this->getRightHand()->rotate4thFinger(fingers->getAngles().coeffRef(3, 0));
+  this->getRightHand()->rotate5thFinger(fingers->getAngles().coeffRef(4, 0));
+
+  glScaled(scale_, scale_, scale_);
+  this->getRightHand()->display();
+  //this->getRightHand()->displayWithoutShade();
+}
+
+bool HandImageCollector::finished()
+{
+  return false;
+}
+
+gl_wrapper::RightHandPtr& HandImageCollector::getRightHand()
+{
+  static gl_wrapper::RightHandPtr right_hand = gl_wrapper::RightHandPtr(new gl_wrapper::RightHand(x_hand_file_name_));
+  return right_hand;
 }
