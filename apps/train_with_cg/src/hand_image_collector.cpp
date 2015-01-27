@@ -63,7 +63,7 @@ HandImageCollector::HandImageCollector()
   local_nh.param<double>("hand/euler/x_min", euler_min[0], 0.0);
   local_nh.param<double>("hand/euler/y_min", euler_min[1], 0.0);
   local_nh.param<double>("hand/euler/z_min", euler_min[2], 0.0);
-  local_nh.param<double>("hand/euler/step", euler_step, 15.0);
+  local_nh.param<double>("hand/euler/step", euler_step, 30.0);
 
   std::vector<double> finger_max(5);
   std::vector<double> finger_min(5);
@@ -79,7 +79,7 @@ HandImageCollector::HandImageCollector()
   local_nh.param<double>("hand/finger/3rd_min", finger_min[2], 0.0);
   local_nh.param<double>("hand/finger/4th_min", finger_min[3], 0.0);
   local_nh.param<double>("hand/finger/5th_min", finger_min[4], 0.0);
-  local_nh.param<double>("hand/finger/step", finger_step, 15.0);
+  local_nh.param<double>("hand/finger/step", finger_step, 30.0);
 
   for(unsigned int i = 0; i < euler_max.size(); ++i)
   {
@@ -101,7 +101,7 @@ HandImageCollector::HandImageCollector()
 
 void HandImageCollector::collect()
 {
-  hand_pose_->update();
+  bool is_last = !hand_pose_->update();
 
 /*
   for(unsigned int i = 0; i < scanned_pose_.size(); ++i)
@@ -134,19 +134,26 @@ void HandImageCollector::collect()
     double euler_x = orientation->getOrientation().coeff(0, 0) / M_PI * 180.0;
 
     glRotated(euler_z, 0.0, 0.0, 1.0);
-    glRotated(euler_y, 0.0, 1.0, 0.0);
     glRotated(euler_x, 1.0, 0.0, 0.0);
+    glRotated(euler_y, 0.0, 1.0, 0.0);
   }
 
-  this->getRightHand()->rotate1stFinger(fingers->getAngles().coeffRef(0, 0));
-  this->getRightHand()->rotate2ndFinger(fingers->getAngles().coeffRef(1, 0));
-  this->getRightHand()->rotate3rdFinger(fingers->getAngles().coeffRef(2, 0));
-  this->getRightHand()->rotate4thFinger(fingers->getAngles().coeffRef(3, 0));
-  this->getRightHand()->rotate5thFinger(fingers->getAngles().coeffRef(4, 0));
+  this->getRightHand()->rotate1stFinger(fingers->getAngles().coeffRef(0, 0) / M_PI * 180.0);
+  this->getRightHand()->rotate2ndFinger(fingers->getAngles().coeffRef(1, 0) / M_PI * 180.0);
+  this->getRightHand()->rotate3rdFinger(fingers->getAngles().coeffRef(2, 0) / M_PI * 180.0);
+  this->getRightHand()->rotate4thFinger(fingers->getAngles().coeffRef(3, 0) / M_PI * 180.0);
+  this->getRightHand()->rotate5thFinger(fingers->getAngles().coeffRef(4, 0) / M_PI * 180.0);
+
+  std::cout << (180.0 / M_PI) * orientation->getOrientation() << std::endl << std::endl;
 
   glScaled(scale_, scale_, scale_);
-  this->getRightHand()->display();
-  //this->getRightHand()->displayWithoutShade();
+  this->getRightHand()->displayWithoutShade();
+
+  if(is_last)
+  {
+    ros::shutdown();
+    exit(0);
+  }
 }
 
 bool HandImageCollector::finished()

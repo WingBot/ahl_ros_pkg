@@ -37,7 +37,7 @@
  *********************************************************************/
 
 #include "train_with_cg/hand_pose.hpp"
-#include "train_with_cg/zyx_euler_angles.hpp"
+#include "train_with_cg/zxy_euler_angles.hpp"
 #include "train_with_cg/quaternion.hpp"
 
 using namespace train;
@@ -52,7 +52,7 @@ HandPose::HandPose(bool use_quaternion,
   }
   else
   {
-    orientation_ = ZYXEulerAnglesPtr(new ZYXEulerAngles(euler_max, euler_min, euler_step));
+    orientation_ = ZXYEulerAnglesPtr(new ZXYEulerAngles(euler_max, euler_min, euler_step));
   }
 
   fingers_ = FingersPtr(new Fingers(finger_max, finger_min, finger_step));
@@ -60,6 +60,22 @@ HandPose::HandPose(bool use_quaternion,
 
 bool HandPose::update()
 {
+  if(fingers_->update())
+  {
+    return true;
+  }
+  else
+  {
+    if(orientation_->update())
+    {
+      fingers_->reset();
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   return true;
 }
 

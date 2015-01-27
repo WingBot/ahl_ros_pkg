@@ -59,6 +59,7 @@ namespace train
     virtual void set(const Eigen::MatrixXd& angles);
     virtual void set(double angle0, double angle1, double angle2, double angle3, double angle4);
     virtual bool update();
+    virtual void reset();
 
     virtual const Eigen::MatrixXd& getAngles() const
     {
@@ -66,11 +67,17 @@ namespace train
     }
 
   private:
-    Eigen::MatrixXd angles_;
+    bool updateAll();
+    bool update(unsigned int idx);
+    void reset(unsigned int idx);
 
-    std::vector<double> max_;
-    std::vector<double> min_;
+    Eigen::MatrixXd angles_;
+    Eigen::MatrixXd max_;
+    Eigen::MatrixXd min_;
+
     double step_;
+    std::vector<unsigned int> step_size_;
+    std::vector<unsigned int> step_idx_;
   };
 
 }

@@ -82,9 +82,9 @@ bool Quaternion::update()
   return true;
 }
 
-bool Quaternion::isLast()
+void Quaternion::reset()
 {
-  return false;
+
 }
 
 void Quaternion::set(const Eigen::MatrixXd& orientation)

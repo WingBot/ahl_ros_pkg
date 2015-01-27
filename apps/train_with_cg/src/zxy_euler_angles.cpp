@@ -36,15 +36,17 @@
  *
  *********************************************************************/
 
-#include "train_with_cg/zyx_euler_angles.hpp"
+#include "train_with_cg/zxy_euler_angles.hpp"
 #include "train_with_cg/exceptions.hpp"
 
 using namespace train;
 
-ZYXEulerAngles::ZYXEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step)
-  : max_(max), min_(min), step_(step)
+ZXYEulerAngles::ZXYEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step)
+  : step_(step)
 {
   euler_ = Eigen::MatrixXd::Zero(3, 1);
+  max_.resize(euler_.rows(), euler_.cols());
+  min_.resize(euler_.rows(), euler_.cols());
 
   if(max.size() != euler_.rows())
   {
@@ -52,7 +54,7 @@ ZYXEulerAngles::ZYXEulerAngles(const std::vector<double>& max, const std::vector
     msg << "The size of \"max\" vector is wrong." << std::endl
         << "        size : " << max.size();
 
-    throw train::Exception("ZYXEulerAngles::ZYXEulerAngles", msg.str());
+    throw train::Exception("ZXYEulerAngles::ZXYEulerAngles", msg.str());
   }
 
   if(min.size() != euler_.rows())
@@ -61,27 +63,29 @@ ZYXEulerAngles::ZYXEulerAngles(const std::vector<double>& max, const std::vector
     msg << "The size of \"min\" vector is wrong." << std::endl
         << "        size : " << min.size();
 
-    throw train::Exception("ZYXEulerAngles::ZYXEulerAngles", msg.str());
-  }
-
-  for(unsigned int i = 0; i < min.size(); ++i)
-  {
-    euler_.coeffRef(i, 0) = min[i];
+    throw train::Exception("ZXYEulerAngles::ZXYEulerAngles", msg.str());
   }
 
   for(unsigned int i = 0; i < euler_.rows(); ++i)
   {
-    step_size_.push_back(static_cast<unsigned int>((max_[i] - min_[i])/step_));
+    euler_.coeffRef(i, 0) = min[i];
+    max_.coeffRef(i, 0)   = max[i];
+    min_.coeffRef(i, 0)   = min[i];
+  }
+
+  for(unsigned int i = 0; i < euler_.rows(); ++i)
+  {
+    step_size_.push_back(static_cast<unsigned int>((max_.coeff(i, 0) - min_.coeff(i, 0))/step_));
     step_idx_.push_back(0);
   }
 }
 
-bool ZYXEulerAngles::isQuaternion()
+bool ZXYEulerAngles::isQuaternion()
 {
   return false;
 }
 
-bool ZYXEulerAngles::isSameAs(const OrientationPtr& orientation, double threshold)
+bool ZXYEulerAngles::isSameAs(const OrientationPtr& orientation, double threshold)
 {
   double diff_x = euler_.coeff(0, 0) - orientation->getOrientation().coeff(0, 0);
   double diff_y = euler_.coeff(1, 0) - orientation->getOrientation().coeff(1, 0);
@@ -101,22 +105,37 @@ bool ZYXEulerAngles::isSameAs(const OrientationPtr& orientation, double threshol
   return is_same;
 }
 
-bool ZYXEulerAngles::update()
+bool ZXYEulerAngles::update()
 {
-  if(this->isLast())
-    return false;
-
-
+  if(this->updateX() == false)
+  {
+    if(this->updateY() == false)
+    {
+      if(this->updateZ() == false)
+      {
+        return false;
+      }
+      else
+      {
+        this->resetX();
+        this->resetY();
+      }
+    }
+    else
+    {
+      this->resetX();
+    }
+  }
 
   return true;
 }
 
-bool ZYXEulerAngles::isLast()
+void ZXYEulerAngles::reset()
 {
-  return false;
+  euler_ = min_;
 }
 
-void ZYXEulerAngles::set(const Eigen::MatrixXd& orientation)
+void ZXYEulerAngles::set(const Eigen::MatrixXd& orientation)
 {
   if(orientation.rows() != 3)
   {
@@ -124,20 +143,71 @@ void ZYXEulerAngles::set(const Eigen::MatrixXd& orientation)
     msg << "The size of orientation matrix is wrong." << std::endl
         << "        rows : " << orientation.rows();
 
-    throw train::Exception("ZYXEulerAngles::set", msg.str());
+    throw train::Exception("ZXYEulerAngles::set", msg.str());
   }
 
   euler_ = orientation;
 }
 
-void ZYXEulerAngles::set(double euler_x, double euler_y, double euler_z)
+void ZXYEulerAngles::set(double euler_x, double euler_y, double euler_z)
 {
   euler_.coeffRef(0, 0) = euler_x;
   euler_.coeffRef(1, 0) = euler_y;
   euler_.coeffRef(2, 0) = euler_z;
 }
 
-const Eigen::MatrixXd& ZYXEulerAngles::getOrientation() const
+const Eigen::MatrixXd& ZXYEulerAngles::getOrientation() const
 {
   return euler_;
+}
+
+bool ZXYEulerAngles::updateX()
+{
+  ++step_idx_[0];
+  if(step_idx_[0] > step_size_[0])
+    return false;
+
+  euler_.coeffRef(0, 0) = min_.coeff(0, 0) + step_idx_[0] * step_;
+
+  return true;
+}
+
+bool ZXYEulerAngles::updateY()
+{
+  ++step_idx_[1];
+  if(step_idx_[1] > step_size_[1])
+    return false;
+
+  euler_.coeffRef(1, 0) = min_.coeff(1, 0) + step_idx_[1] * step_;
+ 
+  return true;
+}
+
+bool ZXYEulerAngles::updateZ()
+{
+  ++step_idx_[2];
+  if(step_idx_[2] > step_size_[2])
+    return false;
+
+  euler_.coeffRef(2, 0) = min_.coeff(2, 0) + step_idx_[2] * step_;
+
+  return true;
+}
+
+void ZXYEulerAngles::resetX()
+{
+  euler_.coeffRef(0, 0) = min_.coeff(0, 0);
+  step_idx_[0] = 0;
+}
+
+void ZXYEulerAngles::resetY()
+{
+  euler_.coeffRef(1, 0) = min_.coeff(1, 0);
+  step_idx_[1] = 0;
+}
+
+void ZXYEulerAngles::resetZ()
+{
+  euler_.coeffRef(2, 0) = min_.coeff(2, 0);
+  step_idx_[2] = 0;
 }

@@ -42,9 +42,11 @@
 using namespace train;
 
 Fingers::Fingers(const std::vector<double>& max, const std::vector<double>& min, double step)
-  : max_(max), min_(min), step_(step)
+  : step_(step)
 {
   angles_.resize(5, 1);
+  max_.resize(angles_.rows(), angles_.cols());
+  min_.resize(angles_.rows(), angles_.cols());
 
   if(max.size() != angles_.rows())
   {
@@ -66,7 +68,12 @@ Fingers::Fingers(const std::vector<double>& max, const std::vector<double>& min,
 
   for(unsigned int i = 0; i < angles_.rows(); ++i)
   {
-    angles_.coeffRef(i, 0) = min_[i];
+    angles_.coeffRef(i, 0) = min[i];
+    max_.coeffRef(i, 0)    = max[i];
+    min_.coeffRef(i, 0)    = min[i];
+
+    step_size_.push_back((max_.coeff(i, 0) - min_.coeff(i, 0)) / step_);
+    step_idx_.push_back(0);
   }
 }
 
@@ -87,5 +94,42 @@ void Fingers::set(double angle0, double angle1, double angle2, double angle3, do
 
 bool Fingers::update()
 {
+  return this->updateAll();
+}
+
+void Fingers::reset()
+{
+  for(unsigned int i = 0; i < angles_.rows(); ++i)
+  {
+    this->reset(i);
+  }
+}
+
+bool Fingers::updateAll()
+{
+  bool updated = true;
+
+  for(unsigned int i = 0; i < angles_.rows(); ++i)
+  {
+    updated &= this->update(i);
+  }
+
+  return updated;
+}
+
+bool Fingers::update(unsigned int idx)
+{
+  if(step_idx_[idx] == step_size_[idx])
+    return false;
+
+  angles_.coeffRef(idx, 0) = min_.coeffRef(idx, 0) + step_idx_[idx] * step_;
+  ++step_idx_[idx];
+
   return true;
+}
+
+void Fingers::reset(unsigned int idx)
+{
+  angles_.coeffRef(idx, 0) = min_.coeffRef(idx, 0);
+  step_idx_[idx] = 0;
 }

@@ -13,7 +13,6 @@ void train::display()
   try
   {
     gl_wrapper::Render::start();
-    gl_wrapper::Render::LIGHT->on();
     static HandImageCollectorPtr hand_image_collector = HandImageCollectorPtr(new HandImageCollector());
 
     hand_image_collector->collect();
