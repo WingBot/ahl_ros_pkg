@@ -1,7 +1,14 @@
 <launch>
+  <param name="window/h" value="480"/>
+  <param name="window/w" value="480"/>
+
+  <param name="fovy" value="57.5"/>
+  <param name="z_near" value="0.2"/>
+  <param name="z_far" value="10.0"/>
+
   <param name="camera/pos/x" value="0.0"/>
   <param name="camera/pos/y" value="0.0"/>
-  <param name="camera/pos/z" value="1.5"/>
+  <param name="camera/pos/z" value="0.4"/>
   <param name="camera/center/x" value="0.0"/>
   <param name="camera/center/y" value="0.0"/>
   <param name="camera/center/z" value="0.0"/>
@@ -11,7 +18,7 @@
 
   <param name="init_camera/pos/x" value="0.0"/>
   <param name="init_camera/pos/y" value="0.0"/>
-  <param name="init_camera/pos/z" value="1.5"/>
+  <param name="init_camera/pos/z" value="0.4"/>
   <param name="init_camera/center/x" value="0.0"/>
   <param name="init_camera/center/y" value="0.0"/>
   <param name="init_camera/center/z" value="0.0"/>

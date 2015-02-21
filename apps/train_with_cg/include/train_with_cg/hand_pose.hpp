@@ -58,8 +58,6 @@ namespace train
              const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step);
              
     bool update();
-    bool isSameAs(const HandPosePtr& hand_pose, double threshold);
-    void copyTo(HandPosePtr& hand_pose);
 
     const OrientationPtr& getOrientation() const
     {

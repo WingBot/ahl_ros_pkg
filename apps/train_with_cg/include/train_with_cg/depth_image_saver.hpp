@@ -39,6 +39,7 @@
 #ifndef __TRAIN_WITH_CG_DEPTH_IMAGE_SAVER_HPP
 #define __TRAIN_WITH_CG_DEPTH_IMAGE_SAVER_HPP
 
+#include <string>
 #include <boost/shared_ptr.hpp>
 
 namespace train
@@ -47,9 +48,15 @@ namespace train
   class DepthImageSaver
   {
   public:
+    DepthImageSaver();
+    void save(const std::string& name);
 
   private:
+    double near_;
+    double far_;
 
+    double hand_size_;
+    double hand_img_size_;
   };
 
   typedef boost::shared_ptr<DepthImageSaver> DepthImageSaverPtr;

@@ -36,6 +36,7 @@
  *
  *********************************************************************/
 
+#include <sstream>
 #include <ros/ros.h>
 #include "train_with_cg/hand_image_collector.hpp"
 #include "train_with_cg/exceptions.hpp"
@@ -46,7 +47,7 @@ HandImageCollector::HandImageCollector()
 {
   ros::NodeHandle local_nh("~");
 
-  local_nh.param<double>("hand/scale", scale_, 0.1);
+  local_nh.param<double>("hand/scale", scale_, 0.01);
   local_nh.param<std::string>("hand/file_name", x_hand_file_name_, "");
 
   bool use_quaternion = false;
@@ -97,23 +98,13 @@ HandImageCollector::HandImageCollector()
 
   hand_pose_ = HandPosePtr(
     new HandPose(use_quaternion, euler_max, euler_min, euler_step, finger_max, finger_min, finger_step));
+
+  depth_image_saver_ = DepthImageSaverPtr(new DepthImageSaver());
 }
 
 void HandImageCollector::collect()
 {
   bool is_last = !hand_pose_->update();
-
-/*
-  for(unsigned int i = 0; i < scanned_pose_.size(); ++i)
-  {
-    if(hand_pose_->isSameAs(scanned_pose_[i], 0.001))
-      return;
-  }
-
-  HandPosePtr scanned_pose;
-  hand_pose_->copyTo(scanned_pose);
-  scanned_pose_.push_back(scanned_pose);
-*/
 
   OrientationPtr orientation = hand_pose_->getOrientation();
   FingersPtr fingers         = hand_pose_->getFingers();
@@ -148,6 +139,12 @@ void HandImageCollector::collect()
 
   glScaled(scale_, scale_, scale_);
   this->getRightHand()->displayWithoutShade();
+
+  static unsigned int cnt = 0;
+  std::stringstream ss;
+  ss << "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/apps/train_with_cg/data/depth/image" << cnt << ".bmp";
+  depth_image_saver_->save(ss.str());
+  ++cnt;
 
   if(is_last)
   {

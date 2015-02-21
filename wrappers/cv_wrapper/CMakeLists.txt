@@ -44,6 +44,7 @@ add_library(
   cv_wrapper
     src/image_subscriber.cpp
     src/utils.cpp
+    src/rect.cpp
 )
 
 target_link_libraries(

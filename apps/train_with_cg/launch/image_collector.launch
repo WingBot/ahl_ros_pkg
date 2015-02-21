@@ -2,12 +2,14 @@
   <include file="$(find train_with_cg)/launch/opengl_env.xml" ns="gl_wrapper"/>
   <node pkg="train_with_cg" type="image_collector" name="image_collector" output="screen">
 
-    <param name="hand/scale" value="0.1"/>
+    <param name="hand/scale" value="0.027"/>
     <param name="hand/file_name" value="$(find train_with_cg)/cg/righthand.cfg"/>
     <param name="hand/use_quaternion" value="false"/>
 
+    <param name="hand/size" value="0.18"/>
+
     <param name="hand/euler/x_max" value="90.0"/>
-    <param name="hand/euler/y_max" value="90.0"/>
+    <param name="hand/euler/y_max" value="0.0"/>
     <param name="hand/euler/z_max" value="90.0"/>
 
     <param name="hand/euler/x_min" value="0.0"/>

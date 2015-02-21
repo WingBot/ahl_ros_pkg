@@ -67,6 +67,7 @@ add_executable(
     src/fingers.cpp
     src/quaternion.cpp
     src/zxy_euler_angles.cpp
+    src/depth_image_saver.cpp
 )
 
 target_link_libraries(

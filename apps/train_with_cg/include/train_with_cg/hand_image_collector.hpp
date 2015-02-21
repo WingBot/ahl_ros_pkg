@@ -60,7 +60,6 @@ namespace train
     double scale_;
     std::string x_hand_file_name_;
     HandPosePtr hand_pose_;
-    std::vector<HandPosePtr> scanned_pose_;
     DepthImageSaverPtr depth_image_saver_;
   };
 
