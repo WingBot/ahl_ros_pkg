@@ -142,7 +142,7 @@ void HandImageCollector::collect()
 
   static unsigned int cnt = 0;
   std::stringstream ss;
-  ss << "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/apps/train_with_cg/data/depth/image" << cnt << ".bmp";
+  ss << "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/apps/train_with_cg/data/depth/image" << cnt << ".pgm";
   depth_image_saver_->save(ss.str());
   ++cnt;
 

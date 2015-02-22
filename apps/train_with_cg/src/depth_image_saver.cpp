@@ -72,17 +72,15 @@ void DepthImageSaver::save(const std::string& name)
   rect.bound(img, 2, false, true);
   std::cout << rect.getH() << ", " << rect.getW() << std::endl;
 
-  if(rect.getH() != 0 && rect.getW() != 0)
-  {
-    cv::Mat tmp = img(rect.getRect());
-    cv::Mat tmp2;
-    tmp.copyTo(tmp2);
+  cv::Mat roi_img = img(rect.getRect());
+  cv::Mat resized_img(hand_img_size_, hand_img_size_, CV_8UC1);
 
-    cv::Mat dst;
-    cv::flip(tmp2, dst, 0);
+  cv::resize(roi_img, resized_img, resized_img.size());
 
-    cv::imwrite(name, dst);
-  }
+  cv::Mat dst;
+  cv::flip(resized_img, dst, 0);
+
+  cv::imwrite(name, dst);
 
   delete buf;
 }
