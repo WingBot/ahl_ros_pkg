@@ -10,6 +10,7 @@ find_package(
     cv_bridge
     cv_wrapper
     gl_wrapper
+    neural_network
     roscpp
     std_utils
     tf
@@ -43,6 +44,7 @@ catkin_package(
     cv_bridge
     cv_wrapper
     gl_wrapper
+    neural_network
     roscpp
     std_utils
     tf

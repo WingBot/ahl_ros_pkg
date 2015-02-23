@@ -2,6 +2,7 @@
 #define __TRAIN_WITH_CG_TRAIN_HPP
 
 #include <boost/shared_ptr.hpp>
+#include <neural_network/neural_network.hpp>
 
 namespace train
 {
@@ -14,6 +15,7 @@ namespace train
     void start();
     void save();
   private:
+    nn::NeuralNetworkPtr nn_;
 
   };
 

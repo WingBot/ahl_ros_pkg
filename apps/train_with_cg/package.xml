@@ -17,6 +17,7 @@
   <build_depend>cv_bridge</build_depend>
   <build_depend>cv_wrapper</build_depend>
   <build_depend>gl_wrapper</build_depend>
+  <build_depend>neural_network</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_utils</build_depend>
   <build_depend>tf</build_depend>
@@ -25,6 +26,7 @@
   <run_depend>cv_bridge</run_depend>
   <run_depend>cv_wrapper</run_depend>
   <run_depend>gl_wrapper</run_depend>
+  <run_depend>neural_network</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_utils</run_depend>
   <run_depend>tf</run_depend>
