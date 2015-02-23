@@ -75,6 +75,18 @@ target_link_libraries(
     ${catkin_LIBRARIES}
 )
 
+add_executable(
+  train_with_cg
+    src/train/main.cpp
+    src/train/train.cpp
+)
+
+target_link_libraries(
+  train_with_cg
+    ${catkin_LIBRARIES}
+)
+
+
 ##############################################################################
 # Install
 ##############################################################################
@@ -82,6 +94,7 @@ target_link_libraries(
 install(
   TARGETS
     image_collector
+    train_with_cg
   ARCHIVE DESTINATION
     ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION
