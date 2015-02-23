@@ -82,6 +82,8 @@ HandImageCollector::HandImageCollector()
   local_nh.param<double>("hand/finger/5th_min", finger_min[4], 0.0);
   local_nh.param<double>("hand/finger/step", finger_step, 30.0);
 
+  local_nh.param<std::string>("hand/output/file_name", output_file_name_, "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/apps/train_with_cg/data/output.txt");
+
   for(unsigned int i = 0; i < euler_max.size(); ++i)
   {
     euler_max[i] = euler_max[i] / 180.0 * M_PI;
@@ -100,6 +102,14 @@ HandImageCollector::HandImageCollector()
     new HandPose(use_quaternion, euler_max, euler_min, euler_step, finger_max, finger_min, finger_step));
 
   depth_image_saver_ = DepthImageSaverPtr(new DepthImageSaver());
+
+  ofs_.open(output_file_name_.c_str());
+  if(ofs_.fail())
+  {
+    std::stringstream msg;
+    msg << "Could not open \"" << output_file_name_ << "\".";
+    throw train::Exception("HandImageCollector::HandImageCollector", msg.str());
+  }
 }
 
 void HandImageCollector::collect()
@@ -140,11 +150,7 @@ void HandImageCollector::collect()
   glScaled(scale_, scale_, scale_);
   this->getRightHand()->displayWithoutShade();
 
-  static unsigned int cnt = 0;
-  std::stringstream ss;
-  ss << "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/apps/train_with_cg/data/depth/image" << cnt << ".pgm";
-  depth_image_saver_->save(ss.str());
-  ++cnt;
+  this->saveData(orientation, fingers);
 
   if(is_last)
   {
@@ -162,4 +168,35 @@ gl_wrapper::RightHandPtr& HandImageCollector::getRightHand()
 {
   static gl_wrapper::RightHandPtr right_hand = gl_wrapper::RightHandPtr(new gl_wrapper::RightHand(x_hand_file_name_));
   return right_hand;
+}
+
+void HandImageCollector::saveData(const OrientationPtr& orientation, const FingersPtr& fingers)
+{
+  static unsigned int cnt = 0;
+  std::stringstream ss;
+  ss << "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/apps/train_with_cg/data/depth/image" << cnt << ".pgm";
+  depth_image_saver_->save(ss.str());
+  ++cnt;
+
+  if(orientation->isQuaternion())
+  {
+    ofs_ << orientation->getOrientation().coeff(0, 0) << ", "
+         << orientation->getOrientation().coeff(1, 0) << ", "
+         << orientation->getOrientation().coeff(2, 0) << ", "
+         << orientation->getOrientation().coeff(3, 0);
+
+  }
+  else
+  {
+    ofs_ << orientation->getOrientation().coeff(0, 0) << ", "
+         << orientation->getOrientation().coeff(1, 0) << ", "
+         << orientation->getOrientation().coeff(2, 0);
+  }
+
+  for(unsigned int i = 0; i < fingers->getAngles().size(); ++i)
+  {
+    ofs_ << ", " << fingers->getAngles().coeffRef(i, 0);
+  }
+
+  ofs_ << std::endl;
 }

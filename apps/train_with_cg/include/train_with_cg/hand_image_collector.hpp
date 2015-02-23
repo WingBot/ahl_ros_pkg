@@ -39,6 +39,7 @@
 #ifndef __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP
 #define __TRAIN_WITH_CG_HAND_IMAGE_COLLECTOR_HPP
 
+#include <fstream>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "gl_wrapper/object/x_hand.hpp"
@@ -56,11 +57,16 @@ namespace train
     bool finished();
   private:
     gl_wrapper::RightHandPtr& getRightHand();
+    void saveData(const OrientationPtr& orientation, const FingersPtr& fingers);
 
     double scale_;
     std::string x_hand_file_name_;
+
     HandPosePtr hand_pose_;
     DepthImageSaverPtr depth_image_saver_;
+
+    std::string output_file_name_;
+    std::ofstream ofs_;
   };
 
   typedef boost::shared_ptr<HandImageCollector> HandImageCollectorPtr;
