@@ -43,8 +43,8 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "gl_wrapper/object/x_hand.hpp"
-#include "train_with_cg/hand_pose.hpp"
-#include "train_with_cg/depth_image_saver.hpp"
+#include "train_with_cg/collect_image/hand_pose.hpp"
+#include "train_with_cg/collect_image/depth_image_saver.hpp"
 
 namespace train
 {

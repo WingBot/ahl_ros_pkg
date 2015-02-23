@@ -36,35 +36,44 @@
  *
  *********************************************************************/
 
-#include <ros/ros.h>
-#include <gl_wrapper/gl_wrapper.hpp>
-#include "train_with_cg/display.hpp"
+#ifndef __TRAIN_WITH_CG_HAND_POSE_HPP
+#define __TRAIN_WITH_CG_HAND_POSE_HPP
 
-int main(int argc, char** argv)
+#include <vector>
+#include <boost/shared_ptr.hpp>
+#include "train_with_cg/collect_image/orientation.hpp"
+#include "train_with_cg/collect_image/fingers.hpp"
+
+namespace train
 {
-  ros::init(argc, argv, "train_with_cg");
-  ros::NodeHandle nh;
 
-  try
-  {
-    gl_wrapper::RenderPtr render = gl_wrapper::RenderPtr(new gl_wrapper::Render(argc, argv));
-    render->start(train::display);
-  }
-  catch(gl_wrapper::FatalException& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    exit(1);
-  }
-  catch(gl_wrapper::Exception& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    exit(1);
-  }
-  catch(...)
-  {
-    ROS_ERROR_STREAM("Unknown exception was thrown.");
-    exit(1);
-  }
+  class HandPose;
+  typedef boost::shared_ptr<HandPose> HandPosePtr;
 
-  return 0;
+  class HandPose
+  {
+  public:
+    HandPose(bool use_quaternion,
+             const std::vector<double>& euler_max, const std::vector<double>& euler_min, double euler_step,
+             const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step);
+             
+    bool update();
+
+    const OrientationPtr& getOrientation() const
+    {
+      return orientation_;
+    }
+
+    const FingersPtr& getFingers() const
+    {
+      return fingers_;
+    }
+
+  private:
+    OrientationPtr orientation_;
+    FingersPtr fingers_;
+  };
+
 }
+
+#endif /* __TRAIN_WITH_CG_HAND_POSE_HPP */

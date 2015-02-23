@@ -36,20 +36,19 @@
  *
  *********************************************************************/
 
-#ifndef __TRAIN_WITH_CG_QUATERNION_HPP
-#define __TRAIN_WITH_CG_QUATERNION_HPP
+#ifndef __TRAIN_WITH_CG_ZXY_EULER_ANGLES_HPP
+#define __TRAIN_WITH_CG_ZXY_EULER_ANGLES_HPP
 
-#include <vector>
 #include <boost/shared_ptr.hpp>
-#include "train_with_cg/orientation.hpp"
+#include "train_with_cg/collect_image/orientation.hpp"
 
 namespace train
 {
 
-  class Quaternion : public Orientation
+  class ZXYEulerAngles : public Orientation
   {
   public:
-    Quaternion(const std::vector<double>& max, const std::vector<double>& min, double step);
+    ZXYEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step);
     virtual bool isQuaternion();
     virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
     virtual bool update();
@@ -59,14 +58,23 @@ namespace train
     virtual const Eigen::MatrixXd& getOrientation() const;
 
   private:
-    Eigen::MatrixXd quaternion_; // x, y, z, w
+    bool updateX();
+    bool updateY();
+    bool updateZ();
+    void resetX();
+    void resetY();
+    void resetZ();
 
-    std::vector<double> max_;
-    std::vector<double> min_;
+    Eigen::MatrixXd euler_;
+    Eigen::MatrixXd max_;
+    Eigen::MatrixXd min_;
+
     double step_;
+    std::vector<unsigned int> step_size_;
+    std::vector<unsigned int> step_idx_;
   };
 
-  typedef boost::shared_ptr<Quaternion> QuaternionPtr;
+  typedef boost::shared_ptr<ZXYEulerAngles> ZXYEulerAnglesPtr;
 }
 
-#endif /* __TRAIN_WITH_CG_QUATERNION_HPP */
+#endif /* __TRAIN_WITH_CG_ZXY_EULER_ANGLES_HPP */

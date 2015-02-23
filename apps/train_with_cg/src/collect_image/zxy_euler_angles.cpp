@@ -36,7 +36,7 @@
  *
  *********************************************************************/
 
-#include "train_with_cg/zxy_euler_angles.hpp"
+#include "train_with_cg/collect_image/zxy_euler_angles.hpp"
 #include "train_with_cg/exceptions.hpp"
 
 using namespace train;

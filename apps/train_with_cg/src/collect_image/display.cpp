@@ -2,8 +2,8 @@
 #include <ros/ros.h>
 #include <gl_wrapper/gl_wrapper.hpp>
 #include <gl_wrapper/exception/exceptions.hpp>
-#include "train_with_cg/display.hpp"
-#include "train_with_cg/hand_image_collector.hpp"
+#include "train_with_cg/collect_image/display.hpp"
+#include "train_with_cg/collect_image/hand_image_collector.hpp"
 #include "train_with_cg/exceptions.hpp"
 
 using namespace train;

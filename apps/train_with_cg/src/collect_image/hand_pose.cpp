@@ -36,44 +36,46 @@
  *
  *********************************************************************/
 
-#ifndef __TRAIN_WITH_CG_HAND_POSE_HPP
-#define __TRAIN_WITH_CG_HAND_POSE_HPP
+#include "train_with_cg/collect_image/hand_pose.hpp"
+#include "train_with_cg/collect_image/zxy_euler_angles.hpp"
+#include "train_with_cg/collect_image/quaternion.hpp"
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
-#include "train_with_cg/orientation.hpp"
-#include "train_with_cg/fingers.hpp"
+using namespace train;
 
-namespace train
+HandPose::HandPose(bool use_quaternion,
+                   const std::vector<double>& euler_max, const std::vector<double>& euler_min, double euler_step,
+                   const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step)
 {
-
-  class HandPose;
-  typedef boost::shared_ptr<HandPose> HandPosePtr;
-
-  class HandPose
+  if(use_quaternion)
   {
-  public:
-    HandPose(bool use_quaternion,
-             const std::vector<double>& euler_max, const std::vector<double>& euler_min, double euler_step,
-             const std::vector<double>& finger_max, const std::vector<double>& finger_min, double finger_step);
-             
-    bool update();
+    orientation_ = QuaternionPtr(new Quaternion(euler_max, euler_min, euler_step));
+  }
+  else
+  {
+    orientation_ = ZXYEulerAnglesPtr(new ZXYEulerAngles(euler_max, euler_min, euler_step));
+  }
 
-    const OrientationPtr& getOrientation() const
-    {
-      return orientation_;
-    }
-
-    const FingersPtr& getFingers() const
-    {
-      return fingers_;
-    }
-
-  private:
-    OrientationPtr orientation_;
-    FingersPtr fingers_;
-  };
-
+  fingers_ = FingersPtr(new Fingers(finger_max, finger_min, finger_step));
 }
 
-#endif /* __TRAIN_WITH_CG_HAND_POSE_HPP */
+bool HandPose::update()
+{
+  if(fingers_->update())
+  {
+    return true;
+  }
+  else
+  {
+    if(orientation_->update())
+    {
+      fingers_->reset();
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+

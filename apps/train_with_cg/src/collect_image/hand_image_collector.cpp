@@ -38,7 +38,7 @@
 
 #include <sstream>
 #include <ros/ros.h>
-#include "train_with_cg/hand_image_collector.hpp"
+#include "train_with_cg/collect_image/hand_image_collector.hpp"
 #include "train_with_cg/exceptions.hpp"
 
 using namespace train;

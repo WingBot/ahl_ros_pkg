@@ -36,45 +36,35 @@
  *
  *********************************************************************/
 
-#ifndef __TRAIN_WITH_CG_ZXY_EULER_ANGLES_HPP
-#define __TRAIN_WITH_CG_ZXY_EULER_ANGLES_HPP
+#include <ros/ros.h>
+#include <gl_wrapper/gl_wrapper.hpp>
+#include "train_with_cg/collect_image/display.hpp"
 
-#include <boost/shared_ptr.hpp>
-#include "train_with_cg/orientation.hpp"
-
-namespace train
+int main(int argc, char** argv)
 {
+  ros::init(argc, argv, "train_with_cg");
+  ros::NodeHandle nh;
 
-  class ZXYEulerAngles : public Orientation
+  try
   {
-  public:
-    ZXYEulerAngles(const std::vector<double>& max, const std::vector<double>& min, double step);
-    virtual bool isQuaternion();
-    virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
-    virtual bool update();
-    virtual void reset();
-    virtual void set(const Eigen::MatrixXd& orientation);
-    virtual void set(double euler_x, double euler_y, double euler_z);
-    virtual const Eigen::MatrixXd& getOrientation() const;
+    gl_wrapper::RenderPtr render = gl_wrapper::RenderPtr(new gl_wrapper::Render(argc, argv));
+    render->start(train::display);
+  }
+  catch(gl_wrapper::FatalException& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+    exit(1);
+  }
+  catch(gl_wrapper::Exception& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+    exit(1);
+  }
+  catch(...)
+  {
+    ROS_ERROR_STREAM("Unknown exception was thrown.");
+    exit(1);
+  }
 
-  private:
-    bool updateX();
-    bool updateY();
-    bool updateZ();
-    void resetX();
-    void resetY();
-    void resetZ();
-
-    Eigen::MatrixXd euler_;
-    Eigen::MatrixXd max_;
-    Eigen::MatrixXd min_;
-
-    double step_;
-    std::vector<unsigned int> step_size_;
-    std::vector<unsigned int> step_idx_;
-  };
-
-  typedef boost::shared_ptr<ZXYEulerAngles> ZXYEulerAnglesPtr;
+  return 0;
 }
-
-#endif /* __TRAIN_WITH_CG_ZXY_EULER_ANGLES_HPP */

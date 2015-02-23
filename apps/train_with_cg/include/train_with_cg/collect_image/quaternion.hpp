@@ -36,57 +36,37 @@
  *
  *********************************************************************/
 
-#ifndef __TRAIN_WITH_CG_EXCEPTIONS_HPP
-#define __TRAIN_WITH_CG_EXCEPTIONS_HPP
+#ifndef __TRAIN_WITH_CG_QUATERNION_HPP
+#define __TRAIN_WITH_CG_QUATERNION_HPP
 
-#include <iostream>
-#include <sstream>
+#include <vector>
+#include <boost/shared_ptr.hpp>
+#include "train_with_cg/collect_image/orientation.hpp"
 
 namespace train
 {
 
-  class Exception
+  class Quaternion : public Orientation
   {
   public:
-    Exception(const std::string& src, const std::string& msg)
-      : src_(src), msg_(msg) {}
-
-    std::string what()
-    {
-      std::stringstream msg;
-      msg << "train::Exception was thrown." << std::endl
-          << "  src : " << src_ << std::endl
-          << "  msg : " << msg_;
-
-      std::cerr << msg.str() << std::endl;
-    }
+    Quaternion(const std::vector<double>& max, const std::vector<double>& min, double step);
+    virtual bool isQuaternion();
+    virtual bool isSameAs(const OrientationPtr& orientation, double threshold);
+    virtual bool update();
+    virtual void reset();
+    virtual void set(const Eigen::MatrixXd& orientation);
+    virtual void set(double euler_x, double euler_y, double euler_z);
+    virtual const Eigen::MatrixXd& getOrientation() const;
 
   private:
-    std::string src_;
-    std::string msg_;
+    Eigen::MatrixXd quaternion_; // x, y, z, w
+
+    std::vector<double> max_;
+    std::vector<double> min_;
+    double step_;
   };
 
-  class FatalException
-  {
-  public:
-    FatalException(const std::string& src, const std::string& msg)
-      : src_(src), msg_(msg) {}
-
-    std::string what()
-    {
-      std::stringstream msg;
-      msg << "train::FatalException was thrown." << std::endl
-          << "  src : " << src_ << std::endl
-          << "  msg : " << msg_;
-
-      std::cerr << msg.str() << std::endl;
-    }
-
-  private:
-    std::string src_;
-    std::string msg_;
-  };
-
+  typedef boost::shared_ptr<Quaternion> QuaternionPtr;
 }
 
-#endif /* __TRAIN_WITH_CG_EXCEPTIONS_HPP */
+#endif /* __TRAIN_WITH_CG_QUATERNION_HPP */

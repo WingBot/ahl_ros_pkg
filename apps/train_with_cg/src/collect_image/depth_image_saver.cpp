@@ -3,7 +3,7 @@
 #include <ros/ros.h>
 #include <gl_wrapper/gl_wrapper.hpp>
 #include <cv_wrapper/rect.hpp>
-#include "train_with_cg/depth_image_saver.hpp"
+#include "train_with_cg/collect_image/depth_image_saver.hpp"
 
 using namespace train;
 

@@ -60,14 +60,14 @@ add_definitions(
 
 add_executable(
   image_collector
-    src/main.cpp
-    src/display.cpp
-    src/hand_image_collector.cpp
-    src/hand_pose.cpp
-    src/fingers.cpp
-    src/quaternion.cpp
-    src/zxy_euler_angles.cpp
-    src/depth_image_saver.cpp
+    src/collect_image/main.cpp
+    src/collect_image/display.cpp
+    src/collect_image/hand_image_collector.cpp
+    src/collect_image/hand_pose.cpp
+    src/collect_image/fingers.cpp
+    src/collect_image/quaternion.cpp
+    src/collect_image/zxy_euler_angles.cpp
+    src/collect_image/depth_image_saver.cpp
 )
 
 target_link_libraries(
