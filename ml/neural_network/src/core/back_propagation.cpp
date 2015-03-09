@@ -79,6 +79,15 @@ BackPropagation::BackPropagation(const ConfigPtr& config)
     }
   }
 
+  for(unsigned int i = 0; i < config->getW().size(); ++i)
+  {
+    if(config->getW()[i].cols() == layer_[i]->getW().cols() &&
+       config->getW()[i].rows() == layer_[i]->getW().rows())
+    {
+      layer_[i]->getWRef() = config->getW()[i];
+    }
+  }
+
   ActivationPtr activation;
   if(config->getActivationType() == "sigmoid")
   {
@@ -123,7 +132,8 @@ double BackPropagation::getCost(const TrainingDataPtr& data)
     unsigned int last = layer_.size() - 1;
     unsigned int rows = layer_[last]->getNeuron().rows();
     unsigned int cols = layer_[last]->getNeuron().cols();
-    cost += (layer_[last]->getNeuron().block(0, 0, rows - 1, cols) - data->getOutput()[i]).norm();
+    double diff = (layer_[last]->getNeuron().block(0, 0, rows - 1, cols) - data->getOutput()[i]).norm();
+    cost += diff * diff;
   }
 
   //return 0.5 * cost;

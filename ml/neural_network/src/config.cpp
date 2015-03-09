@@ -88,6 +88,7 @@ void Config::init(const std::string& yaml_name)
 
       Eigen::MatrixXd tmp;
       load_weight_success &= yaml_loader.loadMatrix(tag.str(), tmp);
+
       w_.push_back(tmp);
     }
 

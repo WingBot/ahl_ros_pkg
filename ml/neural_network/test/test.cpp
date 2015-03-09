@@ -14,8 +14,8 @@ int main(int argc, char** argv)
   std::string result_path;
 
   nh.param<std::string>("/neural_network/test/path/config", config_path,
-//    "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ml/neural_network/yaml/sample.yaml");
-    "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ml/neural_network/test/test_result.yaml");
+    "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ml/neural_network/test/sample.yaml");
+//    "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ml/neural_network/test/test_result.yaml");
   nh.param<std::string>("/neural_network/test/path/data_in", data_in_path,
     "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ml/neural_network/test/test_in.dat");
   nh.param<std::string>("/neural_network/test/path/data_out", data_out_path,

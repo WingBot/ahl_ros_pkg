@@ -68,6 +68,15 @@ MultiThreadedBackPropagation::MultiThreadedBackPropagation(const ConfigPtr& conf
     pre_dw_[i]  = Eigen::MatrixXd::Zero(config->getNeuronNum()[i + 1], config->getNeuronNum()[i] + 1);
     dw_zero_[i] = Eigen::MatrixXd::Zero(config->getNeuronNum()[i + 1], config->getNeuronNum()[i] + 1);
   }
+
+  for(unsigned int i = 0; i < config->getW().size(); ++i)
+  {
+    if(config->getW()[i].cols() == layer_[i]->getW().cols() &&
+       config->getW()[i].rows() == layer_[i]->getW().rows())
+    {
+      layer_[i]->getWRef() = config->getW()[i];
+    }
+  }
 }
 
 void MultiThreadedBackPropagation::train(const TrainingDataPtr& data)
