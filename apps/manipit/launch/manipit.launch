@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find manipit)/launch/openni2.launch"/>
+  <node pkg="manipit" type="manipit_node" name="manipit_node" output="screen">
+
+
+  </node>
+</launch>
