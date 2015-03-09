@@ -78,6 +78,37 @@ target_link_libraries(
 )
 
 add_executable(
+  auto_encoder
+    src/auto_encoder/main.cpp
+    src/auto_encoder/auto_encoder.cpp
+)
+
+target_link_libraries(
+  auto_encoder
+    ${catkin_LIBRARIES}
+)
+
+add_executable(
+  filter_checker
+    src/auto_encoder/filter_checker.cpp
+)
+
+target_link_libraries(
+  filter_checker
+    ${catkin_LIBRARIES}
+)
+
+add_executable(
+  decoder
+    src/auto_encoder/decoder.cpp
+)
+
+target_link_libraries(
+  decoder
+    ${catkin_LIBRARIES}
+)
+
+add_executable(
   train_with_cg
     src/train/main.cpp
     src/train/train.cpp
@@ -96,6 +127,9 @@ target_link_libraries(
 install(
   TARGETS
     image_collector
+    auto_encoder
+    filter_checker
+    decoder
     train_with_cg
   ARCHIVE DESTINATION
     ${CATKIN_PACKAGE_LIB_DESTINATION}

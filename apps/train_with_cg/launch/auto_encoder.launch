@@ -1,0 +1,10 @@
+<launch>
+  <node pkg="train_with_cg" type="auto_encoder" name="auto_encoder" output="screen">
+    <param name="path/config" value="$(find train_with_cg)/yaml/auto_encoder0.yaml"/>
+    <param name="path/data_in" value="$(find train_with_cg)/data/depth"/>
+    <param name="data_name" value="image"/>
+    <param name="extension" value="pgm"/>
+    <param name="path/result" value="$(find train_with_cg)/results/auto_encoder/auto_encoder0_result.yaml"/>
+    <param name="use_image_data" value="true"/>
+  </node>
+</launch>

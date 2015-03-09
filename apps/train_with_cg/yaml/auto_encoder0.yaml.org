@@ -1,0 +1,17 @@
+#this file is a configuration file for neural_network package.
+
+enable_back_propagation : true
+thread_num : 1
+batch_size : 700
+learning_rate : 0.001
+momentum_rate : 0.9
+activation_gain : 1.0
+reference_cost : 0.001
+max_iterations : 3000
+calc_cost_interval : 50
+activation_type : rectified_linear
+#activation_type : sigmoid
+layer :
+- 1024
+- 256
+- 1024

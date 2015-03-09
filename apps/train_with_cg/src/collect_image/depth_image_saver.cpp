@@ -12,7 +12,7 @@ DepthImageSaver::DepthImageSaver()
   ros::NodeHandle nh;
 
   nh.param<double>("hand/size", hand_size_, 0.18);
-  nh.param<double>("hand/img/size", hand_img_size_, 40);
+  nh.param<double>("hand/img/size", hand_img_size_, 32);
 
   near_ = gl_wrapper::Render::PARAM->z_near;
   far_  = gl_wrapper::Render::PARAM->z_far;

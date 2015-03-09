@@ -16,7 +16,9 @@ namespace train
     void save();
   private:
     nn::NeuralNetworkPtr nn_;
-
+    nn::ConfigPtr config_;
+    nn::TrainingDataPtr data_;
+    nn::ScalerPtr scaler_;
   };
 
   typedef boost::shared_ptr<Train> TrainPtr;

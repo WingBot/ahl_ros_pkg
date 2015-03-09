@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="train_with_cg" type="filter_checker" name="filter_checker" output="screen">
+    <param name="yaml_name" value="$(find train_with_cg)/results/auto_encoder/auto_encoder0_result.yaml"/>
+    <param name="image/height" value="32"/>
+    <param name="image/weight" value="32"/>
+  </node>
+</launch>
