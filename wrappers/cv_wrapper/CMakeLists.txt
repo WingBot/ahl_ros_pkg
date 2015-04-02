@@ -45,6 +45,7 @@ add_library(
     src/image_subscriber.cpp
     src/utils.cpp
     src/rect.cpp
+    src/hsv_mask.cpp
 )
 
 target_link_libraries(

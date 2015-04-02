@@ -1,5 +1,6 @@
 #include <sensor_msgs/image_encodings.h>
 #include <tf2_ros/transform_broadcaster.h>
+
 #include "manipit/manipit.hpp"
 #include "manipit/exception.hpp"
 #include "manipit/hand_detector/rgb_hand_detector.hpp"
@@ -36,7 +37,7 @@ Manipit::Manipit()
 
   sync_->registerCallback(boost::bind(&Manipit::receivedImages, this, _1, _2));
 
-  rgb_.create(320, 240, CV_8UC3);
+  rgb_.create(240, 320, CV_8UC3);
   depth_.create(rgb_.rows, rgb_.cols, CV_32FC1);
 
   detector_ = HandDetectorPtr(new RGBHandDetector());
@@ -53,6 +54,8 @@ void Manipit::receivedImages(const sensor_msgs::ImageConstPtr& msg_rgb,
 
   cv::resize(rgb_ptr_->image, rgb_, rgb_.size());
   cv::resize(depth_ptr_->image, depth_, depth_.size());
+
+  cv::medianBlur(rgb_, rgb_, 5);
 
   cv::Rect hand_roi;
 
@@ -72,6 +75,13 @@ void Manipit::receivedImages(const sensor_msgs::ImageConstPtr& msg_rgb,
   if(publish_transform_)
   {
     publishTransform();
+  }
+
+  cv::imshow("rgb", rgb_);
+  cv::imshow("depth", depth_);
+  if(cv::waitKey(2) == 27)
+  {
+    exit(0);
   }
 }
 

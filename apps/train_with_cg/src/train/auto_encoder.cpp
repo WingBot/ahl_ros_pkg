@@ -26,7 +26,5 @@ AutoEncoder::AutoEncoder()
 
   config_->init(config_path);
   data_->init(data_in_path, data_out_path);
-
-
 }
 

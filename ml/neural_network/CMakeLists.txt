@@ -104,6 +104,18 @@ target_link_libraries(
     neural_network
 )
 
+add_executable(
+  parallel
+    test/parallel.cpp
+)
+
+target_link_libraries(
+  parallel
+    ${catkin_LIBRARIES}
+    neural_network
+)
+
+
 ##############################################################################
 # Install
 ##############################################################################

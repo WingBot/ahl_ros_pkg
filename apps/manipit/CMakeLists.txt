@@ -8,9 +8,11 @@ project(manipit)
 find_package(
   catkin REQUIRED COMPONENTS
     cv_bridge
+    cv_wrapper
     geometry_msgs
     image_transport
     message_filters
+    neural_network
     roscpp
     sensor_msgs
     std_srvs
@@ -48,9 +50,11 @@ catkin_package(
     manipit
   CATKIN_DEPENDS
     cv_bridge
+    cv_wrapper
     geometry_msgs
     image_transport
     message_filters
+    neural_network
     roscpp
     sensor_msgs
     std_srvs
