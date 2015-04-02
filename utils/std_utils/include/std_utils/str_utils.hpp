@@ -53,11 +53,38 @@ namespace std_utils
     static bool have(const std::string& str, const std::string& word);
     static bool isAlphabet(const std::string& str);
 
+    static bool convertToBoolean(const std::string& str, bool& dst)
+    {
+      std::stringstream ss(str);
+      std::string tmp;
+
+      if(!(ss >> tmp))
+      {
+        return false;
+      }
+
+      if(tmp == std::string("true") || tmp == std::string("TRUE"))
+      {
+        dst = true;
+      }
+      else if(tmp == std::string("false") || tmp == std::string("FALSE"))
+      {
+        dst = false;
+      }
+      else
+      {
+        return false;
+      }
+
+      return true;
+    }
+
     template <class T>
     static bool convertToNum(const std::string& str, T& dst)
     {
       std::stringstream ss(str);
       double tmp;
+
       if(!(ss >> tmp))
       {
         return false;
@@ -79,7 +106,7 @@ namespace std_utils
       vec.resize(words.size());
       for(unsigned int i = 0; i < words.size(); ++i)
       {
-        if(StrUtils::convertToNum<T>(words[i], vec[i]))
+        if(!StrUtils::convertToNum<T>(words[i], vec[i]))
         {
           return false;
         }
