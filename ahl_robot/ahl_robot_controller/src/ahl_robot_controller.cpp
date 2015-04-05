@@ -14,7 +14,7 @@ AHLRobotController::AHLRobotController()
   //parser_->load("/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot_controller/sdf/simple_arm.sdf", "simple_arm", robot_);
 
   robot_->print();
-  robot_->printNameList();
+  //robot_->printNameList();
 
   ros::NodeHandle nh;
   ros::NodeHandle local_nh("~");
@@ -35,7 +35,7 @@ AHLRobotController::AHLRobotController()
 void AHLRobotController::publishTfCB(const ros::TimerEvent&)
 {
   if(publish_joint_frames_)
-    tf_publisher_->publishJointFrames(robot_);
+    ;//tf_publisher_->publishJointFrames(robot_);
   if(publish_link_frames_)
     tf_publisher_->publishLinkFrames(robot_);
 }

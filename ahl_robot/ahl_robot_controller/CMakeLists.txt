@@ -78,6 +78,7 @@ add_library(
     src/robot/joint.cpp
     src/robot/xml_parser.cpp
     src/robot/tf_publisher.cpp
+    src/utils/math.cpp
 )
 
 add_dependencies(

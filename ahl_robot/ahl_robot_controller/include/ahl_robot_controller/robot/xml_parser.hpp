@@ -6,6 +6,7 @@
 #include <Eigen/Dense>
 #include <tinyxml.h>
 #include <std_utils/str_utils.hpp>
+#include "ahl_robot_controller/utils/math.hpp"
 #include "ahl_robot_controller/robot/link.hpp"
 #include "ahl_robot_controller/robot/joint.hpp"
 #include "ahl_robot_controller/robot/parser.hpp"
@@ -25,26 +26,26 @@ namespace ahl_robot
 
     void loadBaseFrame(TiXmlElement* robot_elem);
     void loadLink(TiXmlElement* link_elem);
-    void loadInertial(const std::string& link_name, TiXmlElement* inertial_elem);
-    void loadInertia(const std::string& link_name, TiXmlElement* inertia_elem);
+    void loadLinkPose(TiXmlElement* pose_elem,
+                      Eigen::Vector3d& pos, Eigen::Vector3d& rpy);
+    void loadInertial(TiXmlElement* inertial_elem, double& M, Eigen::Matrix3d& I,
+                      Eigen::Vector3d& pos_com, Eigen::Vector3d& rpy_com);
+    void loadInertia(TiXmlElement* inertia_elem, Eigen::Matrix3d& I);
 
     void loadJoint(TiXmlElement* joint_elem);
-    void setParentLink(const std::string& joint_name, const std::string& parent_name);
-    void setChildLink(const std::string& joint_name, const std::string& parent_name);
-    void loadAxisParams(const std::string& joint_name, TiXmlElement* axis_elem);
-    void loadLimits(const std::string& joint_name, TiXmlElement* limit_elem);
-    void loadAxis(const std::string& joint_name, TiXmlElement* xyz_elem);
+    void loadAxisParams(TiXmlElement* axis_elem, Eigen::Vector3d& axis,
+                        double& q_min, double& q_max, double& dq_max, double& tau_max);
+    void loadLimits(TiXmlElement* limit_elem,
+                    double& q_min, double& q_max, double& dq_max, double& tau_max);
+    void loadAxis(TiXmlElement* xyz_elem, Eigen::Vector3d& axis);
 
     void convertTextToMatrix4d(const std::string& text, Eigen::Matrix4d& mat);
+    void convertTextToVectors(const std::string& text, Eigen::Vector3d& pos, Eigen::Vector3d& rpy);
     void convertRPYToMatrix3d(const std::vector<double>& rpy, Eigen::Matrix3d& mat);
 
-    void addJoints();
-    void addLinks();
-
-    LinkPtr& link(const std::string& name);
-    JointPtr& joint(const std::string& name);
-
-    void printResults();
+    //void setupLinks();
+    //void setupJoints();
+    //void setupJoints(const JointPtr& joint);
 
     std::string file_name_;
     std::string robot_name_;
@@ -57,13 +58,11 @@ namespace ahl_robot
     Eigen::Matrix4d base_frame_; // homogeneous transformation
 
     // Link
-    std::map<std::string, LinkPtr> links_;
+    //std::map<std::string, LinkPtr> links_;
 
     // Joint
-    std::map<std::string, JointPtr> joints_;
+    //std::map<std::string, JointPtr> joints_;
     std::map<std::string, bool> use_parent_model_frame_;
-
-    Eigen::MatrixXd last_row_;
   };
 
 }

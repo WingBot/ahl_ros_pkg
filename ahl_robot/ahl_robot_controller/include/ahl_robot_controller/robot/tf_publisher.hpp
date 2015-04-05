@@ -19,7 +19,6 @@ namespace ahl_robot
 
   private:
     tf2_ros::TransformBroadcaster& transformBroadcaster();
-    geometry_msgs::TransformStamped transform_;
   };
 
   typedef boost::shared_ptr<TfPublisher> TfPublisherPtr;

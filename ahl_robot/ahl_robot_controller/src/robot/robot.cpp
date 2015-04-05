@@ -19,6 +19,32 @@ void Robot::unfix()
   is_static_ = false;
 }
 
+void Robot::addLink(const LinkPtr& link)
+{
+  if(!link)
+  {
+    std::stringstream msg;
+    msg << "Could not add link \"" << link->getName() << "\".";
+
+    throw ahl_robot::Exception("ahl_robot::Robot::addLink", msg.str());
+  }
+
+  links_[link->getName()] = link;
+}
+
+void Robot::addJoint(const JointPtr& joint)
+{
+  if(!joint)
+  {
+    std::stringstream msg;
+    msg << "Could not add link \"" << joint->getName() << "\".";
+
+    throw ahl_robot::Exception("ahl_robot::Robot::addJoint", msg.str());
+  }
+
+  joints_[joint->getName()] = joint;
+}
+
 void Robot::addJoint(const std::string& name, const JointPtr& joint)
 {
   if(!joint)
@@ -30,6 +56,48 @@ void Robot::addJoint(const std::string& name, const JointPtr& joint)
   }
 
   joints_[name] = joint;
+}
+
+void Robot::connectJointWithLink(const std::string& joint, const std::string& link)
+{
+  if(!joints_[joint])
+  {
+    std::stringstream msg;
+    msg << joint << " is null.";
+
+    throw ahl_robot::Exception("Robot::connectJointWithLink", msg.str());
+  }
+  else if(!links_[link])
+  {
+    std::stringstream msg;
+    msg << link << " is null.";
+
+    throw ahl_robot::Exception("Robot::connectJointWithLink", msg.str());
+  }
+
+  joints_[joint]->setLink(links_[link]);
+  links_[link]->setJoint(joints_[joint]);
+}
+
+void Robot::connectJointWithParentLink(const std::string& joint, const std::string& link)
+{
+  if(!joints_[joint])
+  {
+    std::stringstream msg;
+    msg << joint << " is null.";
+
+    throw ahl_robot::Exception("Robot::connectJointWithLink", msg.str());
+  }
+  else if(!links_[link])
+  {
+    std::stringstream msg;
+    msg << link << " is null.";
+
+    throw ahl_robot::Exception("Robot::connectJointWithLink", msg.str());
+  }
+
+  joints_[joint]->setParentLink(links_[link]);
+  links_[link]->addChildJoint(joints_[joint]);
 }
 
 void Robot::addLink(const std::string& name, const LinkPtr& link)
@@ -45,6 +113,11 @@ void Robot::addLink(const std::string& name, const LinkPtr& link)
   links_[name] = link;
 }
 
+void Robot::setRootLink(const LinkPtr& root_link)
+{
+  root_link_ = root_link;
+}
+
 void Robot::specifyEndEffector(const std::string& name)
 {
   ee_names_.push_back(name);
@@ -58,6 +131,11 @@ const Joints& Robot::getJoints() const
 const Links& Robot::getLinks() const
 {
   return links_;
+}
+
+const LinkPtr& Robot::getRootLink() const
+{
+  return root_link_;
 }
 
 void Robot::print()
