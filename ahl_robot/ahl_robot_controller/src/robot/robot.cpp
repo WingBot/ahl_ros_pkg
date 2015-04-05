@@ -45,19 +45,6 @@ void Robot::addJoint(const JointPtr& joint)
   joints_[joint->getName()] = joint;
 }
 
-void Robot::addJoint(const std::string& name, const JointPtr& joint)
-{
-  if(!joint)
-  {
-    std::stringstream msg;
-    msg << "Could not add joint \"" << name << "\".";
-
-    throw ahl_robot::Exception("ahl_robot::Robot::addJoint", msg.str());
-  }
-
-  joints_[name] = joint;
-}
-
 void Robot::connectJointWithLink(const std::string& joint, const std::string& link)
 {
   if(!joints_[joint])
@@ -100,27 +87,9 @@ void Robot::connectJointWithParentLink(const std::string& joint, const std::stri
   links_[link]->addChildJoint(joints_[joint]);
 }
 
-void Robot::addLink(const std::string& name, const LinkPtr& link)
-{
-  if(!link)
-  {
-    std::stringstream msg;
-    msg << "Could not add link \"" << name << "\".";
-
-    throw ahl_robot::Exception("ahl_robot::Robot::addLink", msg.str());
-  }
-
-  links_[name] = link;
-}
-
 void Robot::setRootLink(const LinkPtr& root_link)
 {
   root_link_ = root_link;
-}
-
-void Robot::specifyEndEffector(const std::string& name)
-{
-  ee_names_.push_back(name);
 }
 
 const Joints& Robot::getJoints() const

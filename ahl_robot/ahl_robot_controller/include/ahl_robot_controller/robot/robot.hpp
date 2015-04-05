@@ -26,10 +26,7 @@ namespace ahl_robot
     void connectJointWithLink(const std::string& joint, const std::string& link);
     void connectJointWithParentLink(const std::string& joint, const std::string& link);
 
-    void addJoint(const std::string& name, const JointPtr& joint);
-    void addLink(const std::string& name, const LinkPtr& link);
     void setRootLink(const LinkPtr& root_link);
-    void specifyEndEffector(const std::string& name);
 
     const Joints& getJoints() const;
     const Links& getLinks() const;
@@ -47,8 +44,6 @@ namespace ahl_robot
     Links links_;
 
     LinkPtr root_link_;
-
-    std::vector<std::string> ee_names_;
 
     Eigen::MatrixXd M_;
     Eigen::MatrixXd J_;

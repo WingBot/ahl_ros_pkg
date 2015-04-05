@@ -138,7 +138,7 @@ void XMLParser::loadLink(TiXmlElement* link_elem)
                    )
                  );
 
-  robot_->addLink(name, link);
+  robot_->addLink(link);
 
 
 /*
