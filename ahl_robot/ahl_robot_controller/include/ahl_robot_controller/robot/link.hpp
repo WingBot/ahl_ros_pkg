@@ -27,6 +27,12 @@ namespace ahl_robot
 
     void setJoint(const JointPtr& joint);
     void addChildJoint(const JointPtr& joint);
+    void setChildJoints(const Joints& joint);
+
+    void setT(Eigen::Matrix4d& T)
+    {
+      T_ = T;
+    }
 
     const std::string& getName() const
     {

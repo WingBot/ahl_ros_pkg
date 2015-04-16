@@ -8,7 +8,9 @@ namespace ahl_robot
   namespace utils
   {  
 
-    void convertRPYToRotationMatrix(double r, double p, double y, Eigen::Matrix3d& dst);
+    int sign(double src1, double src2 = 0.0);
+    void convertRPYToRotationMatrix(double r, double p, double y, Eigen::Matrix3d& 
+dst);
     Eigen::MatrixXd& getLastRowOfTransformationMatrix();
     void calculateInverseTransformationMatrix(const Eigen::Matrix4d& src, Eigen::Matrix4d& dst);
 

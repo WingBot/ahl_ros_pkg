@@ -76,6 +76,8 @@ add_library(
     src/robot/robot.cpp
     src/robot/link.cpp
     src/robot/joint.cpp
+    src/robot/manipulator.cpp
+    src/robot/mobile_base.cpp
     src/robot/xml_parser.cpp
     src/robot/tf_publisher.cpp
     src/utils/math.cpp

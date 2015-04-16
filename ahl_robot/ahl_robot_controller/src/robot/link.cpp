@@ -48,10 +48,15 @@ void Link::addChildJoint(const JointPtr& joint)
     std::stringstream msg;
     msg << name_ << " could not set null joint ptr.";
 
-    throw ahl_robot::Exception("Link::setChildJoint", msg.str());
+    throw ahl_robot::Exception("Link::addChildJoint", msg.str());
   }
 
   child_joints_[joint->getName()] = joint;
+}
+
+void Link::setChildJoints(const Joints& joints)
+{
+  child_joints_ = joints;
 }
 
 void Link::print()

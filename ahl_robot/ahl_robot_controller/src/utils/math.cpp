@@ -5,6 +5,14 @@ namespace ahl_robot
   namespace utils
   {
 
+    int sign(double src1, double src2)
+    {
+      if(src1 - src2 >= 0.0)
+        return 1;
+      else
+        return -1;
+    }
+
     void convertRPYToRotationMatrix(double r, double p, double y, Eigen::Matrix3d& dst)
     {
       static const Eigen::Vector3d x_axis(1.0, 0.0, 0.0);

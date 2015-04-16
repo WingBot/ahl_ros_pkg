@@ -261,6 +261,11 @@ void XMLParser::loadJoint(TiXmlElement* joint_elem)
   {
     is_revolute = false;
   }
+  else if(type == "screw")
+  {
+    // TODO : pr2 model includes screw joint ... what's this ? 2dof ?
+    is_revolute = false;
+  }
   else
   {
     std::stringstream msg;

@@ -24,6 +24,11 @@ namespace ahl_robot
     void setLink(const LinkPtr& link);
     void setParentLink(const LinkPtr& link);
 
+    void setT(Eigen::Matrix4d& T)
+    {
+      T_ = T;
+    }
+
     const std::string& getName() const
     {
       return name_;
