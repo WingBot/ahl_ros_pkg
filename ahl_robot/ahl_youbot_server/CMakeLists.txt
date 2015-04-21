@@ -63,8 +63,7 @@ add_executable(
     src/action/set_joint_action.cpp
     src/action/joint_space_control_action.cpp
     src/action/task_space_control_action.cpp
-#    src/action/_action.cpp
-#    src/action/_action.cpp
+    src/action/task_space_hybrid_control_action.cpp
 )
 
 target_link_libraries(

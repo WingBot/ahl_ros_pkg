@@ -4,6 +4,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
+#include "ahl_youbot_server/ahl_robot_actions.hpp"
 
 namespace ahl_youbot
 {
@@ -46,7 +47,8 @@ namespace ahl_youbot
       ahl_robot_srvs::TaskSpaceHybridControl::Request& req,
       ahl_robot_srvs::TaskSpaceHybridControl::Response& res);
 
-  private:
+  protected:
+
 
   };
 
