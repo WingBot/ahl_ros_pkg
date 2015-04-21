@@ -22,7 +22,7 @@ void JointSpaceControlAction::executeCB(const ahl_robot_actions::JointSpaceContr
 
 bool JointSpaceControlAction::isActive()
 {
-  return false; 
+  return server_->isActive();
 }
 
 bool JointSpaceControlAction::isNewGoalAvailable()

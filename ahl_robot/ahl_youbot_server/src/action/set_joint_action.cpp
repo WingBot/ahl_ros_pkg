@@ -22,7 +22,7 @@ void SetJointAction::executeCB(const ahl_robot_actions::SetJointGoalConstPtr& go
 
 bool SetJointAction::isActive()
 {
-  return false;
+  return server_->isActive();
 }
 
 bool SetJointAction::isNewGoalAvailable()

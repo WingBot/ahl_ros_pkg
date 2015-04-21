@@ -15,6 +15,12 @@ namespace ahl_youbot
   {
   public:
     ActionServer();
+
+    void start(Action::Type type);
+    void cancel(Action::Type type);
+    void shutdown(Action::Type type);
+    bool isActive(Action::Type type);
+
   private:
     std::map<Action::Type, ActionPtr> action_;
 

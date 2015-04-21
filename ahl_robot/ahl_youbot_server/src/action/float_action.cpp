@@ -22,7 +22,7 @@ void FloatAction::executeCB(const ahl_robot_actions::FloatGoalConstPtr& goal)
 
 bool FloatAction::isActive()
 {
-  return false;
+  return server_->isActive();
 }
 
 bool FloatAction::isNewGoalAvailable()

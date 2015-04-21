@@ -22,7 +22,7 @@ void TaskSpaceControlAction::executeCB(const ahl_robot_actions::TaskSpaceControl
 
 bool TaskSpaceControlAction::isActive()
 {
-  return false;
+  return server_->isActive();
 }
 
 bool TaskSpaceControlAction::isNewGoalAvailable()
