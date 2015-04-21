@@ -1,0 +1,6 @@
+geometry_msgs/Point xpd
+float64[] xrd
+---
+geometry_msgs/Point xp
+float64[] xr
+float64[] q

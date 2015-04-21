@@ -1,0 +1,12 @@
+# goal
+geometry_msgs/Point xpd # position of end-effector w.r.t a frame attached to base
+float64[] xrd # if size is 3 => euler_angles(ZYX), 4 => quaternion, 9 => direction cosines
+---
+# result
+float64[] q
+geometry_msgs/Point xp
+float64[] xr
+---
+# feedback
+float64[] q
+float64[] tau # generalized force
