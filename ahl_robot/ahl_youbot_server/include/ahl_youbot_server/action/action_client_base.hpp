@@ -1,9 +1,11 @@
 #ifndef __AHL_YOUBOT_SERVER_ACTION_CLIENT_BASE_HPP
 #define __AHL_YOUBOT_SERVER_ACTION_CLIENT_BASE_HPP
 
-#include <actionlib/client/terminal_state.h>
+#include <map>
 #include <boost/shared_ptr.hpp>
 #include <ros/ros.h>
+#include <actionlib/client/terminal_state.h>
+#include "ahl_youbot_server/action/action.hpp"
 
 namespace ahl_youbot
 {
@@ -29,6 +31,7 @@ namespace ahl_youbot
   };
 
   typedef boost::shared_ptr<ActionClientBase> ActionClientBasePtr;
+  typedef std::map<Action::Type, ActionClientBasePtr> ActionClientBasePtrMap;
 }
 
 #endif /* __AHL_YOUBOT_SERVER_ACTION_CLIENT_BASE_HPP */

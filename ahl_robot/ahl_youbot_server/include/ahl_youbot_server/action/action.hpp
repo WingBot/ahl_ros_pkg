@@ -19,6 +19,7 @@ namespace ahl_youbot
       TASK_SPACE_HYBRID_CONTROL,
       ACTION_NUM,
     };
+
     Action(const std::string& action_name)
       : action_name_(action_name) {}
     virtual ~Action() {}

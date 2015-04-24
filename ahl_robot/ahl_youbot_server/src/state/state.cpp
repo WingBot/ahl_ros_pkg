@@ -2,8 +2,8 @@
 
 using namespace ahl_youbot;
 
-State::State(const ActionServerPtr& action_server)
-  : action_server_(action_server)
+State::State(const ActionServerPtr& server, const ActionClientBasePtrMap& client)
+  : server_(server), client_(client)
 {
 
 }
@@ -12,7 +12,7 @@ bool State::callCancel(
   std_srvs::Empty::Request& req,
   std_srvs::Empty::Response& res)
 {
-  action_server_->cancel();
+  server_->cancel();
   return false;
 }
 
@@ -20,7 +20,7 @@ bool State::callFloat(
   ahl_robot_srvs::Float::Request& req,
   ahl_robot_srvs::Float::Response& res)
 {
-  action_server_->cancel();
+  server_->cancel();
   return false;
 }
 
@@ -28,7 +28,7 @@ bool State::callSetJoint(
   ahl_robot_srvs::SetJoint::Request& req,
   ahl_robot_srvs::SetJoint::Response& res)
 {
-  action_server_->cancel();
+  server_->cancel();
   return false;
 }
 
@@ -36,7 +36,7 @@ bool State::callJointSpaceControl(
   ahl_robot_srvs::JointSpaceControl::Request& req,
   ahl_robot_srvs::JointSpaceControl::Response& res)
 {
-  action_server_->cancel();
+  server_->cancel();
   return false;
 }
 
@@ -44,7 +44,7 @@ bool State::callTaskSpaceControl(
   ahl_robot_srvs::TaskSpaceControl::Request& req,
   ahl_robot_srvs::TaskSpaceControl::Response& res)
 {
-  action_server_->cancel();
+  server_->cancel();
   return false;
 }
 
@@ -52,7 +52,7 @@ bool State::callTaskSpaceHybridControl(
   ahl_robot_srvs::TaskSpaceHybridControl::Request& req,
   ahl_robot_srvs::TaskSpaceHybridControl::Response& res)
 {
-  action_server_->cancel();
+  server_->cancel();
   return false;
 }
 

@@ -7,6 +7,7 @@
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
 #include "ahl_youbot_server/ahl_robot_actions.hpp"
 #include "ahl_youbot_server/action/action_server.hpp"
+#include "ahl_youbot_server/action/action_client.hpp"
 
 namespace ahl_youbot
 {
@@ -25,7 +26,7 @@ namespace ahl_youbot
       STATE_NUM,
     };
 
-    State(const ActionServerPtr& action_server);
+    State(const ActionServerPtr& server, const ActionClientBasePtrMap& client);
     virtual ~State() {}
 
     virtual std::string getState()
@@ -52,10 +53,15 @@ namespace ahl_youbot
       ahl_robot_srvs::TaskSpaceHybridControl::Request& req,
       ahl_robot_srvs::TaskSpaceHybridControl::Response& res);
 
-    virtual const ActionServerPtr& getActionServer() const
+    virtual ActionServerPtr& server()
     {
-      return action_server_;
+      return server_;
     };
+
+    virtual ActionClientBasePtrMap& client()
+    {
+      return client_;
+    }
 
   protected:
     virtual void convertServiceToAction(
@@ -75,7 +81,8 @@ namespace ahl_youbot
       ahl_robot_actions::TaskSpaceHybridControlGoal& goal);
 
   private:
-    ActionServerPtr action_server_;
+    ActionServerPtr server_;
+    ActionClientBasePtrMap client_;
   };
 
   typedef boost::shared_ptr<State> StatePtr;

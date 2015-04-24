@@ -9,8 +9,8 @@ namespace ahl_youbot
   class Float : public State
   {
   public:
-    Float(const ActionServerPtr& action_server)
-      : State(action_server) {}
+    Float(const ActionServerPtr& server, const ActionClientBasePtrMap& client)
+      : State(server, client) {}
 
     virtual std::string getState()
     {
