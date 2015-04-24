@@ -42,12 +42,12 @@ namespace ahl_youbot
     std::map<State::Type, StatePtr> state_;
     State::Type state_type_;
 
-    ros::ServiceServer server_cancel_;
-    ros::ServiceServer server_float_;
-    ros::ServiceServer server_set_joint_;
-    ros::ServiceServer server_joint_space_control_;
-    ros::ServiceServer server_task_space_control_;
-    ros::ServiceServer server_task_space_hybrid_control_;
+    ros::ServiceServer ros_server_cancel_;
+    ros::ServiceServer ros_server_float_;
+    ros::ServiceServer ros_server_set_joint_;
+    ros::ServiceServer ros_server_joint_space_control_;
+    ros::ServiceServer ros_server_task_space_control_;
+    ros::ServiceServer ros_server_task_space_hybrid_control_;
 
     ActionServerPtr action_server_;
     ActionClientBasePtrMap action_client_;

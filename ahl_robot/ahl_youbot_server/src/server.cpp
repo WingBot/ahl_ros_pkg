@@ -49,17 +49,17 @@ Server::Server()
 
   ros::NodeHandle local_nh("ahl_youbot_server");
 
-  server_cancel_ = local_nh.advertiseService(
+  ros_server_cancel_ = local_nh.advertiseService(
     "command/cancel", &Server::cancelCB, this);
-  server_float_ = local_nh.advertiseService(
+  ros_server_float_ = local_nh.advertiseService(
     "command/float", &Server::floatCB, this);
-  server_set_joint_ = local_nh.advertiseService(
+  ros_server_set_joint_ = local_nh.advertiseService(
     "command/set_joint", &Server::setJointCB, this);
-  server_joint_space_control_ = local_nh.advertiseService(
+  ros_server_joint_space_control_ = local_nh.advertiseService(
     "command/joint_space_control", &Server::jointSpaceControlCB, this);
-  server_task_space_control_ = local_nh.advertiseService(
+  ros_server_task_space_control_ = local_nh.advertiseService(
     "command/task_space_control", &Server::taskSpaceControlCB, this);
-  server_task_space_hybrid_control_ = local_nh.advertiseService(
+  ros_server_task_space_hybrid_control_ = local_nh.advertiseService(
     "command/task_space_hybrid_control", &Server::taskSpaceHybridControlCB, this);
 }
 
