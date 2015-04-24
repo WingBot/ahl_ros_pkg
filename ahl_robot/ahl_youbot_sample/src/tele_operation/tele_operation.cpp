@@ -1,3 +1,4 @@
+#include "ahl_youbot_sample/exception.hpp"
 #include "ahl_youbot_sample/tele_operation/tele_operation.hpp"
 
 using namespace ahl_youbot;
@@ -11,23 +12,21 @@ TeleOperation::TeleOperation()
   std::string cfg_youbot_base;
   std::string cfg_youbot_manipulator;
 
-  local_nh.param<double>("tele_operation/duration", duration_, 200);
+  local_nh.param<double>("tele_operation/duration", duration_, 0.25);
   local_nh.param<std::string>(
     "tele_operation/cfg/youbot_base", cfg_youbot_base, "youbot-base");
   local_nh.param<std::string>(
     "tele_operation/cfg/youbot_manipulator", cfg_youbot_manipulator, "youbot-manipulator");
-  local_nh.param<double>("tele_operation/scalar_vx", scalar_vx_, 0.05);
-  local_nh.param<double>("tele_operation/scalar_vy", scalar_vy_, 0.05);
-  local_nh.param<double>("tele_operation/scalar_vr", scalar_vr_, 0.2);
+  local_nh.param<double>("tele_operation/vx", vx_, 0.05);
+  local_nh.param<double>("tele_operation/vy", vy_, 0.05);
+  local_nh.param<double>("tele_operation/vr", vr_, 0.2);
+  local_nh.param<double>("tele_operation/qd", qd_, 0.2);
 
   base_ = YouBotBasePtr(
     new youbot::YouBotBase(cfg_youbot_base, YOUBOT_CONFIGURATIONS_DIR));
-  base_->doJointCommutation();
 
   manipulator_ = YouBotManipulatorPtr(
     new youbot::YouBotManipulator(cfg_youbot_manipulator, YOUBOT_CONFIGURATIONS_DIR));
-  manipulator_->doJointCommutation();
-  manipulator_->calibrateManipulator();
 }
 
 TeleOperation::~TeleOperation()
@@ -45,13 +44,10 @@ void TeleOperation::run()
 
   while(ros::ok() && running_)
   {
-    this->setBaseCommandToZero();
-    this->setManipulatorCommandToZero();
-    this->getCommand();
+    this->control();
 
     std::cout << "(vx, vy, vr) = ("
-              << vx_ << ", " << vy_ << ", " << vr_ << ")\r" << std::endl;
-    //base_->setBaseVelocity(vx_, vy_, vr_);
+              << dvx_ << ", " << dvy_ << ", " << dvr_ << ")\r" << std::endl;
     refresh();
 
     ros::Duration(duration_).sleep();
@@ -60,6 +56,11 @@ void TeleOperation::run()
 
 void TeleOperation::init()
 {
+  base_->doJointCommutation();
+  manipulator_->doJointCommutation();
+  manipulator_->calibrateManipulator(true);
+  manipulator_->calibrateGripper(true);
+
   static_cast<void>(initscr()); // initialize the curses library
   keypad(stdscr, TRUE); // enable keyboard mapping
   static_cast<void>(nonl()); // tell curses not to do NL->CR/NL on output
@@ -67,6 +68,16 @@ void TeleOperation::init()
 
   def_prog_mode();
   refresh();
+
+  dqd_.resize(manipulator_->getNumberJoints());
+  if(dqd_.size() != 5)
+  {
+    std::stringstream msg;
+    msg << "Wrong number of joints. It should be 5." << std::endl
+        << "  number of joint : " << dqd_.size();
+
+    throw ahl_youbot::Exception("ahl_youbot::TeleOperation::init", msg.str());
+  }
 
   this->printHotKeys();
   refresh();
@@ -98,65 +109,145 @@ void TeleOperation::printHotKeys()
             << "Ctrl + C = shutdown the process\r" << std::endl;
 }
 
-void TeleOperation::getCommand()
+void TeleOperation::control()
 {
+  std::cout << "*** WARNING *** DO NOT HOLD ANY KEYS ***\r" << std::endl;
+  std::cout << "Press 's' or 'ESC' in order to stop the robot\r" << std::endl;
+
   int ch = getch();
 
-  if(ch == KEY_UP || ch == KEY_DOWN || ch == KEY_LEFT || ch == KEY_RIGHT ||
-     ch == 'z' || ch == 'x')
+  if(ch == 's' || ch == 27) // ESC == 27
   {
-    this->getBaseCommand(ch);
+    this->stop();
+  }
+  else if(ch == KEY_UP || ch == KEY_DOWN || ch == KEY_LEFT || ch == KEY_RIGHT || ch == 'z' || ch == 'x')
+  {
+    this->controlBase(ch);
+  }
+  else if(ch == '6' || ch == 'y')
+  {
+    this->controlGripper(ch);
   }
   else
   {
-    this->getManipulatorCommand(ch);
+    this->controlManipulator(ch);
   }
 }
 
-void TeleOperation::getBaseCommand(int ch)
+void TeleOperation::controlBase(int ch)
 {
+  dvx_ = 0 * meter_per_second;
+  dvy_ = 0 * meter_per_second;
+  dvr_ = 0 * radian_per_second;
+
   switch(ch)
   {
   case KEY_UP:
-    vx_ = scalar_vx_ * meter_per_second;
+    dvx_ = vx_ * meter_per_second;
     break;
   case KEY_DOWN:
-    vx_ = -scalar_vx_ * meter_per_second;
+    dvx_ = -vx_ * meter_per_second;
     break;
   case KEY_LEFT:
-    vy_ = scalar_vy_ * meter_per_second;
+    dvy_ = vy_ * meter_per_second;
     break;
   case KEY_RIGHT:
-    vy_ = -scalar_vy_ * meter_per_second;
+    dvy_ = -vy_ * meter_per_second;
     break;
   case 'z':
-    vr_ = scalar_vr_ * radian_per_second;
+    dvr_ = vr_ * radian_per_second;
     break;
   case 'x':
-    vr_ = -scalar_vr_ * radian_per_second;
+    dvr_ = -vr_ * radian_per_second;
     break;
   default:
     break;
   };
+
+  base_->setBaseVelocity(dvx_, dvy_, dvr_);
 }
 
-void TeleOperation::getManipulatorCommand(int ch)
+void TeleOperation::controlGripper(int ch)
 {
   switch(ch)
   {
-  default:
+  case '6':
+    manipulator_->getArmGripper().open();
+    break;
+  case 'y':
+    manipulator_->getArmGripper().close();
     break;
   };
 }
 
-void TeleOperation::setBaseCommandToZero()
+void TeleOperation::controlManipulator(int ch)
 {
-  vx_ = 0 * meter_per_second;
-  vy_ = 0 * meter_per_second;
-  vr_ = 0 * radian_per_second;
+  for(unsigned int i = 0; i < dqd_.size(); ++i)
+  {
+    dqd_[i].angularVelocity = 0.0 * radian_per_second;
+  }
+
+  switch(ch)
+  {
+  case '1':
+    dqd_[0].angularVelocity = qd_ * radian_per_second;
+    break;
+  case 'q':
+    dqd_[0].angularVelocity = -qd_ * radian_per_second;
+    break;
+  case '2':
+    dqd_[1].angularVelocity = qd_ * radian_per_second;
+    break;
+  case 'w':
+    dqd_[1].angularVelocity = -qd_ * radian_per_second;
+    break;
+  case '3':
+    dqd_[2].angularVelocity = qd_ * radian_per_second;
+    break;
+  case 'e':
+    dqd_[2].angularVelocity = -qd_ * radian_per_second;
+    break;
+  case '4':
+    dqd_[3].angularVelocity = qd_ * radian_per_second;
+    break;
+  case 'r':
+    dqd_[3].angularVelocity = -qd_ * radian_per_second;
+    break;
+  case '5':
+    dqd_[4].angularVelocity = qd_ * radian_per_second;
+    break;
+  case 't':
+    dqd_[4].angularVelocity = -qd_ * radian_per_second;
+    break;
+  default:
+    break;
+  };
+
+  manipulator_->setJointData(dqd_);
 }
 
-void TeleOperation::setManipulatorCommandToZero()
+void TeleOperation::stop()
 {
+  this->stopBase();
+  this->stopManipulator();
+  manipulator_->getArmGripper().close();
+}
 
+void TeleOperation::stopBase()
+{
+  dvx_ = 0 * meter_per_second;
+  dvy_ = 0 * meter_per_second;
+  dvr_ = 0 * radian_per_second;
+
+  base_->setBaseVelocity(dvx_, dvy_, dvr_);
+}
+
+void TeleOperation::stopManipulator()
+{
+  for(unsigned int i = 0; i < dqd_.size(); ++i)
+  {
+    dqd_[i].angularVelocity = 0.0 * radian_per_second;
+  }
+
+  manipulator_->setJointData(dqd_);
 }

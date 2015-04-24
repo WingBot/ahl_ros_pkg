@@ -26,29 +26,34 @@ namespace ahl_youbot
 
     void init();
     void printHotKeys();
-    void getCommand();
-    void getBaseCommand(int ch);
-    void getManipulatorCommand(int ch);
-    void setBaseCommandToZero();
-    void setManipulatorCommandToZero();
+
+    void control();
+    void controlBase(int ch);
+    void controlGripper(int ch);
+    void controlManipulator(int ch);
+
+    void stop();
+    void stopBase();
+    void stopManipulator();
 
     bool initialized_;
     bool running_;
 
     double duration_;
 
-    double scalar_vx_; // longitudinal velocity
-    double scalar_vy_; // transversal velocity
-    double scalar_vr_; // transversal velocity
+    double vx_; // longitudinal velocity
+    double vy_; // transversal velocity
+    double vr_; // angular velocity (yaw)
+    double qd_; // angular velocity of manipulator
+
+    quantity<velocity> dvx_; // desired longitudinal velocity
+    quantity<velocity> dvy_; // desired transversal velocity
+    quantity<angular_velocity> dvr_; // desired angular velocity
 
     YouBotBasePtr base_;
     YouBotManipulatorPtr manipulator_;
 
-    youbot::JointVelocitySetpoint setpoint_;
-
-    quantity<si::velocity> vx_; // longitudinal velocity
-    quantity<si::velocity> vy_; // transversal velocity
-    quantity<si::angular_velocity> vr_; // angular velocity
+    std::vector<youbot::JointVelocitySetpoint> dqd_; // desired angular velocity of manipulator
   };
 
 }
