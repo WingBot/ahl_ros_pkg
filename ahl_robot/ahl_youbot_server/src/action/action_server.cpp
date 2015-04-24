@@ -77,31 +77,6 @@ ActionServer::ActionServer()
   );
 }
 
-void ActionServer::sendGoal(const ahl_robot_actions::FloatGoal& goal)
-{
-
-}
-
-void ActionServer::sendGoal(const ahl_robot_actions::SetJointGoal& goal)
-{
-
-}
-
-void ActionServer::sendGoal(const ahl_robot_actions::JointSpaceControlGoal& goal)
-{
-
-}
-
-void ActionServer::sendGoal(const ahl_robot_actions::TaskSpaceControlGoal& goal)
-{
-
-}
-
-void ActionServer::sendGoal(const ahl_robot_actions::TaskSpaceHybridControlGoal& goal)
-{
-
-}
-
 void ActionServer::start(Action::Type type)
 {
   action_[type]->start();

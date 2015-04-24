@@ -25,12 +25,6 @@ namespace ahl_youbot
       client_[type]->sendGoal(goal);
     }
 
-    void sendGoal(const ahl_robot_actions::FloatGoal& goal);
-    void sendGoal(const ahl_robot_actions::SetJointGoal& goal);
-    void sendGoal(const ahl_robot_actions::JointSpaceControlGoal& goal);
-    void sendGoal(const ahl_robot_actions::TaskSpaceControlGoal& goal);
-    void sendGoal(const ahl_robot_actions::TaskSpaceHybridControlGoal& goal);
-
     void start(Action::Type type);
     void preempt(Action::Type type);
     void cancel(Action::Type type);
