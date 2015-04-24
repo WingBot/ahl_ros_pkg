@@ -19,6 +19,12 @@ namespace ahl_youbot
   public:
     ActionServer();
 
+    template<class ActionGoal>
+    void sendGoal(Action::Type type, const ActionGoal& goal)
+    {
+      client_[type]->sendGoal(goal);
+    }
+
     void sendGoal(const ahl_robot_actions::FloatGoal& goal);
     void sendGoal(const ahl_robot_actions::SetJointGoal& goal);
     void sendGoal(const ahl_robot_actions::JointSpaceControlGoal& goal);

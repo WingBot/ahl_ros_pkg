@@ -2,8 +2,6 @@
 #define __AHL_YOUBOT_SERVER_ACTION_CLIENT_HPP
 
 #include <map>
-#include <boost/shared_ptr.hpp>
-#include <ros/ros.h>
 
 #include "ahl_youbot_server/ahl_robot_actions.hpp"
 #include "ahl_youbot_server/action/action.hpp"
@@ -62,12 +60,12 @@ namespace ahl_youbot
 
     }
 
-    bool waitForResult(const ros::Duration& timeout = ros::Duration(0,0) )
+    bool waitForResult(const ros::Duration& timeout = ros::Duration(0, 0))
     {
       return client_->waitForResult(timeout);
     }
 
-    bool waitForServer(const ros::Duration& timeout = ros::Duration(0,0) )
+    bool waitForServer(const ros::Duration& timeout = ros::Duration(0, 0))
     {
       return client_->waitForServer(timeout);
     }
