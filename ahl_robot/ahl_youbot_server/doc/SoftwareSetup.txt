@@ -1,0 +1,64 @@
+1. Setup hardware
+   See HardwareSetup.txt
+
+2. Install ROS Indigo to your laptop
+   See http://wiki.ros.org/indigo/Installation/Ubuntu
+
+3. Setup catkin workspace.
+   See http://wiki.ros.org/catkin/Tutorials
+   See Catkin Tutorial 1 in order to catkin_ws directory
+   under some directory.(eg. /home/[user]/Work/catkin_ws)
+
+4. sudo apt-get install libsdl1.2-dev libncurses5-dev
+   These are required to compile a sample program for kuka youbot
+
+5. Download youbot_driver(hydro-devel)
+   See https://github.com/youbot/youbot_driver/tree/hydro-devel
+   Change the branch from "master" to "hydro" and download zip.
+   "Download ZIP" button is at the right side of the page.
+
+6. Download youbot_applications
+   See https://github.com/wnowak/youbot_applications
+   Download zip.
+
+7. Make directory "youbot" under catkin_ws/src.
+   cd catkin_ws/src
+   mkdir youbot
+
+8. Copy and unzip youbot_driver and youbot_applications under directory "youbot"
+   Type like as follows.
+   cp /home/[user]/youbot_driver-hydro-devel.zip ./
+   unzip youbot_driver-hydro-devel.zip
+   cp /home/[user]/youbot_applications-master.zip ./
+   unzip youbot_applications-master.zip
+
+9. Change directory to "catkin_ws" and execute "catkin_make"
+
+10. Set youbot in an open place.
+
+11. sudo su
+
+12. Move to catkin_ws/devel/hello_world_demo
+
+13. ./youBot_HelloWorldDemo
+    Youbot will move a little bit.
+
+Note:
+If you have a problem with connection,
+possibly it's because of the name of ethernet.
+
+Please check the name of the ethernet.
+Type "ifconfig" and check it.
+
+If ethernet's name is not "eth0", 
+edit youbot_driver/config/youbot-ethercat.cfg
+and change "EthernetDevice = eth0" to "EthernetDevice = eth*" depending on the name.
+
+Or ...
+If it's not eth0 but eth1 or something like that,
+please rename it from eth* to eth0.
+See http://askubuntu.com/questions/217635/how-to-rename-an-ethernet-interface
+
+Reference:
+https://github.com/youbot/youbot-ros-pkg/issues/21
+

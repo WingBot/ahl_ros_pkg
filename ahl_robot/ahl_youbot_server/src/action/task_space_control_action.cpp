@@ -2,13 +2,12 @@
 
 using namespace ahl_youbot;
 
-const std::string TaskSpaceControlAction::ACTION_NAME_ = "youbot/task_space_control_action";
-
-TaskSpaceControlAction::TaskSpaceControlAction()
+TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name)
+  : Action(action_name)
 {
   server_ = TaskSpaceControlServerPtr(
     new TaskSpaceControlServer(
-      getNodeHandle(), ACTION_NAME_, boost::bind(&TaskSpaceControlAction::executeCB, this, _1), false
+      getNodeHandle(), getActionName(), boost::bind(&TaskSpaceControlAction::executeCB, this, _1), false
     )
   );
 

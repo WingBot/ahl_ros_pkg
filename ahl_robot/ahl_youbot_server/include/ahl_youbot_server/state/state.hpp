@@ -3,8 +3,10 @@
 
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <std_srvs/Empty.h>
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
 #include "ahl_youbot_server/ahl_robot_actions.hpp"
+#include "ahl_youbot_server/action/action_server.hpp"
 
 namespace ahl_youbot
 {
@@ -23,7 +25,7 @@ namespace ahl_youbot
       STATE_NUM,
     };
 
-    State();
+    State(const ActionServerPtr& action_server);
     virtual ~State() {}
 
     virtual std::string getState()
@@ -31,6 +33,9 @@ namespace ahl_youbot
       return std::string("N/A");
     }
 
+    virtual bool callCancel(
+      std_srvs::Empty::Request& req,
+      std_srvs::Empty::Response& res);
     virtual bool callFloat(
       ahl_robot_srvs::Float::Request& req,
       ahl_robot_srvs::Float::Response& res);
@@ -47,9 +52,30 @@ namespace ahl_youbot
       ahl_robot_srvs::TaskSpaceHybridControl::Request& req,
       ahl_robot_srvs::TaskSpaceHybridControl::Response& res);
 
+    virtual const ActionServerPtr& getActionServer() const
+    {
+      return action_server_;
+    };
+
   protected:
+    virtual void convertServiceToAction(
+      ahl_robot_srvs::Float::Request& req,
+      ahl_robot_actions::FloatGoal& goal);
+    virtual void convertServiceToAction(
+      ahl_robot_srvs::SetJoint::Request& req,
+      ahl_robot_actions::SetJointGoal& goal);
+    virtual void convertServiceToAction(
+      ahl_robot_srvs::JointSpaceControl::Request& req,
+      ahl_robot_actions::JointSpaceControlGoal& goal);
+    virtual void convertServiceToAction(
+      ahl_robot_srvs::TaskSpaceControl::Request& req,
+      ahl_robot_actions::TaskSpaceControlGoal& goal);
+    virtual void convertServiceToAction(
+      ahl_robot_srvs::TaskSpaceHybridControl::Request& req,
+      ahl_robot_actions::TaskSpaceHybridControlGoal& goal);
 
-
+  private:
+    ActionServerPtr action_server_;
   };
 
   typedef boost::shared_ptr<State> StatePtr;

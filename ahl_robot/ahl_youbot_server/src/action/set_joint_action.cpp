@@ -2,13 +2,12 @@
 
 using namespace ahl_youbot;
 
-const std::string SetJointAction::ACTION_NAME_ = "youbot/set_joint_action";
-
-SetJointAction::SetJointAction()
+SetJointAction::SetJointAction(const std::string& action_name)
+  : Action(action_name)
 {
   server_ = SetJointServerPtr(
     new SetJointServer(
-      getNodeHandle(), ACTION_NAME_, boost::bind(&SetJointAction::executeCB, this, _1), false
+      getNodeHandle(), getActionName(), boost::bind(&SetJointAction::executeCB, this, _1), false
     )
   );
 

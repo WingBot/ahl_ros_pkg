@@ -2,13 +2,12 @@
 
 using namespace ahl_youbot;
 
-const std::string FloatAction::ACTION_NAME_ = "youbot/float_action";
-
-FloatAction::FloatAction()
+FloatAction::FloatAction(const std::string& action_name)
+  : Action(action_name)
 {
   server_ = FloatServerPtr(
     new FloatServer(
-      getNodeHandle(), ACTION_NAME_, boost::bind(&FloatAction::executeCB, this, _1), false
+      getNodeHandle(), getActionName(), boost::bind(&FloatAction::executeCB, this, _1), false
     )
   );
 

@@ -11,7 +11,7 @@ namespace ahl_youbot
   class TaskSpaceControlAction : public Action
   {
   public:
-    TaskSpaceControlAction();
+    TaskSpaceControlAction(const std::string& action_name);
 
     virtual bool isActive();
     virtual bool isNewGoalAvailable();
@@ -25,7 +25,6 @@ namespace ahl_youbot
     typedef actionlib::SimpleActionServer<ahl_robot_actions::TaskSpaceControlAction> TaskSpaceControlServer;
     typedef boost::shared_ptr<TaskSpaceControlServer> TaskSpaceControlServerPtr;
 
-    static const std::string ACTION_NAME_;
     TaskSpaceControlServerPtr server_;
   };
 

@@ -10,17 +10,21 @@ using namespace ahl_youbot;
 
 Server::Server()
 {
-  state_[State::ALARM]    = StatePtr(new Alarm());
-  state_[State::DISABLED] = StatePtr(new Disabled());
-  state_[State::FLOAT]    = StatePtr(new Float());
-  state_[State::LOCK]     = StatePtr(new Lock());
-  state_[State::MOVE]     = StatePtr(new Move());
-  state_[State::READY]    = StatePtr(new Ready());
+  action_server_ = ActionServerPtr(new ActionServer());
+
+  state_[State::ALARM]    = StatePtr(new Alarm(action_server_));
+  state_[State::DISABLED] = StatePtr(new Disabled(action_server_));
+  state_[State::FLOAT]    = StatePtr(new Float(action_server_));
+  state_[State::LOCK]     = StatePtr(new Lock(action_server_));
+  state_[State::MOVE]     = StatePtr(new Move(action_server_));
+  state_[State::READY]    = StatePtr(new Ready(action_server_));
 
   state_type_ = State::DISABLED;
 
   ros::NodeHandle local_nh("ahl_youbot_server");
 
+  server_cancel_ = local_nh.advertiseService(
+    "command/cancel", &Server::cancelCB, this);
   server_float_ = local_nh.advertiseService(
     "command/float", &Server::floatCB, this);
   server_set_joint_ = local_nh.advertiseService(
@@ -31,8 +35,13 @@ Server::Server()
     "command/task_space_control", &Server::taskSpaceControlCB, this);
   server_task_space_hybrid_control_ = local_nh.advertiseService(
     "command/task_space_hybrid_control", &Server::taskSpaceHybridControlCB, this);
+}
 
-  action_server_ = ActionServerPtr(new ActionServer());
+bool Server::cancelCB(
+  std_srvs::Empty::Request& req,
+  std_srvs::Empty::Response& res)
+{
+  return state_[state_type_]->callCancel(req, res);
 }
 
 bool Server::floatCB(
@@ -69,4 +78,3 @@ bool Server::taskSpaceHybridControlCB(
 {
   return state_[state_type_]->callTaskSpaceHybridControl(req, res);
 }
-

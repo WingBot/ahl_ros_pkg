@@ -9,6 +9,9 @@ namespace ahl_youbot
   class Lock : public State
   {
   public:
+    Lock(const ActionServerPtr& action_server)
+      : State(action_server) {}
+
     virtual std::string getState()
     {
       return std::string("Lock");

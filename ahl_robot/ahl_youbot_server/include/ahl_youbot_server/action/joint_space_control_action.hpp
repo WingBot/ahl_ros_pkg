@@ -11,7 +11,7 @@ namespace ahl_youbot
   class JointSpaceControlAction : public Action
   {
   public:
-    JointSpaceControlAction();
+    JointSpaceControlAction(const std::string& action_name);
 
     virtual bool isActive();
     virtual bool isNewGoalAvailable();
@@ -25,7 +25,6 @@ namespace ahl_youbot
     typedef actionlib::SimpleActionServer<ahl_robot_actions::JointSpaceControlAction> JointSpaceControlServer;
     typedef boost::shared_ptr<JointSpaceControlServer> JointSpaceControlServerPtr;
 
-    static const std::string ACTION_NAME_;
     JointSpaceControlServerPtr server_;
   };
 

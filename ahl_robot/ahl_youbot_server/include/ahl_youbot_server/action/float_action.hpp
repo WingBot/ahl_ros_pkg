@@ -11,7 +11,7 @@ namespace ahl_youbot
   class FloatAction : public Action
   {
   public:
-    FloatAction();
+    FloatAction(const std::string& action_name);
 
     virtual bool isActive();
     virtual bool isNewGoalAvailable();
@@ -25,7 +25,6 @@ namespace ahl_youbot
     typedef actionlib::SimpleActionServer<ahl_robot_actions::FloatAction> FloatServer;
     typedef boost::shared_ptr<FloatServer> FloatServerPtr;
 
-    static const std::string ACTION_NAME_;
     FloatServerPtr server_;
   };
 

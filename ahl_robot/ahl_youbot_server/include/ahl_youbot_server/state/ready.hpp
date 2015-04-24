@@ -9,6 +9,9 @@ namespace ahl_youbot
   class Ready : public State
   {
   public:
+    Ready(const ActionServerPtr& action_server)
+      : State(action_server) {}
+
     virtual std::string getState()
     {
       return std::string("Ready");

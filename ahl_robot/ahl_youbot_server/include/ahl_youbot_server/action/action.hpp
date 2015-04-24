@@ -19,6 +19,8 @@ namespace ahl_youbot
       TASK_SPACE_HYBRID_CONTROL,
       ACTION_NUM,
     };
+    Action(const std::string& action_name)
+      : action_name_(action_name) {}
     virtual ~Action() {}
 
     virtual bool isActive() = 0;
@@ -26,6 +28,11 @@ namespace ahl_youbot
     virtual bool isPreemptRequested() = 0;
     virtual void start() = 0;
     virtual void shutdown () = 0;
+
+    virtual const std::string& getActionName() const
+    {
+      return action_name_;
+    }
 
   protected:
     const ros::NodeHandle& getNodeHandle() const
@@ -35,6 +42,7 @@ namespace ahl_youbot
 
   private:
     ros::NodeHandle nh_;
+    std::string action_name_;
   };
 
   typedef boost::shared_ptr<Action> ActionPtr;

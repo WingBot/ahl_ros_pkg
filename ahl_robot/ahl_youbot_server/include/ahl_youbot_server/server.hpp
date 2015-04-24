@@ -4,6 +4,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <ros/ros.h>
+#include <std_srvs/Empty.h>
 
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
 #include "ahl_youbot_server/state/state.hpp"
@@ -18,6 +19,9 @@ namespace ahl_youbot
     Server();
 
   private:
+    bool cancelCB(
+      std_srvs::Empty::Request& req,
+      std_srvs::Empty::Response& res);
     bool floatCB(
       ahl_robot_srvs::Float::Request& req,
       ahl_robot_srvs::Float::Response& res);
@@ -37,6 +41,7 @@ namespace ahl_youbot
     std::map<State::Type, StatePtr> state_;
     State::Type state_type_;
 
+    ros::ServiceServer server_cancel_;
     ros::ServiceServer server_float_;
     ros::ServiceServer server_set_joint_;
     ros::ServiceServer server_joint_space_control_;

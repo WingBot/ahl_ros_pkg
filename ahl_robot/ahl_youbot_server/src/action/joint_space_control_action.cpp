@@ -2,13 +2,12 @@
 
 using namespace ahl_youbot;
 
-const std::string JointSpaceControlAction::ACTION_NAME_ = "youbot/joint_space_control_action";
-
-JointSpaceControlAction::JointSpaceControlAction()
+JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name)
+  : Action(action_name)
 {
   server_ = JointSpaceControlServerPtr(
     new JointSpaceControlServer(
-      getNodeHandle(), ACTION_NAME_, boost::bind(&JointSpaceControlAction::executeCB, this, _1), false
+      getNodeHandle(), getActionName(), boost::bind(&JointSpaceControlAction::executeCB, this, _1), false
     )
   );
 

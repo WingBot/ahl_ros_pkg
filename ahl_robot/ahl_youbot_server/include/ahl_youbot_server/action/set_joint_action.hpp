@@ -11,7 +11,7 @@ namespace ahl_youbot
   class SetJointAction : public Action
   {
   public:
-    SetJointAction();
+    SetJointAction(const std::string& action_name);
 
     virtual bool isActive();
     virtual bool isNewGoalAvailable();
@@ -25,7 +25,6 @@ namespace ahl_youbot
     typedef actionlib::SimpleActionServer<ahl_robot_actions::SetJointAction> SetJointServer;
     typedef boost::shared_ptr<SetJointServer> SetJointServerPtr;
 
-    static const std::string ACTION_NAME_;
     SetJointServerPtr server_;
  };
 

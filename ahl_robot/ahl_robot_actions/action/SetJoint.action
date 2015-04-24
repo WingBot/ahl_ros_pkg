@@ -1,5 +1,5 @@
 # goal
-float64[] qd # generalized coordinates
+float64[] qd
 ---
 # result
 float64[] q
