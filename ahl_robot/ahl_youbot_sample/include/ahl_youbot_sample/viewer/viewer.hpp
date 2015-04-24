@@ -24,6 +24,14 @@ namespace ahl_youbot
     YouBotBasePtr base_;
     YouBotManipulatorPtr manipulator_;
 
+    quantity<si::velocity> vx_;
+    quantity<si::velocity> vy_;
+    quantity<si::angular_velocity> vr_;
+
+    std::vector<youbot::JointSensedAngle> q_;
+    std::vector<youbot::JointSensedVelocity> dq_;
+    std::vector<youbot::JointSensedTorque> tau_;
+
     ros::Timer timer_;
   };
 
