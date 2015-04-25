@@ -2,8 +2,8 @@
 
 using namespace ahl_youbot;
 
-JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name)
-  : Action(action_name)
+JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name, const YouBotPtr& youbot)
+  : youbot_(youbot), Action(action_name)
 {
   server_ = JointSpaceControlServerPtr(
     new JointSpaceControlServer(

@@ -11,6 +11,7 @@
 
 #include "ahl_youbot_server/ahl_robot_actions.hpp"
 #include "ahl_youbot_server/action/action.hpp"
+#include "ahl_youbot_server/youbot/youbot.hpp"
 
 namespace ahl_youbot
 {
@@ -18,7 +19,7 @@ namespace ahl_youbot
   class ActionServer
   {
   public:
-    ActionServer();
+    ActionServer(bool use_real_robot);
 
     void start(Action::Type type);
     void preempt(Action::Type type);
@@ -35,6 +36,7 @@ namespace ahl_youbot
   private:
     std::map<Action::Type, ActionPtr> action_;
     std::map<Action::Type, ros::Publisher> canceller_;
+    YouBotPtr youbot_;
   };
 
   typedef boost::shared_ptr<ActionServer> ActionServerPtr;

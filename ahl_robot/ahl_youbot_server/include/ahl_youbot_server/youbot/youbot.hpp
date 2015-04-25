@@ -27,6 +27,7 @@ namespace ahl_youbot
     AHLYouBotManipulatorPtr manipulator_;
   };
 
+  typedef boost::shared_ptr<YouBot> YouBotPtr;
 };
 
 #endif /* __AHL_YOUBOT_SERVER_YOUBOT_HPP */

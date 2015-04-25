@@ -2,8 +2,8 @@
 
 using namespace ahl_youbot;
 
-SetJointAction::SetJointAction(const std::string& action_name)
-  : Action(action_name)
+SetJointAction::SetJointAction(const std::string& action_name, const YouBotPtr& youbot)
+  : youbot_(youbot), Action(action_name)
 {
   server_ = SetJointServerPtr(
     new SetJointServer(

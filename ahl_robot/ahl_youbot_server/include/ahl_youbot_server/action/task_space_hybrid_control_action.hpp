@@ -4,6 +4,7 @@
 #include <actionlib/server/simple_action_server.h>
 #include <ahl_robot_actions/TaskSpaceHybridControlAction.h>
 #include "ahl_youbot_server/action/action.hpp"
+#include "ahl_youbot_server/youbot/youbot.hpp"
 
 namespace ahl_youbot
 {
@@ -11,7 +12,7 @@ namespace ahl_youbot
   class TaskSpaceHybridControlAction : public Action
   {
   public:
-    TaskSpaceHybridControlAction(const std::string& action_name);
+    TaskSpaceHybridControlAction(const std::string& action_name, const YouBotPtr& youbot);
 
     virtual bool isActive();
     virtual bool isNewGoalAvailable();
@@ -26,6 +27,7 @@ namespace ahl_youbot
     typedef boost::shared_ptr<TaskSpaceHybridControlServer> TaskSpaceHybridControlServerPtr;
 
     TaskSpaceHybridControlServerPtr server_;
+    YouBotPtr youbot_;
   };
 
 }

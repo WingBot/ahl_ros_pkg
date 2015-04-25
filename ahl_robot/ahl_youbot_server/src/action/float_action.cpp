@@ -2,8 +2,8 @@
 
 using namespace ahl_youbot;
 
-FloatAction::FloatAction(const std::string& action_name)
-  : Action(action_name)
+FloatAction::FloatAction(const std::string& action_name, const YouBotPtr& youbot)
+  : youbot_(youbot), Action(action_name)
 {
   server_ = FloatServerPtr(
     new FloatServer(

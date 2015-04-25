@@ -10,7 +10,12 @@ using namespace ahl_youbot;
 
 Server::Server()
 {
-  action_server_ = ActionServerPtr(new ActionServer());
+  ros::NodeHandle local_nh("ahl_youbot_server");
+
+  bool use_real_robot = false;
+  local_nh.param<bool>("use_real_robot", use_real_robot, false);
+
+  action_server_ = ActionServerPtr(new ActionServer(use_real_robot));
 
   action_client_[Action::FLOAT] = ActionClientBasePtr(
     new ActionClient<ahl_robot_actions::FloatAction,
@@ -52,8 +57,6 @@ Server::Server()
     new Ready(state_type_, action_server_, action_client_));
 
   state_type_ = State::DISABLED;
-
-  ros::NodeHandle local_nh("ahl_youbot_server");
 
   ros_server_cancel_ = local_nh.advertiseService(
     "command/cancel", &Server::cancelCB, this);

@@ -7,18 +7,18 @@
 
 using namespace ahl_youbot;
 
-ActionServer::ActionServer()
+ActionServer::ActionServer(bool use_real_robot)
 {
   action_[Action::FLOAT] = ActionPtr(
-    new FloatAction("youbot/float"));
+    new FloatAction("youbot/float", youbot_));
   action_[Action::SET_JOINT] = ActionPtr(
-    new SetJointAction("youbot/set_joint"));
+    new SetJointAction("youbot/set_joint", youbot_));
   action_[Action::JOINT_SPACE_CONTROL] = ActionPtr(
-    new JointSpaceControlAction("youbot/joint_space_control"));
+    new JointSpaceControlAction("youbot/joint_space_control", youbot_));
   action_[Action::TASK_SPACE_CONTROL] = ActionPtr(
-    new TaskSpaceControlAction("youbot/task_space_control"));
+    new TaskSpaceControlAction("youbot/task_space_control", youbot_));
   action_[Action::TASK_SPACE_HYBRID_CONTROL] = ActionPtr(
-    new TaskSpaceHybridControlAction("youbot/task_space_hybrid_control"));
+    new TaskSpaceHybridControlAction("youbot/task_space_hybrid_control", youbot_));
 
   ros::NodeHandle nh;
   const int queue_size = 1;
