@@ -6,6 +6,8 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
+#include <youbot_driver/youbot/YouBotBase.hpp>
+#include <youbot_driver/youbot/YouBotManipulator.hpp>
 
 #include "ahl_youbot_server/ahl_robot_actions.hpp"
 #include "ahl_youbot_server/action/action.hpp"
