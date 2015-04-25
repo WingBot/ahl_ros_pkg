@@ -26,12 +26,22 @@ namespace ahl_youbot
       STATE_NUM,
     };
 
-    State(const ActionServerPtr& server, const ActionClientBasePtrMap& client);
+    State(State::Type& state_type, const ActionServerPtr& server, const ActionClientBasePtrMap& client);
     virtual ~State() {}
+
+    virtual State::Type getStateType()
+    {
+      return state_type_;
+    }
 
     virtual std::string getState()
     {
       return std::string("N/A");
+    }
+
+    virtual void setStateType(State::Type state_type)
+    {
+      state_type_ = state_type;
     }
 
     virtual bool callCancel(
@@ -81,6 +91,7 @@ namespace ahl_youbot
       ahl_robot_actions::TaskSpaceHybridControlGoal& goal);
 
   private:
+    State::Type& state_type_;
     ActionServerPtr server_;
     ActionClientBasePtrMap client_;
   };

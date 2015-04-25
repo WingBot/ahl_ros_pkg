@@ -21,6 +21,8 @@ find_package(
   Eigen REQUIRED
 )
 
+add_definitions(-DYOUBOT_CONFIGURATIONS_DIR="${youbot_driver_CONFIG_DIR}")
+
 link_directories(
   ${catkin_LIBRARY_DIRS}
   ${Eigen_LIBRARY_DIRS}

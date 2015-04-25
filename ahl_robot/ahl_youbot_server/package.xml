@@ -9,7 +9,6 @@
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>youbot_driver</build_depend>
   <build_depend>ahl_robot_actions</build_depend>
   <build_depend>ahl_robot_controller</build_depend>
   <build_depend>ahl_robot_srvs</build_depend>
@@ -17,8 +16,8 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>tf2</build_depend>
+  <build_depend>youbot_driver</build_depend>
 
-  <run_depend>youbot_driver</run_depend>
   <run_depend>ahl_robot_actions</run_depend>
   <run_depend>ahl_robot_controller</run_depend>
   <run_depend>ahl_robot_srvs</run_depend>
@@ -26,4 +25,5 @@
   <run_depend>geometry_msgs</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>tf2</run_depend>
+  <run_depend>youbot_driver</run_depend>
 </package>

@@ -2,10 +2,9 @@
 
 using namespace ahl_youbot;
 
-State::State(const ActionServerPtr& server, const ActionClientBasePtrMap& client)
-  : server_(server), client_(client)
+State::State(State::Type& state_type, const ActionServerPtr& server, const ActionClientBasePtrMap& client)
+  : state_type_(state_type), server_(server), client_(client)
 {
-
 }
 
 bool State::callCancel(

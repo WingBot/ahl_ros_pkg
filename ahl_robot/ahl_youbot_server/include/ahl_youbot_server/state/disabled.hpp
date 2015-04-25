@@ -9,8 +9,8 @@ namespace ahl_youbot
   class Disabled : public State
   {
   public:
-    Disabled(const ActionServerPtr& server, const ActionClientBasePtrMap& client)
-      : State(server, client) {}
+    Disabled(State::Type& state_type, const ActionServerPtr& server, const ActionClientBasePtrMap& client)
+      : State(state_type, server, client) {}
 
     virtual std::string getState()
     {

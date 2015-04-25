@@ -42,6 +42,7 @@ namespace ahl_youbot
     std::map<State::Type, StatePtr> state_;
     State::Type state_type_;
 
+    ros::ServiceServer ros_server_change_state_;
     ros::ServiceServer ros_server_cancel_;
     ros::ServiceServer ros_server_float_;
     ros::ServiceServer ros_server_set_joint_;

@@ -9,8 +9,8 @@ namespace ahl_youbot
   class Move : public State
   {
   public:
-    Move(const ActionServerPtr& server, const ActionClientBasePtrMap& client)
-      : State(server, client) {}
+    Move(State::Type& state_type, const ActionServerPtr& server, const ActionClientBasePtrMap& client)
+      : State(state_type, server, client) {}
 
     virtual std::string getState()
     {

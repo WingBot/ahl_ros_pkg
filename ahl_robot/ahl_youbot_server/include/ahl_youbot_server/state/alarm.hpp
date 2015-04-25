@@ -9,8 +9,8 @@ namespace ahl_youbot
   class Alarm : public State
   {
   public:
-    Alarm(const ActionServerPtr& server, const ActionClientBasePtrMap& client)
-      : State(server, client) {}
+    Alarm(State::Type& state_type, const ActionServerPtr& server, const ActionClientBasePtrMap& client)
+      : State(state_type, server, client) {}
 
     virtual std::string getState()
     {

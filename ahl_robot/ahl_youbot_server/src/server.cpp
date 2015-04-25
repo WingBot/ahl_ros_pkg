@@ -38,12 +38,18 @@ Server::Server()
       action_server_->getActionName(Action::TASK_SPACE_HYBRID_CONTROL))
   );
 
-  state_[State::ALARM]    = StatePtr(new Alarm(action_server_, action_client_));
-  state_[State::DISABLED] = StatePtr(new Disabled(action_server_, action_client_));
-  state_[State::FLOAT]    = StatePtr(new Float(action_server_, action_client_));
-  state_[State::LOCK]     = StatePtr(new Lock(action_server_, action_client_));
-  state_[State::MOVE]     = StatePtr(new Move(action_server_,action_client_));
-  state_[State::READY]    = StatePtr(new Ready(action_server_, action_client_));
+  state_[State::ALARM]    = StatePtr(
+    new Alarm(state_type_, action_server_, action_client_));
+  state_[State::DISABLED] = StatePtr(
+    new Disabled(state_type_, action_server_, action_client_));
+  state_[State::FLOAT]    = StatePtr(
+    new Float(state_type_, action_server_, action_client_));
+  state_[State::LOCK]     = StatePtr(
+    new Lock(state_type_, action_server_, action_client_));
+  state_[State::MOVE]     = StatePtr(
+    new Move(state_type_, action_server_,action_client_));
+  state_[State::READY]    = StatePtr(
+    new Ready(state_type_, action_server_, action_client_));
 
   state_type_ = State::DISABLED;
 
