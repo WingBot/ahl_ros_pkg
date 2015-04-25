@@ -21,25 +21,25 @@ include_directories(
 )
 
 add_executable(
-  ahl_youbot_tele_operation
+  tele_operation
     src/tele_operation/main.cpp
     src/tele_operation/tele_operation.cpp
 )
 
 target_link_libraries(
-  ahl_youbot_tele_operation
+  tele_operation
     ${catkin_LIBRARIES}
     ncurses
 )
 
 add_executable(
-  ahl_youbot_viewer
+  viewer
     src/viewer/main.cpp
     src/viewer/viewer.cpp
 )
 
 target_link_libraries(
-  ahl_youbot_viewer
+  viewer
     ${catkin_LIBRARIES}
 )
 
