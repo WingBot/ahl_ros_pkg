@@ -1,6 +1,12 @@
 #ifndef __AHL_YOUBOT_SERVER_GAZEBO_YOUBOT_BASE_HPP
 #define __AHL_YOUBOT_SERVER_GAZEBO_YOUBOT_BASE_HPP
 
+#include <ros/ros.h>
+#include <gazebo_msgs/ModelStates.h>
+#include <gazebo_msgs/LinkStates.h>
+#include <gazebo_msgs/GetJointProperties.h>
+#include <gazebo_msgs/ApplyJointEffort.h>
+
 #include "ahl_youbot_server/youbot/youbot_base.hpp"
 
 namespace ahl_youbot
@@ -24,6 +30,7 @@ namespace ahl_youbot
     virtual void getTorque(const std::vector<double>& tau);
 
   private:
+
 
   };
 

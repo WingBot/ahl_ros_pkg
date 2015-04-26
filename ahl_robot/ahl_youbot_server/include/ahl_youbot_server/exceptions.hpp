@@ -9,18 +9,18 @@ namespace ahl_youbot
   class Exception
   {
   public:
-    Exception(const std::string& src, const std::string& msg)
+    explicit Exception(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg)
     {}
 
-    std::string what()
+    const char* what() const throw()
     {
       std::stringstream ss;
       ss << "ahl_youbot::Exception was occured." << std::endl
          << "  src : " << src_ << std::endl
          << "  msg : " << msg_;
 
-      return ss.str();
+      return ss.str().c_str();
     }
 
   private:
@@ -31,18 +31,18 @@ namespace ahl_youbot
   class FatalException
   {
   public:
-    FatalException(const std::string& src, const std::string& msg)
+    explicit FatalException(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg)
     {}
 
-    std::string what()
+    const char* what() const throw()
     {
       std::stringstream ss;
       ss << "ahl_youbot::FatalException was occured." << std::endl
          << "  src : " << src_ << std::endl
          << "  msg : " << msg_;
 
-      return ss.str();
+      return ss.str().c_str();
     }
 
   private:
