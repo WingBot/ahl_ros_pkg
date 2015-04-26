@@ -47,18 +47,18 @@ namespace gl_wrapper
   class Exception
   {
   public:
-    Exception(const std::string& src, const std::string& msg)
+    explicit Exception(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg) {}
     virtual ~Exception() {}
 
-    virtual std::string what()
+    virtual const char* what() const throw()
     {
       std::stringstream ss;
       ss << "gl_wrapper::Exception was thrown." << std::endl
          << "  src : " << src_ << std::endl
          << "  msg : " << msg_ << std::endl;
 
-      return ss.str();
+      return ss.str().c_str();
     }
 
   private:
@@ -69,17 +69,17 @@ namespace gl_wrapper
   class FatalException
   {
   public:
-    FatalException(const std::string& src, const std::string& msg)
+    explicit FatalException(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg) {}
 
-    std::string what()
+    const char* what() const throw()
     {
       std::stringstream ss;
       ss << "gl_wrapper::FatalException was thrown." << std::endl
          << "  src : " << src_ << std::endl
          << "  msg : " << msg_ << std::endl;
 
-      return ss.str();
+      return ss.str().c_str();
     }
 
   private:

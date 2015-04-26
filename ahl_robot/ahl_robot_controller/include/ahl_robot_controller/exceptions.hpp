@@ -9,11 +9,11 @@ namespace ahl_robot
   class Exception
   {
   public:
-    Exception(const std::string& src, const std::string& msg)
+    explicit Exception(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg), name_(std::string("ahl_robot::Exception")) {}
     virtual ~Exception() {}
 
-    virtual std::string what()
+    virtual const char* what() const throw()
     {
       std::stringstream msg;
 
@@ -21,7 +21,7 @@ namespace ahl_robot
           << "  src : " << src_ << std::endl
           << "  msg : " << msg_;
 
-      return msg.str();
+      return msg.str().c_str();
     }
 
   protected:
@@ -39,7 +39,7 @@ namespace ahl_robot
   class FatalException : public Exception
   {
   public:
-    FatalException(const std::string& src, const std::string& msg)
+    explicit FatalException(const std::string& src, const std::string& msg) throw()
       : Exception(src, msg)
     {
       Exception::setName(std::string("ahl_robot::FatalException"));

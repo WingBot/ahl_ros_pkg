@@ -9,17 +9,17 @@ namespace train
   class Exception
   {
   public:
-    Exception(const std::string& src, const std::string& msg)
+    explicit Exception(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg) {}
 
-    std::string what()
+    const char* what() const throw()
     {
       std::stringstream msg;
       msg << "train::Exception was thrown." << std::endl
           << "  src : " << src_ << std::endl
           << "  msg : " << msg_;
 
-      return msg.str();
+      return msg.str().c_str();
     }
 
   private:
@@ -30,17 +30,17 @@ namespace train
   class FatalException
   {
   public:
-    FatalException(const std::string& src, const std::string& msg)
+    explicit FatalException(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg) {}
 
-    std::string what()
+    const char* what() const throw()
     {
       std::stringstream msg;
       msg << "train::Exception was thrown." << std::endl
           << "  src : " << src_ << std::endl
           << "  msg : " << msg_;
 
-      return msg.str();
+      return msg.str().c_str();
     }
 
   private:

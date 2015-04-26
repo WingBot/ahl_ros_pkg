@@ -47,7 +47,7 @@ namespace cv_wrapper
   class Exception
   {
   public:
-    Exception(const std::string& src, const std::string& msg) throw()
+    explicit Exception(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg)
     {
     }
@@ -70,7 +70,7 @@ namespace cv_wrapper
   class FatalException
   {
   public:    
-    FatalException(const std::string& src, const std::string& msg) throw()
+    explicit FatalException(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg)
     {
     }
