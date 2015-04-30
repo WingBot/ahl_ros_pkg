@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="ahl_youbot_server" type="ahl_youbot_server" name="gazebo_ahl_youbot_server" output="screen">
+    <param name="use_real_robot" value="false"/>
+  </node>
+</launch>

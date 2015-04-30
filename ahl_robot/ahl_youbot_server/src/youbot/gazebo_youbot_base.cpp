@@ -9,7 +9,7 @@ GazeboYouBotBase::GazeboYouBotBase()
 
 void GazeboYouBotBase::doJointCommutation()
 {
-
+  // Do Nothing
 }
 
 void GazeboYouBotBase::setPosition(double x, double y, double r)

@@ -24,11 +24,7 @@ namespace ahl_youbot
       : action_name_(action_name) {}
     virtual ~Action() {}
 
-    virtual bool isActive() = 0;
-    virtual bool isNewGoalAvailable() = 0;
-    virtual bool isPreemptRequested() = 0;
-    virtual void start() = 0;
-    virtual void shutdown () = 0;
+    virtual void execute(void* goal) = 0;
 
     virtual const std::string& getActionName() const
     {

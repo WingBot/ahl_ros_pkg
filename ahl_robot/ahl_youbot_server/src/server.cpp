@@ -17,46 +17,20 @@ Server::Server()
 
   action_server_ = ActionServerPtr(new ActionServer(use_real_robot));
 
-  action_client_[Action::FLOAT] = ActionClientBasePtr(
-    new ActionClient<ahl_robot_actions::FloatAction,
-                     ahl_robot_actions::FloatGoal>(
-      action_server_->getActionName(Action::FLOAT))
-  );
-  action_client_[Action::SET_JOINT] = ActionClientBasePtr(
-    new ActionClient<ahl_robot_actions::SetJointAction,
-                     ahl_robot_actions::SetJointGoal>(
-      action_server_->getActionName(Action::SET_JOINT))
-  );
-  action_client_[Action::JOINT_SPACE_CONTROL] = ActionClientBasePtr(
-    new ActionClient<ahl_robot_actions::JointSpaceControlAction,
-                     ahl_robot_actions::JointSpaceControlGoal>(
-      action_server_->getActionName(Action::JOINT_SPACE_CONTROL))
-  );
-  action_client_[Action::TASK_SPACE_CONTROL] = ActionClientBasePtr(
-    new ActionClient<ahl_robot_actions::TaskSpaceControlAction,
-                     ahl_robot_actions::TaskSpaceControlGoal>(
-      action_server_->getActionName(Action::TASK_SPACE_CONTROL))
-  );
-  action_client_[Action::TASK_SPACE_HYBRID_CONTROL] = ActionClientBasePtr(
-    new ActionClient<ahl_robot_actions::TaskSpaceHybridControlAction,
-                     ahl_robot_actions::TaskSpaceHybridControlGoal>(
-      action_server_->getActionName(Action::TASK_SPACE_HYBRID_CONTROL))
-  );
-
   state_[State::ALARM]    = StatePtr(
-    new Alarm(state_type_, action_server_, action_client_));
+    new Alarm(state_type_, action_server_));
   state_[State::DISABLED] = StatePtr(
-    new Disabled(state_type_, action_server_, action_client_));
+    new Disabled(state_type_, action_server_));
   state_[State::FLOAT]    = StatePtr(
-    new Float(state_type_, action_server_, action_client_));
+    new Float(state_type_, action_server_));
   state_[State::LOCK]     = StatePtr(
-    new Lock(state_type_, action_server_, action_client_));
+    new Lock(state_type_, action_server_));
   state_[State::MOVE]     = StatePtr(
-    new Move(state_type_, action_server_,action_client_));
+    new Move(state_type_, action_server_));
   state_[State::READY]    = StatePtr(
-    new Ready(state_type_, action_server_, action_client_));
+    new Ready(state_type_, action_server_));
 
-  state_type_ = State::DISABLED;
+  state_type_ = State::READY;
 
   ros_server_cancel_ = local_nh.advertiseService(
     "command/cancel", &Server::cancelCB, this);

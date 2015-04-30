@@ -9,8 +9,8 @@ namespace ahl_youbot
   class Ready : public State
   {
   public:
-    Ready(State::Type& state_type, const ActionServerPtr& server, const ActionClientBasePtrMap& client)
-      : State(state_type, server, client) {}
+    Ready(State::Type& state_type, const ActionServerPtr& server)
+      : State(state_type, server) {}
 
     virtual std::string getState()
     {

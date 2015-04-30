@@ -35,11 +35,6 @@ namespace ahl_youbot
       client_->cancelGoalsAtAndBeforeTime(time);
     }
 
-    GoalType getResult()
-    {
-      return client_->getResult();
-    }
-
     actionlib::SimpleClientGoalState getState()
     {
       return client_->getState();
@@ -50,9 +45,9 @@ namespace ahl_youbot
       return client_->isServerConnected();
     }
 
-    void sendGoal(const GoalType& goal)
+    void sendGoal(void* goal)
     {
-      client_->sendGoal(goal);
+      client_->sendGoal(*(static_cast<GoalType*>(goal)));
     }
 
     void stopTrackingGoal()

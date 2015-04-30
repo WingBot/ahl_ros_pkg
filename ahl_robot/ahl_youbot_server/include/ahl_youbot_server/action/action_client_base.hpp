@@ -17,14 +17,10 @@ namespace ahl_youbot
     virtual void cancelAllGoals() = 0;
     virtual void cancelGoal() = 0;
     virtual void cancelGoalsAtAndBeforeTime(const ros::Time& time) = 0;
-    template<class GoalType> GoalType getResult()
-    {
-      GoalType empty;
-      return empty;
-    }
     virtual actionlib::SimpleClientGoalState getState() = 0;
     virtual bool isServerConnected() = 0;
-    template<class GoalType> void sendGoal(const GoalType& goal) {}
+    //template<class GoalType> void sendGoal(const GoalType& goal) { ROS_INFO_STREAM("ActionClientBase::sendGoal"); }
+    virtual void sendGoal(void* goal) = 0;
     virtual void stopTrackingGoal() = 0;
     virtual bool waitForResult(const ros::Duration& timeout = ros::Duration(0, 0)) = 0;
     virtual bool waitForServer(const ros::Duration& timeout = ros::Duration(0, 0)) = 0;

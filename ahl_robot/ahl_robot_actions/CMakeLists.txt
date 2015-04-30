@@ -13,6 +13,7 @@ add_action_files(
   DIRECTORY
     action
   FILES
+    MotionControl.action
     Float.action
     JointSpaceControl.action
     SetJoint.action

@@ -9,7 +9,6 @@
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
 #include "ahl_youbot_server/state/state.hpp"
 #include "ahl_youbot_server/action/action_server.hpp"
-#include "ahl_youbot_server/action/action_client.hpp"
 
 namespace ahl_youbot
 {
@@ -51,7 +50,6 @@ namespace ahl_youbot
     ros::ServiceServer ros_server_task_space_hybrid_control_;
 
     ActionServerPtr action_server_;
-    ActionClientBasePtrMap action_client_;
   };
 
   typedef boost::shared_ptr<Server> ServerPtr;

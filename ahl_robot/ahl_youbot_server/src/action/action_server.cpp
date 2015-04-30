@@ -9,65 +9,26 @@ using namespace ahl_youbot;
 
 ActionServer::ActionServer(bool use_real_robot)
 {
+  action_type_ = Action::FLOAT;
+/*
   action_[Action::FLOAT] = ActionPtr(
-    new FloatAction("youbot/float", youbot_));
+    new FloatAction("ahl_youbot/float", youbot_));
   action_[Action::SET_JOINT] = ActionPtr(
-    new SetJointAction("youbot/set_joint", youbot_));
+    new SetJointAction("ahl_youbot/set_joint", youbot_));
   action_[Action::JOINT_SPACE_CONTROL] = ActionPtr(
-    new JointSpaceControlAction("youbot/joint_space_control", youbot_));
+    new JointSpaceControlAction("ahl_youbot/joint_space_control", youbot_));
   action_[Action::TASK_SPACE_CONTROL] = ActionPtr(
-    new TaskSpaceControlAction("youbot/task_space_control", youbot_));
+    new TaskSpaceControlAction("ahl_youbot/task_space_control", youbot_));
   action_[Action::TASK_SPACE_HYBRID_CONTROL] = ActionPtr(
-    new TaskSpaceHybridControlAction("youbot/task_space_hybrid_control", youbot_));
-
+    new TaskSpaceHybridControlAction("ahl_youbot/task_space_hybrid_control", youbot_));
+*/
   ros::NodeHandle nh;
-  const int queue_size = 1;
-  canceller_[Action::FLOAT] = nh.advertise<actionlib_msgs::GoalID>(
-    action_[Action::FLOAT]->getActionName(), queue_size);
-  canceller_[Action::SET_JOINT] = nh.advertise<actionlib_msgs::GoalID>(
-    action_[Action::SET_JOINT]->getActionName(), queue_size);
-  canceller_[Action::JOINT_SPACE_CONTROL] = nh.advertise<actionlib_msgs::GoalID>(
-    action_[Action::JOINT_SPACE_CONTROL]->getActionName(), queue_size);
-  canceller_[Action::TASK_SPACE_CONTROL] = nh.advertise<actionlib_msgs::GoalID>(
-    action_[Action::TASK_SPACE_CONTROL]->getActionName(), queue_size);
-  canceller_[Action::TASK_SPACE_HYBRID_CONTROL] = nh.advertise<actionlib_msgs::GoalID>(
-    action_[Action::TASK_SPACE_HYBRID_CONTROL]->getActionName(), queue_size);
+
+  timer_ = nh.createTimer(ros::Duration(1.0), &ActionServer::timerCB, this);
 }
 
-void ActionServer::start(Action::Type type)
+void ActionServer::timerCB(const ros::TimerEvent&)
 {
-  action_[type]->start();
+  void* test;
+  action_[action_type_]->execute(test);
 }
-
-void ActionServer::preempt(Action::Type type)
-{
-
-}
-
-void ActionServer::cancel(Action::Type type)
-{
-  actionlib_msgs::GoalID empty;
-  canceller_[type].publish(empty);
-}
-
-void ActionServer::cancel()
-{
-  std::map<Action::Type, ros::Publisher>::iterator it;
-
-  for(it = canceller_.begin(); it != canceller_.end(); ++it)
-  {
-    actionlib_msgs::GoalID empty;
-    it->second.publish(empty);
-  }
-}
-
-void ActionServer::shutdown(Action::Type type)
-{
-  action_[type]->shutdown();
-}
-
-bool ActionServer::isActive(Action::Type type)
-{
-  action_[type]->isActive();
-}
-

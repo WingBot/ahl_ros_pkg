@@ -1,0 +1,8 @@
+# goal
+---
+# result
+---
+# feedback
+float64[] q # generalized coordinates
+float64[] dq # time derivative of generalized coordinates
+float64[] tau # generalized forces

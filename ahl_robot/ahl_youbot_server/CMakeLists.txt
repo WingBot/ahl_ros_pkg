@@ -73,6 +73,12 @@ add_executable(
     src/youbot/gazebo_youbot_manipulator.cpp
 )
 
+add_dependencies(
+  ahl_youbot_server
+    ahl_robot_srvs_gencpp
+    ahl_robot_actions_gencpp
+)
+
 target_link_libraries(
   ahl_youbot_server
     ${catkin_LIBRARIES}

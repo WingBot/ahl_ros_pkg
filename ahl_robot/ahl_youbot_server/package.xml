@@ -3,10 +3,10 @@
   <name>ahl_youbot_server</name>
   <version>0.0.0</version>
   <description>The ahl_youbot_server package</description>
-  <maintainer email="daichi@todo.todo">daichi</maintainer>
-  <license>TODO</license>
+  <maintainer email="daichi.yoshikawa@gmail.com">daichi</maintainer>
+  <license>BSD</license>
   <!-- <url type="website">http://wiki.ros.org/ahl_youbot_server</url> -->
-  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+  <author email="daichi.yoshikawa@gmail.com">Daichi Yoshikawa</author> -->
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>ahl_robot_actions</build_depend>
