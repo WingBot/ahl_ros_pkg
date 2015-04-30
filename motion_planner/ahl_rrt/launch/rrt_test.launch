@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="ahl_rrt" type="ahl_rrt_visualization" name="ahl_rrt_visualization"/>
+  <node pkg="ahl_rrt" type="ahl_rrt_test" name="ahl_rrt_test"/>
+</launch>
