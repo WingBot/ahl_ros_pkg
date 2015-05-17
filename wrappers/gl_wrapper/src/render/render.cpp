@@ -190,7 +190,7 @@ namespace gl_wrapper
       switch(key)
       {
       case ESC_KEY:
-        exit(1);
+        exit(0);
         break;
       case 'i':
         Render::CAMERA->reset();
