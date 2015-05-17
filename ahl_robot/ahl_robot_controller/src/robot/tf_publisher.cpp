@@ -99,14 +99,6 @@ void TfPublisher::publishLinkFrames(const RobotPtr& robot)
     com_stamped.transform.rotation.y = q.y();
     com_stamped.transform.rotation.z = q.z();
     com_stamped.transform.rotation.w = q.w();
-/*
-    std::cout << "parent : " << tf_stamped.header.frame_id << std::endl
-              << "child  : " << tf_stamped.child_frame_id << std::endl;
-    std::cout << tf_stamped.transform.translation.x << ", "
-              << tf_stamped.transform.translation.y << ", "
-              << tf_stamped.transform.translation.z << std::endl;
-    std::cout << joint->org << std::endl;
-*/
 
     transformBroadcaster().sendTransform(tf_stamped);
     transformBroadcaster().sendTransform(com_stamped);

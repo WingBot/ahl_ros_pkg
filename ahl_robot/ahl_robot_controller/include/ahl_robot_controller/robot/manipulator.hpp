@@ -23,7 +23,6 @@ namespace ahl_robot
   };
 
   typedef boost::shared_ptr<Manipulator> ManipulatorPtr;
-
 }
 
 #endif /* __AHL_ROBOT_CONTROLLER_MANIPULATOR_HPP */
