@@ -32,6 +32,24 @@ int main(int argc, char** argv)
     RobotPtr robot = RobotPtr(new Robot(name, base_name, mnp_and_ee));
 
     ParserPtr parser = ParserPtr(new SDFParser());
+    parser->ignoreJoint("torso_lift_motor_screw_joint");
+    parser->ignoreJoint("l_gripper_l_screw_screw_joint");
+    parser->ignoreJoint("l_gripper_r_screw_screw_joint");
+    parser->ignoreJoint("r_gripper_l_screw_screw_joint");
+    parser->ignoreJoint("r_gripper_r_screw_screw_joint");
+    parser->ignoreJoint("l_gripper_joint");
+    parser->ignoreJoint("r_gripper_joint");
+    parser->ignoreJoint("l_gripper_l_parallel_tip_joint");
+    parser->ignoreJoint("l_gripper_r_parallel_tip_joint");
+    parser->ignoreJoint("r_gripper_l_parallel_tip_joint");
+    parser->ignoreJoint("r_gripper_r_parallel_tip_joint");
+    parser->fixJoint("torso_lift_screw_torso_lift_joint");
+    parser->swapParentAndChild("l_gripper_l_parallel_root_joint");
+    parser->swapParentAndChild("l_gripper_r_parallel_root_joint");
+    parser->swapParentAndChild("r_gripper_l_parallel_root_joint");
+    parser->swapParentAndChild("r_gripper_r_parallel_root_joint");
+
+
     std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot/models/pr2/model.sdf";
     parser->load(path, robot);
 #endif

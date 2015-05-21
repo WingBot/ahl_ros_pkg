@@ -2106,7 +2106,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2120,7 +2120,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2134,7 +2134,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2148,7 +2148,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2162,7 +2162,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2176,7 +2176,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2190,7 +2190,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2204,7 +2204,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2218,7 +2218,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2232,7 +2232,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2246,7 +2246,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2260,7 +2260,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2274,7 +2274,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.330000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2292,7 +2292,7 @@
         <limit>
           <lower>-3.006993</lower>
           <upper>3.006993</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2310,7 +2310,7 @@
         <limit>
           <lower>-0.471237</lower>
           <upper>1.396260</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2328,7 +2328,7 @@
         <limit>
           <lower>-0.714602</lower>
           <upper>2.285404</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2346,7 +2346,7 @@
         <limit>
           <lower>-0.523601</lower>
           <upper>1.396300</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2364,7 +2364,7 @@
         <limit>
           <lower>-0.800000</lower>
           <upper>3.900008</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2382,7 +2382,7 @@
         <limit>
           <lower>-2.321305</lower>
           <upper>0.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2400,7 +2400,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2418,7 +2418,7 @@
         <limit>
           <lower>-2.180004</lower>
           <upper>0.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2436,7 +2436,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2454,7 +2454,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2472,7 +2472,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2486,7 +2486,7 @@
         <limit>
           <lower>-0.100000</lower>
           <upper>0.100000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2504,7 +2504,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2522,7 +2522,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2540,7 +2540,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2558,7 +2558,7 @@
         <limit>
           <lower>-0.785400</lower>
           <upper>1.483530</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2576,7 +2576,7 @@
         <limit>
           <lower>-2.285404</lower>
           <upper>0.714602</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2594,7 +2594,7 @@
         <limit>
           <lower>-0.523601</lower>
           <upper>1.396300</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2612,7 +2612,7 @@
         <limit>
           <lower>-3.900008</lower>
           <upper>0.800000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2630,7 +2630,7 @@
         <limit>
           <lower>-2.321305</lower>
           <upper>0.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2648,7 +2648,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2666,7 +2666,7 @@
         <limit>
           <lower>-2.180004</lower>
           <upper>0.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2684,7 +2684,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2702,7 +2702,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2720,7 +2720,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2738,7 +2738,7 @@
         <limit>
           <lower>-0.100000</lower>
           <upper>0.100000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2756,7 +2756,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2774,7 +2774,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2792,7 +2792,7 @@
         <limit>
           <lower>0.000000</lower>
           <upper>0.548000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2810,7 +2810,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2829,7 +2829,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2848,7 +2848,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2867,7 +2867,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2886,7 +2886,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2905,7 +2905,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2924,7 +2924,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2943,7 +2943,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2961,7 +2961,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2980,7 +2980,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -2999,7 +2999,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -3018,7 +3018,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -3037,7 +3037,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -3056,7 +3056,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -3071,7 +3071,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -3085,7 +3085,7 @@
         <limit>
           <lower>-10000000000000000.000000</lower>
           <upper>10000000000000000.000000</upper>
-          <effort>0.000000</effort>
+          <effort>10000.000000</effort>
           <velocity>4.000000</velocity>
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>

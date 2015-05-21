@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <Eigen/Dense>
 #include <tinyxml.h>
 #include "ahl_robot/parser/parser.hpp"
@@ -18,6 +19,10 @@ namespace ahl_robot
   {
   public:
     SDFParser();
+
+    virtual void ignoreJoint(const std::string& joint);
+    virtual void fixJoint(const std::string& joint);
+    virtual void swapParentAndChild(const std::string& joint);
     virtual void load(const std::string& path, RobotPtr& robot);
 
   private:
@@ -60,6 +65,10 @@ namespace ahl_robot
     TfJointMap joint_;
 
     MnpGeneratorPtr mnp_generator_;
+
+    std::set<std::string> ignored_joint_;
+    std::set<std::string> fixed_joint_;
+    std::set<std::string> swapped_joint_;
   };
 
 }

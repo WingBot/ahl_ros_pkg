@@ -10,6 +10,21 @@ SDFParser::SDFParser()
 {
 }
 
+void SDFParser::ignoreJoint(const std::string& joint)
+{
+  ignored_joint_.insert(joint);
+}
+
+void SDFParser::fixJoint(const std::string& joint)
+{
+  fixed_joint_.insert(joint);
+}
+
+void SDFParser::swapParentAndChild(const std::string& joint)
+{
+  swapped_joint_.insert(joint);
+}
+
 void SDFParser::load(const std::string& path, RobotPtr& robot)
 {
   path_ = path;
@@ -243,7 +258,12 @@ void SDFParser::loadJoint(TiXmlElement* joint_elem)
   Link::JointType type = Link::FIXED;
 
   std::string type_str = joint_elem->Attribute("type");
-  if(type_str == std::string("revolute"))
+
+  if(fixed_joint_.find(name) != fixed_joint_.end())
+  {
+    type = Link::FIXED;
+  }
+  else if(type_str == std::string("revolute"))
   {
     type = Link::REVOLUTE;
   }
@@ -329,6 +349,21 @@ void SDFParser::loadJoint(TiXmlElement* joint_elem)
     throw ahl_robot::Exception("ahl_robot::SDFParser::loadJoint", msg.str());
   }
 
+  if(swapped_joint_.find(name) != swapped_joint_.end())
+  {
+    std::string tmp = parent_link_name;
+    parent_link_name = link_name;
+    link_name = tmp;
+
+    Eigen::Matrix4d Tbp = link_[parent_link_name]->T;
+    Eigen::Matrix4d Tbc = link_[link_name]->T;
+    Eigen::Matrix4d Tpb;
+    math::calculateInverseTransformationMatrix(Tbp, Tpb);
+    Eigen::Matrix4d Tpc = Tpb * Tbc;
+    Eigen::Matrix4d Tpj = Tpc * joint->T;
+    joint->T = Tpj;
+  }
+
   // connect joint to child link
   joint->link = link_[link_name];
   link_[link_name]->joint = joint;
@@ -337,7 +372,10 @@ void SDFParser::loadJoint(TiXmlElement* joint_elem)
   joint->parent_link = link_[parent_link_name];
   link_[parent_link_name]->child_joint[joint->name] = joint;
 
-  joint_[joint->name] = joint;
+  if(ignored_joint_.find(joint->name) == ignored_joint_.end())
+  {
+    joint_[joint->name] = joint;
+  }
 
   std::cout << "Loaded joint : " << joint->name << std::endl
             << "  parent : " << joint->parent_link->name << std::endl

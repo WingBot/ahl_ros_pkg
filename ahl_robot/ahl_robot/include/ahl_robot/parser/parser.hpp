@@ -13,6 +13,9 @@ namespace ahl_robot
   public:
     Parser() {}
     virtual ~Parser() {}
+    virtual void ignoreJoint(const std::string& joint) {}
+    virtual void fixJoint(const std::string& joint) {}
+    virtual void swapParentAndChild(const std::string& joint) {}
     virtual void load(const std::string& path, RobotPtr& robot) {}
 
   protected:

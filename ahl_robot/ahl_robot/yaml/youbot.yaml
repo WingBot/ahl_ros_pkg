@@ -1,0 +1,140 @@
+name: youbot
+xyz: 0 0 0
+rpy: 0 0 0
+links:
+- name: base
+  parent: world
+  joint_type: omni_directional_wheel
+
+  xyz_in_parent: 0 0 0.084
+  rpy_in_parent: 0 0 0
+
+  mass: 28.761
+  inertia_matrix_in_com: >
+     0.13063 -0.43726 -0.42639
+    -0.43726  0.30975 -0.43696
+    -0.42639 -0.43696  0.37087
+  com_in_link: -0.009443 0.000392 -0.012768
+
+  vx_max: 0.8
+  vy_max: 0.8
+  vr_max: 1.04719
+
+- name: link1
+  parent: base_link
+  joint_type: revolute_z
+
+  xyz_in_parent: 0.31 0 0.1063
+  rpy_in_parent: 0 0 0
+
+  mass: 1.390
+  inertia_matrix_in_com: >
+    0.0029525         0         0
+            0 0.0059942 0.0000408
+            0 0.0000408 0.0058970
+  com_in_link: 0.01516 -0.00359 -0.03105
+
+  q_min: -2.949606
+  q_max:  2.949606
+  dq_max: 1.5
+  tau_max: 9.5
+  init_q: 0
+
+- name: link2
+  parent: link1
+  joint_type: revolute_y
+
+  xyz_in_parent: 0.033 0 0.0689
+  rpy_in_parent: 0 0 0
+
+  mass: 1.318
+  inertia_matrix_in_com: >
+    0.0031145          0         0
+            0 0.00058430         0
+            0          0 0.0031631
+  com_in_link: 0.015 -0.01903 0.11397
+
+  q_min: -1.134464
+  q_max:  1.570796
+  dq_max: 1.5
+  tau_max: 9.5
+  init_q: 0
+
+- name: link3
+  parent: link2
+  joint_type: revolute_y
+
+  xyz_in_parent: 0 0 0.155
+  rpy_in_parent: 0 0 0
+
+  mass: 0.821
+  inertia_matrix_in_com: >
+    0.0017277          0         0
+            0 0.00041967         0
+            0          0 0.0018468
+  com_in_link: -0.00013 0.02022 0.10441
+
+  q_min: -2.635447
+  q_max:  2.548180
+  dq_max: 1.5
+  tau_max: 6.0
+  init_q: 0
+
+- name: link4
+  parent: link3
+  joint_type: revolute_y
+
+  xyz_in_parent: 0 0 0.135
+  rpy_in_parent: 0 0 0
+
+  mass: 0.769
+  inertia_matrix_in_com: >
+    0.00067640           0           0
+             0  0.00082474 -0.00019514
+             0 -0.00019514  0.00089356
+  com_in_link: -0.015 -0.02464 0.05353
+
+  q_min: -1.788962
+  q_max:  1.788962
+  dq_max: 1.5
+  tau_max: 2.0
+  init_q: 0
+
+- name: link5
+  parent: link4
+  joint_type: revolute_z
+
+  xyz_in_parent: 0 0 0.084
+  rpy_in_parent: 0 0 0
+
+  mass: 0.906
+  inertia_matrix_in_com: >
+    0.0038148          0          0
+            0  0.0038802 -0.0000036
+            0 -0.0000036  0.0005565
+  com_in_link: 0 -0.00091 0.017815
+
+  q_min: -2.879793
+  q_max:  2.879793
+  dq_max: 1.5
+  tau_max: 1.0
+  init_q: 0
+
+- name: gripper
+  parent: link_5
+  joint_type: end_effector
+
+  xyz_in_parent: 0 0 0.0965
+  rpy_in_parent: 0 0 0
+
+  mass: 0
+  inertia_matrix_in_com: >
+    0 0 0
+    0 0 0
+    0 0 0
+  com_in_link: 0 0 0
+  q_min: 0
+  q_max: 0
+  dq_max: 0
+  tau_max: 0
+  init_q: 0

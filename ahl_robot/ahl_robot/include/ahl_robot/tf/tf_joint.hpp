@@ -44,7 +44,7 @@ namespace ahl_robot
     std::string name;
     Link::JointType type;
 
-    Eigen::Matrix4d T_org; // Frame attached to joint in parent joint frame
+    //Eigen::Matrix4d T_org; // Frame attached to joint in parent joint frame
     Eigen::Matrix4d T; // Initial frame attached to joint in parent joint frame
     Eigen::Vector3d axis; // Axis in joint frame
 
