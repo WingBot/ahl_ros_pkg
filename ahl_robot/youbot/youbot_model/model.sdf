@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <model name="youbot">
-    <pose>0 0 0.09 0 0 0</pose>
+    <pose>0 0 0.084 0 0 0</pose>
     <link name="base_footprint">
       <pose>0 0 0 0 0 0</pose>
       <inertial>
@@ -191,14 +191,15 @@
     <link name="arm_link_1">
       <pose>0.167000 0 0.0921 0 0 0</pose>
       <inertial>
-        <pose>-0.010838 0.006337 0.034345 0 0 0</pose>
+   <!-- <pose>-0.010838 0.006337 0.034345 0 0 0</pose> -->
+        <pose>0.01516 -0.00359 -0.03105 0 0 0</pose>
         <inertia>
-          <ixx>0.003003</ixx>
+          <ixx>0.0029525</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.003003</iyy>
-          <iyz>0</iyz>
-          <izz>0.004904</izz>
+          <iyy>0.0059942</iyy>
+          <iyz>-0.0000408</iyz>
+          <izz>0.0058970</izz>
         </inertia>
         <mass>1.390000</mass>
       </inertial>
@@ -251,14 +252,15 @@
     <link name="arm_link_2">
       <pose>0.20000 0 0.161000 0 0 0</pose>
       <inertial>
-        <pose>0.001377 -0.029369 0.086325 0 0 0</pose>
+   <!-- <pose>0.001377 -0.029369 0.086325 0 0 0</pose> -->
+        <pose>0.015 -0.01903 0.11397 0 0 0</pose>
         <inertia>
-          <ixx>0.0031631</ixx>
+          <ixx>0.0031145</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0031145</iyy>
+          <iyy>0.0005843</iyy>
           <iyz>0</iyz>
-          <izz>0.0005843</izz>
+          <izz>0.0031631</izz>
         </inertia>
         <mass>1.318000</mass>
       </inertial>
@@ -311,14 +313,15 @@
     <link name="arm_link_3">
       <pose>0.20000 0 0.316000 0 0 0</pose>
       <inertial>
-        <pose>0.000130 0.028500 0.079400 0 0 0</pose>
+   <!-- <pose>0.000130 0.028500 0.079400 0 0 0</pose> -->
+        <pose>-0.000130 0.02022 0.10441 0 0 0</pose>
         <inertia>
-          <ixx>0.0018468</ixx>
+          <ixx>0.0017277</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.00172767</iyy>
+          <iyy>0.0004197</iyy>
           <iyz>0</iyz>
-          <izz>0.0005843</izz>
+          <izz>0.0018468</izz>
         </inertia>
         <mass>0.821000</mass>
       </inertial>
@@ -371,14 +374,15 @@
     <link name="arm_link_4">
       <pose>0.20000 0 0.451000 0 0 0</pose>
       <inertial>
-        <pose>0.000124 -0.005595 0.040469 0 0 0</pose>
+  <!--  <pose>0.000124 -0.005595 0.040469 0 0 0</pose> -->
+        <pose>-0.015 -0.02464 0.05353 0 0 0</pose>
         <inertia>
-          <ixx>0.0010573</ixx>
+          <ixx>0.00067640</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0006764</iyy>
-          <iyz>0</iyz>
-          <izz>0.0006610</izz>
+          <iyy>0.00082474</iyy>
+          <iyz>-0.00019514</iyz>
+          <izz>0.00089356</izz>
         </inertia>
         <mass>0.769000</mass>
       </inertial>
@@ -431,12 +435,13 @@
     <link name="arm_link_5">
       <pose>0.20000 0 0.535000 0 0 0</pose>
       <inertial>
-        <pose>-0.000903 0.000638 0.006573 0 0 0</pose>
+   <!-- <pose>-0.000903 0.000638 0.006573 0 0 0</pose> -->
+        <pose>0 -0.0012 -0.01648 0 0 0</pose>
         <inertia>
-          <ixx>0.0001602</ixx>
+          <ixx>0.0000689</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0000689</iyy>
+          <iyy>0.0001602</iyy>
           <iyz>0</iyz>
           <izz>0.0001934</izz>
         </inertia>
@@ -491,14 +496,15 @@
     <link name="gripper_palm_link">
       <pose>0.20000 0 0.5567 0 0 0</pose>
       <inertial>
-        <pose>0.002737 0 0.02616 0 0 0</pose>
+   <!-- <pose>0.002737 0 0.02616 0 0 0</pose> -->
+        <pose>0 0 0.0289 0 0 0</pose>
         <inertia>
-          <ixx>0.0003629</ixx>
+          <ixx>0.0002324</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
           <iyy>0.0002067</iyy>
           <iyz>0</iyz>
-          <izz>0.0002324</izz>
+          <izz>0.0003629</izz>
         </inertia>
         <mass>0.199000</mass>
       </inertial>
@@ -578,7 +584,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>0</mu>
+              <mu>0.5</mu>
               <mu2>0</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
@@ -638,7 +644,7 @@
         <surface>
           <friction>
             <ode>
-              <mu>0</mu>
+              <mu>0.5</mu>
               <mu2>0</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
@@ -1341,7 +1347,7 @@
           <effort>0.5</effort>
           <velocity>0.1</velocity>
         </limit>
-        <xyz>0 -1.000000 0</xyz>
+        <xyz>0 1 0</xyz>
         <use_parent_model_frame>true</use_parent_model_frame>
       </axis>
     </joint>
