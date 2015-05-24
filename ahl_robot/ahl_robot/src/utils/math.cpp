@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ahl_robot/utils/math.hpp"
 
 namespace ahl_robot
@@ -51,5 +52,31 @@ namespace ahl_robot
       mat.coeffRef(2, 1) = cos_b * sin_g;
       mat.coeffRef(2, 2) = cos_b * cos_g;
     }
-  }
-}
+
+    void rpyToQuaternion(const Eigen::Vector3d& rpy, Eigen::Quaternion<double>& q)
+    {
+      double a = rpy.coeff(0);
+      double b = rpy.coeff(1);
+      double g = rpy.coeff(2);
+
+      double sin_b_half = sin(0.5 * b);
+      double cos_b_half = cos(0.5 * b);
+      double diff_a_g_half = 0.5 * (a - g);
+      double sum_a_g_half = 0.5 * (a + g);
+
+      q.x() = sin_b_half * cos(diff_a_g_half);
+      q.y() = sin_b_half * sin(diff_a_g_half);
+      q.z() = cos_b_half * sin(sum_a_g_half);
+      q.w() = cos_b_half * cos(sum_a_g_half);
+    }
+
+    void xyzrpyToTransformationMatrix(const Eigen::Vector3d& xyz, const Eigen::Vector3d& rpy, Eigen::Matrix4d& T)
+    {
+      T = Eigen::Matrix4d::Identity();
+      Eigen::Matrix3d R;
+      rpyToRotationMatrix(rpy, R);
+      T.block(0, 0, 3, 3) = R;
+      T.block(0, 3, 3, 1) = xyz;
+    }
+  } // namespace math
+} // namespace ahl_robot

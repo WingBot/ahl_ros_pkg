@@ -14,11 +14,9 @@ namespace ahl_robot
   {
   public:
     TfPublisher();
-    void publish(const RobotPtr& robot);
+    void publish(const RobotPtr& robot, bool publish_com = true);
   private:
-    void publishManipulators(const RobotPtr& robot, const ros::Time& current);
-    void publishJointFrames(const RobotPtr& robot, const ros::Time& current);
-    void publishLinkFrames(const RobotPtr& robot, const ros::Time& current);
+    void publish(const ManipulatorPtr& mnp, const ros::Time& current, bool publish_com);
 
     tf2_ros::TransformBroadcaster& transformBroadcaster();
   };

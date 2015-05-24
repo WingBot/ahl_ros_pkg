@@ -13,9 +13,12 @@ find_package(
   cmake_modules REQUIRED
 )
 
-find_package(
-  TinyXML REQUIRED
-)
+find_package(PkgConfig)
+
+pkg_check_modules(NEW_YAMLcpp yaml-cpp>=0.5)
+if(NEW_YAMLCPP_FOUND)
+  add_definitions(-DHAVE_NEW_YAMLCPP)
+endif(NEW_YAMLCPP_FOUND)
 
 find_package(
   Eigen REQUIRED
@@ -30,7 +33,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN_INCLUDE_DIRS}
-  ${TinyXML_INCLUDE_DIRS}
 )
 
 catkin_package(
@@ -45,13 +47,14 @@ catkin_package(
     tf2_ros
   DEPENDS
     Eigen
-    TinyXML
+    yaml-cpp
 )
 
 add_library(
   ahl_robot
-    src/parser/sdf_parser.cpp
-    src/parser/mnp_generator.cpp
+    src/robot/manipulator.cpp
+    src/robot/transformation.cpp
+    src/robot/parser.cpp
     src/tf/tf_publisher.cpp
     src/utils/math.cpp
 )
@@ -59,7 +62,7 @@ add_library(
 target_link_libraries(
   ahl_robot
     ${catkin_LIBRARIES}
-    ${TinyXML_LIBRARIES}
+    yaml-cpp
 )
 
 add_executable(

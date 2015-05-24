@@ -1,61 +1,60 @@
 #ifndef __AHL_ROBOT_LINK_HPP
 #define __AHL_ROBOT_LINK_HPP
 
-#include <map>
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
+#include "ahl_robot/robot/transformation.hpp"
 
 namespace ahl_robot
 {
-
   class Link;
   typedef boost::shared_ptr<Link> LinkPtr;
-  typedef std::map<std::string, LinkPtr> Links;
-
-  class TfLink;
-  class TfJoint;
 
   class Link
   {
   public:
-    enum JointType
+    Link ()
+      : name(""), joint_type(""), parent(""), child(""),
+        m(0.0), q_min(0.0), q_max(0.0), dq_max(0.0), tau(0.0), tau_max(0.0)
     {
-      FIXED, // 0 DOF
-      OMNIDIRECTIONAL_BASE, // it can move along x and y axis, and rotate about z axis
-      FREE, // 6 DOF like a base of flying robot
-      REVOLUTE,
-      PRISMATIC,
-      JOINT_TYPE_NUM,
-    };
-
-    Link()
-      : name(""), type(FIXED), m(0.0), q(0.0), pre_q(0.0), q_min(0.0), q_max(0.0),
-        dq(0.0), dq_max(0.0), tau(0.0), tau_max(0.0)
-    {
+      T_org = Eigen::Matrix4d::Identity();
+      C = Eigen::Vector3d::Zero();
       I = Eigen::Matrix3d::Zero();
-      T_org = T = com = Eigen::Matrix4d::Identity();
-      axis = Eigen::Vector3d::Zero();
+    }
+
+    void print()
+    {
+      std::cout << "name : " << name << std::endl
+                << "joint_type : " << joint_type << std::endl
+                << "parent : " << parent << std::endl
+                << "child : " << child << std::endl
+                << "T_org : " << std::endl << T_org << std::endl
+                << "C : " << std::endl << C << std::endl
+                << "m : " << m << std::endl
+                << "I : " << std::endl << I << std::endl
+                << "q_min : " << q_min << std::endl
+                << "q_max : " << q_max << std::endl
+                << "dq_max : " << dq_max << std::endl
+                << "tau : " << tau << std::endl
+                << "tau_max : " << tau_max << std::endl;
     }
 
     std::string name;
-    JointType type;
+    std::string joint_type;
+    std::string parent;
+    std::string child;
+
+    TransformationPtr tf;
+
+    Eigen::Matrix4d T_org;
+    Eigen::Vector3d C;
 
     double m;
     Eigen::Matrix3d I;
 
-    Eigen::Matrix4d T_org; // Initial frame attached to joint in parent joint frame
-    Eigen::Matrix4d T; // Current frame attached to joint in parent joint frame
-    Eigen::Matrix4d com; // Frame center of mass in joint frame
-    Eigen::Vector3d axis; // Direction of joint
-
-    double q;
-    double pre_q;
     double q_min;
     double q_max;
-
-    double dq;
     double dq_max;
-
     double tau;
     double tau_max;
   };
