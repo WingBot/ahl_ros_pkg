@@ -51,7 +51,7 @@ void Manipulator::computeFK()
     if(link[i]->joint_type == joint::FIXED)
       continue;
 
-    T[i] = link[i]->tf->T(q.coeff(idx)) * link[i]->T_org;
+    link[i]->tf->transform(q.coeff(idx), T[i]);
     ++idx;
   }
 

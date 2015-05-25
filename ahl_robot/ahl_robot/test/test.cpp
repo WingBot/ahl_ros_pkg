@@ -23,8 +23,18 @@ int main(int argc, char** argv)
 
     TfPublisherPtr tf_publisher = TfPublisherPtr(new TfPublisher());
 
+    unsigned long cnt = 0;
     while(ros::ok())
     {
+      ManipulatorPtr mnp = robot->getManipulator("mnp");
+      Eigen::VectorXd q = Eigen::VectorXd::Constant(mnp->dof, 1.0);
+      double coeff = 0.5 * sin(2.0 * M_PI * 0.1 * cnt * 0.1);
+      mnp->q = coeff * q;
+      mnp->q.coeffRef(0) = 0.0;
+      mnp->q.coeffRef(1) = 0.0;
+      mnp->q.coeffRef(2) = 0.0;
+      ++cnt;
+      mnp->computeFK();
       tf_publisher->publish(robot);
       ros::Duration(0.1).sleep();
     }

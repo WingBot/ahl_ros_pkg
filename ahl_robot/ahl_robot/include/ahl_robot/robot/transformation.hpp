@@ -13,7 +13,7 @@ namespace ahl_robot
     Transformation();
     virtual ~Transformation() {}
     virtual const Eigen::Matrix4d& T(double q) = 0;
-
+    virtual void transform(double q, Eigen::Matrix4d& T) = 0;
   protected:
     Eigen::Matrix4d T_;
     Eigen::Vector3d axis_;
@@ -27,6 +27,9 @@ namespace ahl_robot
     {
       return T_;
     }
+    virtual void transform(double q, Eigen::Matrix4d& T)
+    {
+    }
   };
 
   class RevoluteX : public Transformation
@@ -34,6 +37,7 @@ namespace ahl_robot
   public:
     RevoluteX();
     virtual const Eigen::Matrix4d& T(double q);
+    virtual void transform(double q, Eigen::Matrix4d& T);
   private:
     Eigen::Matrix3d R_;
   };
@@ -43,6 +47,7 @@ namespace ahl_robot
   public:
     RevoluteY();
     virtual const Eigen::Matrix4d& T(double q);
+    virtual void transform(double q, Eigen::Matrix4d& T);
   private:
     Eigen::Matrix3d R_;
   };
@@ -52,6 +57,7 @@ namespace ahl_robot
   public:
     RevoluteZ();
     virtual const Eigen::Matrix4d& T(double q);
+    virtual void transform(double q, Eigen::Matrix4d& T);
   private:
     Eigen::Matrix3d R_;
   };
@@ -60,18 +66,21 @@ namespace ahl_robot
   {
   public:
     virtual const Eigen::Matrix4d& T(double q);
+    virtual void transform(double q, Eigen::Matrix4d& T);
   };
 
   class PrismaticY : public Transformation
   {
   public:
     virtual const Eigen::Matrix4d& T(double q);
+    virtual void transform(double q, Eigen::Matrix4d& T);
   };
 
   class PrismaticZ : public Transformation
   {
   public:
     virtual const Eigen::Matrix4d& T(double q);
+    virtual void transform(double q, Eigen::Matrix4d& T);
   };
 
 }
