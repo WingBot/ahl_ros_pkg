@@ -14,7 +14,7 @@ namespace ahl_robot
   {
   public:
     Link ()
-      : name(""), joint_type(""), parent(""), child(""),
+      : name(""), joint_type(""), parent(""), child(""), ep(false),
         m(0.0), q_min(0.0), q_max(0.0), dq_max(0.0), tau(0.0), tau_max(0.0)
     {
       T_org = Eigen::Matrix4d::Identity();
@@ -28,6 +28,7 @@ namespace ahl_robot
                 << "joint_type : " << joint_type << std::endl
                 << "parent : " << parent << std::endl
                 << "child : " << child << std::endl
+                << "ep    : " << ep << std::endl
                 << "T_org : " << std::endl << T_org << std::endl
                 << "C : " << std::endl << C << std::endl
                 << "m : " << m << std::endl
@@ -43,6 +44,7 @@ namespace ahl_robot
     std::string joint_type;
     std::string parent;
     std::string child;
+    bool ep;
 
     TransformationPtr tf;
 

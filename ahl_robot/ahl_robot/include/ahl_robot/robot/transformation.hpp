@@ -14,6 +14,10 @@ namespace ahl_robot
     virtual ~Transformation() {}
     virtual const Eigen::Matrix4d& T(double q) = 0;
     virtual void transform(double q, Eigen::Matrix4d& T) = 0;
+    virtual Eigen::Vector3d& axis()
+    {
+      return axis_;
+    }
   protected:
     Eigen::Matrix4d T_;
     Eigen::Vector3d axis_;
@@ -65,6 +69,7 @@ namespace ahl_robot
   class PrismaticX : public Transformation
   {
   public:
+    PrismaticX();
     virtual const Eigen::Matrix4d& T(double q);
     virtual void transform(double q, Eigen::Matrix4d& T);
   };
@@ -72,6 +77,7 @@ namespace ahl_robot
   class PrismaticY : public Transformation
   {
   public:
+    PrismaticY();
     virtual const Eigen::Matrix4d& T(double q);
     virtual void transform(double q, Eigen::Matrix4d& T);
   };
@@ -79,6 +85,7 @@ namespace ahl_robot
   class PrismaticZ : public Transformation
   {
   public:
+    PrismaticZ();
     virtual const Eigen::Matrix4d& T(double q);
     virtual void transform(double q, Eigen::Matrix4d& T);
   };

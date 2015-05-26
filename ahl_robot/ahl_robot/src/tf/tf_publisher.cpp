@@ -53,6 +53,9 @@ void TfPublisher::publish(const ManipulatorPtr& mnp, const ros::Time& current, b
     tf_stamped.transform.rotation.w = q.w();
     transformBroadcaster().sendTransform(tf_stamped);
 
+    if(!publish_com)
+      continue;
+
     geometry_msgs::TransformStamped com_stamped;
     com_stamped.header.frame_id = link->name;
     com_stamped.child_frame_id  = link->name + "_com";

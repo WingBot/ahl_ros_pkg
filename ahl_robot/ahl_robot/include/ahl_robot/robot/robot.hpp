@@ -1,6 +1,7 @@
 #ifndef __AHL_ROBOT_ROBOT_HPP
 #define __AHL_ROBOT_ROBOT_HPP
 
+#include <map>
 #include "ahl_robot/definition.hpp"
 #include "ahl_robot/robot/manipulator.hpp"
 
@@ -15,6 +16,8 @@ namespace ahl_robot
       : name_(robot_name), world_(frame::WORLD)
     {
     }
+
+    void update(const std::string& mnp_name, const Eigen::VectorXd& q);
 
     void setPosition(const Eigen::Vector3d& p)
     {
@@ -31,11 +34,7 @@ namespace ahl_robot
       world_ = world;
     }
 
-    void add(const ManipulatorPtr& mnp)
-    {
-      mnp_[mnp->name] = mnp;
-      mnp_name_.push_back(mnp->name);
-    }
+    void add(const ManipulatorPtr& mnp);
 
     const std::string& getName() const
     {
@@ -66,6 +65,8 @@ namespace ahl_robot
     {
       return mnp_name_;
     }
+
+    unsigned int getDOF(const std::string& mnp_name);
 
   private:
     std::string name_;

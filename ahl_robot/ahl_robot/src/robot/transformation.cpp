@@ -61,6 +61,11 @@ void RevoluteZ::transform(double q, Eigen::Matrix4d& T)
   T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3);
 }
 
+PrismaticX::PrismaticX()
+{
+  axis_ << 1, 0, 0;
+}
+
 const Eigen::Matrix4d& PrismaticX::T(double q)
 {
   T_.coeffRef(0, 3) = q;
@@ -72,6 +77,11 @@ void PrismaticX::transform(double q, Eigen::Matrix4d& T)
   T.block(0, 3, 3, 1) = this->T(q).block(0, 3, 3, 1);
 }
 
+PrismaticY::PrismaticY()
+{
+  axis_ << 0, 1, 0;
+}
+
 const Eigen::Matrix4d& PrismaticY::T(double q)
 {
   T_.coeffRef(1, 3) = q;
@@ -81,6 +91,11 @@ const Eigen::Matrix4d& PrismaticY::T(double q)
 void PrismaticY::transform(double q, Eigen::Matrix4d& T)
 {
   T.block(0, 3, 3, 1) = this->T(q).block(0, 3, 3, 1);
+}
+
+PrismaticZ::PrismaticZ()
+{
+  axis_ << 0, 0, 1;
 }
 
 const Eigen::Matrix4d& PrismaticZ::T(double q)

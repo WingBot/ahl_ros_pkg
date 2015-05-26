@@ -52,6 +52,7 @@ catkin_package(
 
 add_library(
   ahl_robot
+    src/robot/robot.cpp
     src/robot/manipulator.cpp
     src/robot/transformation.cpp
     src/robot/parser.cpp

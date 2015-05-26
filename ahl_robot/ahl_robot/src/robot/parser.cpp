@@ -100,6 +100,12 @@ void Parser::loadLinks(const YAML::Node& node, const ManipulatorPtr& mnp)
     // joint_type
     this->checkTag(node[i], yaml_tag::JOINT_TYPE, func);
     link->joint_type = node[i][yaml_tag::JOINT_TYPE].as<std::string>();
+    if(link->joint_type == joint::PRISMATIC_X ||
+       link->joint_type == joint::PRISMATIC_Y ||
+       link->joint_type == joint::PRISMATIC_Z)
+    {
+      link->ep = true;
+    }
 
     // parent
     this->checkTag(node[i], yaml_tag::PARENT, func);
@@ -283,7 +289,7 @@ void Parser::loadMatrix3d(const YAML::Node& node, const std::string& tag, Eigen:
 
 void Parser::setLinkToManipulator(const std::map<std::string, double>& init_q, const ManipulatorPtr& mnp)
 {
-  mnp->dof = 0;
+  unsigned int dof = 0;
 
   // Push back link and count dof
   for(unsigned int i = 0; i < mnp->link.size(); ++i)
@@ -295,13 +301,25 @@ void Parser::setLinkToManipulator(const std::map<std::string, double>& init_q, c
        mnp->link[i]->joint_type == joint::PRISMATIC_Y ||
        mnp->link[i]->joint_type == joint::PRISMATIC_Z)
     {
-      ++mnp->dof;
+      ++dof;
     }
+  }
+
+  if(mnp->link.size() != dof + 1)
+  {
+    std::stringstream msg;
+    msg << "mnp->link.size() != dof + 1" << std::endl
+        << "The number of link should be DOF + 1,"
+        << "including virtual link which is attached to operational point frame and following the last link." << std::endl
+        << "  mnp : " << mnp->name << std::endl
+        << "  mnp->link.size : " << mnp->link.size() << std::endl
+        << "  dof : " << dof;
+    throw ahl_robot::Exception("ahl_robot::Parser::setLinkToManipulator", msg.str());
   }
 
   // Initialize joint angles
   // Initialize q, dq, T, x, xr,
-  mnp->q = Eigen::VectorXd::Zero(mnp->dof);
+  Eigen::VectorXd q = Eigen::VectorXd::Zero(dof);
 
   int idx = 0;
   for(unsigned int i = 0; i < mnp->link.size(); ++i)
@@ -309,17 +327,17 @@ void Parser::setLinkToManipulator(const std::map<std::string, double>& init_q, c
     if(init_q.find(mnp->link[i]->name) == init_q.end())
       continue;
 
-    mnp->q.coeffRef(idx) = const_cast< std::map<std::string, double>& >(init_q)[mnp->link[i]->name];
+    q.coeffRef(idx) = const_cast< std::map<std::string, double>& >(init_q)[mnp->link[i]->name];
     ++idx;
   }
 
-  mnp->dq = Eigen::VectorXd::Zero(mnp->dof);
   mnp->T.resize(mnp->link.size());
   for(unsigned int i = 0; i < mnp->T.size(); ++i)
   {
     mnp->T[i] = mnp->link[i]->T_org;
   }
-  mnp->computeFK();
+  mnp->init(dof, q);
+  mnp->update(q);
 }
 
 void Parser::checkTag(const YAML::Node& node, const std::string& tag, const std::string& func)
