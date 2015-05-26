@@ -6,7 +6,7 @@
   <maintainer email="daichi@todo.todo">daichi</maintainer>
   <license>TODO</license>
   <!-- <url type="website">http://wiki.ros.org/ahl_robot_srvs</url> -->
-  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+  <author email="daichi.yoshikawa@gmail.com">Daichi Yoshikawa</author>
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>geometry_msgs</build_depend>
