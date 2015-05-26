@@ -41,12 +41,11 @@ namespace ahl_robot
     VectorMatrix4d T; // Relative transformation matrix associated with each link frame
   private:
     void computeForwardKinematics();
-    void computeRbiPin(); // Should be called after updating xp
+    void computeTabs(); // Should be called after updating xp
     void computeJacobian(int idx);
 
     double time_;
     double pre_time_;
-    VectorMatrix3d Rbi_; // Rotation matrix of i-th link w.r.t base
     VectorMatrix4d T_abs_; // Transformation matrix of i-th link w.r.t base
     VectorVector3d Pin_; // End-effector position w.r.t i-th link w.r.t link
   };

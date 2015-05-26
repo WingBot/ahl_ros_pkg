@@ -33,8 +33,8 @@ int main(int argc, char** argv)
       ++cnt;
 
       q = coeff * q;
-      q.coeffRef(0) = 0.0;
-      q.coeffRef(1) = 0.0;
+      q.coeffRef(0) = coeff;
+      q.coeffRef(1) = coeff;
       q.coeffRef(2) = coeff;
 
       robot->update(mnp_name, q);
