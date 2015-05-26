@@ -5,6 +5,16 @@ namespace ahl_robot
 {
   namespace math
   {
+    void computeEr(const Eigen::Quaternion<double>& q, Eigen::MatrixXd& Er)
+    {
+      Er.resize(4, 3);
+      Er << -q.x(), -q.y(), -q.z(),
+             q.w(),  q.z(), -q.y(),
+            -q.z(),  q.w(),  q.x(),
+             q.y(), -q.x(),  q.w();
+      Er = 0.5 * Er;
+    }
+
     void calculateInverseTransformationMatrix(const Eigen::Matrix4d& src, Eigen::Matrix4d& dst)
     {
       dst = Eigen::Matrix4d::Identity();

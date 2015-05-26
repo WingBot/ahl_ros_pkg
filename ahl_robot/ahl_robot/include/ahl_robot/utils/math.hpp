@@ -8,6 +8,7 @@ namespace ahl_robot
 {
   namespace math
   {
+    void computeEr(const Eigen::Quaternion<double>& q, Eigen::MatrixXd& Er);
     void calculateInverseTransformationMatrix(const Eigen::Matrix4d& src, Eigen::Matrix4d& dst);
     void rpyToRotationMatrix(const std::vector<double>& rpy, Eigen::Matrix3d& mat);
     void rpyToRotationMatrix(const Eigen::Vector3d& rpy, Eigen::Matrix3d& mat);

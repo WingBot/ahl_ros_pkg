@@ -37,7 +37,6 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   dq    = Eigen::VectorXd::Zero(dof);
 
   J0 = Eigen::MatrixXd::Zero(6, dof);
-  J  = Eigen::MatrixXd::Zero(7, dof);
   T_abs_.resize(dof + 1);
   for(unsigned int i = 0; i < T_abs_.size(); ++i)
   {
@@ -52,7 +51,6 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   q = init_q;
   this->computeForwardKinematics();
   pre_q  = q;
-  pre_xp = xp; // Will be removed
 }
 
 void Manipulator::update(const Eigen::VectorXd& q_msr)
@@ -70,9 +68,10 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
 
   q = q_msr;
   this->computeForwardKinematics();
+  this->computeBasicJacobian(link[link.size() - 1]->name);
 }
 
-void Manipulator::computeJacobian(const std::string& name)
+void Manipulator::computeBasicJacobian(const std::string& name)
 {
   if(link.size() != T.size())
   {
@@ -80,7 +79,7 @@ void Manipulator::computeJacobian(const std::string& name)
     msg << "link.size() != T.size()" << std::endl
         << "  link.size : " << link.size() << std::endl
         << "  T.size    : " << T.size();
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeJacobian", msg.str());
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
   if(link.size() != dof + 1)
@@ -92,7 +91,7 @@ void Manipulator::computeJacobian(const std::string& name)
         << "  mnp : " << name << std::endl
         << "  link.size : " << link.size() << std::endl
         << "  dof : " << dof;
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeJacobian", msg.str());
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
   // Find the index of the link of the name
@@ -110,10 +109,10 @@ void Manipulator::computeJacobian(const std::string& name)
   {
     std::stringstream msg;
     msg << "Could not find link : " << name << ".";
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeJacobian", msg.str());
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
-  this->computeJacobian(idx);
+  this->computeBasicJacobian(idx);
 }
 
 void Manipulator::print()
@@ -158,7 +157,7 @@ void Manipulator::computeForwardKinematics()
   // Absolute transformation matrix
   this->computeTabs();
 
-  // Distance between i-th link and end-effector w.r.t base
+  // Compute distance between i-th link and end-effector w.r.t base
   if(T_abs_.size() != Pin_.size())
   {
     std::stringstream msg;
@@ -185,27 +184,13 @@ void Manipulator::computeForwardKinematics()
     Pin_[i] = Pin.block(0, 0, 3, 1);
   }
 
-  // End-effector position and orientation
+  // Compute end-effector position and orientation
   xp = T_abs_[T_abs_.size() - 1].block(0, 3, 3, 1);
   Eigen::Matrix3d R = T_abs_[T_abs_.size() - 1].block(0, 0, 3, 3);
   xr = R;
 
-  // compute velocities
-  this->computeJacobian(link[link.size() - 1]->name);
-  std::cout << J0 * dq << std::endl << std::endl;
-
-  double dt = (time_ - pre_time_) * 0.001;
-  if(dt > 0.0)
-  {
-    dq  = (q - pre_q) / dt;
-  }
-  else
-  {
-    dq = Eigen::VectorXd::Zero(dq.rows());
-  }
-
-  pre_q  = q;
-  pre_time_ = time_;
+  // Compute velocity of generalized coordinates
+  this->computeVelocity();
 }
 
 void Manipulator::computeTabs()
@@ -234,11 +219,11 @@ void Manipulator::computeTabs()
   }
 }
 
-void Manipulator::computeJacobian(int idx)
+void Manipulator::computeBasicJacobian(int idx)
 {
   J0 = Eigen::MatrixXd::Zero(6, dof);
-  J  = Eigen::MatrixXd::Zero(7, dof);
 
+  // Compute basic jacobian
   for(unsigned int i = 0; i < idx; ++i)
   {
     if(link[i]->ep) // joint_type is prismatic
@@ -253,6 +238,7 @@ void Manipulator::computeJacobian(int idx)
     }
   }
 
+  // Pne is the distance between end-effector and last joint w.r.t base
   Eigen::MatrixXd J_Pne = Eigen::MatrixXd::Identity(6, 6);
   Eigen::Vector3d Pne;
   if(T_abs_.size() - 2 >= 0.0)
@@ -264,13 +250,30 @@ void Manipulator::computeJacobian(int idx)
     std::stringstream msg;
     msg << "T_abs_.size() <= 1" << std::endl
         << "Manipulator doesn't have enough links." << std::endl;
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeJacobian", msg.str());
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
+  // Compute basic jacobian associated with end-effector
   Eigen::Matrix3d Pne_cross;
   Pne_cross <<           0.0,  Pne.coeff(2), -Pne.coeff(1),
                -Pne.coeff(2),           0.0,  Pne.coeff(0),
                 Pne.coeff(1), -Pne.coeff(0),           0.0;
   J_Pne.block(0, 3, 3, 3) = Pne_cross;
   J0 = J_Pne * J0;
+}
+
+void Manipulator::computeVelocity()
+{
+  double dt = (time_ - pre_time_) * 0.001;
+  if(dt > 0.0)
+  {
+    dq  = (q - pre_q) / dt;
+  }
+  else
+  {
+    dq = Eigen::VectorXd::Zero(dq.rows());
+  }
+
+  pre_q  = q;
+  pre_time_ = time_;
 }

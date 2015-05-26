@@ -19,7 +19,8 @@ namespace ahl_robot
     void print();
     void init(unsigned int dof, const Eigen::VectorXd& init_q);
     void update(const Eigen::VectorXd& q_msr);
-    void computeJacobian(const std::string& name);
+    void computeBasicJacobian(const std::string& name);
+    void computeVelocity();
 
     std::string name;
     VectorLinkPtr link;
@@ -27,22 +28,18 @@ namespace ahl_robot
     unsigned int dof;
 
     Eigen::MatrixXd J0; // Basic jacobian associated with end effector
-    Eigen::MatrixXd J; // Jacobian associated with end effector
     Eigen::VectorXd q; // Generalized coordinates
     Eigen::VectorXd pre_q; // Generalized coordinates
     Eigen::VectorXd dq; // Velocity of generalized coordinates
 
     Eigen::Vector3d xp;  // xyz position
-    Eigen::Vector3d pre_xp;  // xyz position
-    Eigen::Vector3d dxp; // xyz velocity
     Eigen::Quaternion<double> xr;  // Quaternion
-    Eigen::Vector3d w; // Angular velocity
 
     VectorMatrix4d T; // Relative transformation matrix associated with each link frame
   private:
     void computeForwardKinematics();
     void computeTabs(); // Should be called after updating xp
-    void computeJacobian(int idx);
+    void computeBasicJacobian(int idx);
 
     double time_;
     double pre_time_;
