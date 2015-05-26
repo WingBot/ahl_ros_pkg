@@ -68,10 +68,12 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
 
   q = q_msr;
   this->computeForwardKinematics();
-  this->computeBasicJacobian(link[link.size() - 1]->name);
+  this->computeBasicJacobian(link[link.size() - 1]->name, J0);
+
+  std::cout << J0 * dq << std::endl;
 }
 
-void Manipulator::computeBasicJacobian(const std::string& name)
+void Manipulator::computeBasicJacobian(const std::string& name, Eigen::MatrixXd& J)
 {
   if(link.size() != T.size())
   {
@@ -112,7 +114,7 @@ void Manipulator::computeBasicJacobian(const std::string& name)
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
-  this->computeBasicJacobian(idx);
+  this->computeBasicJacobian(idx, J);
 }
 
 void Manipulator::print()
@@ -219,22 +221,22 @@ void Manipulator::computeTabs()
   }
 }
 
-void Manipulator::computeBasicJacobian(int idx)
+void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
 {
-  J0 = Eigen::MatrixXd::Zero(6, dof);
+  J = Eigen::MatrixXd::Zero(6, dof);
 
   // Compute basic jacobian
   for(unsigned int i = 0; i < idx; ++i)
   {
     if(link[i]->ep) // joint_type is prismatic
     {
-      J0.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
-      J0.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
     }
     else // joint_type is revolute
     {
-      J0.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(Pin_[i]);
-      J0.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(Pin_[i]);
+      J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
     }
   }
 
@@ -259,7 +261,7 @@ void Manipulator::computeBasicJacobian(int idx)
                -Pne.coeff(2),           0.0,  Pne.coeff(0),
                 Pne.coeff(1), -Pne.coeff(0),           0.0;
   J_Pne.block(0, 3, 3, 3) = Pne_cross;
-  J0 = J_Pne * J0;
+  J = J_Pne * J;
 }
 
 void Manipulator::computeVelocity()

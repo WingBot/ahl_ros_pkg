@@ -19,7 +19,7 @@ namespace ahl_robot
     void print();
     void init(unsigned int dof, const Eigen::VectorXd& init_q);
     void update(const Eigen::VectorXd& q_msr);
-    void computeBasicJacobian(const std::string& name);
+    void computeBasicJacobian(const std::string& name, Eigen::MatrixXd& J);
     void computeVelocity();
 
     std::string name;
@@ -39,7 +39,7 @@ namespace ahl_robot
   private:
     void computeForwardKinematics();
     void computeTabs(); // Should be called after updating xp
-    void computeBasicJacobian(int idx);
+    void computeBasicJacobian(int idx, Eigen::MatrixXd& J);
 
     double time_;
     double pre_time_;
