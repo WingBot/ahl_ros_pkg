@@ -5,17 +5,14 @@
        xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        name="youbot">
   
-  <xacro:include filename="$(find ahl_youbot_description)/urdf/common.urdf.xacro" />
-  <xacro:include filename="$(find ahl_youbot_description)/urdf/material.urdf.xacro" />
-  <xacro:include filename="$(find ahl_youbot_description)/urdf/base/base.urdf.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/base/base.urdf.xacro"/>
   <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/arm.urdf.xacro"/>
-  <xacro:include filename="$(find ahl_youbot_description)/urdf/gripper/gripper.urdf.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/gripper/gripper.urdf.xacro"/>
 <!--
-  <xacro:include filename="$(find ahl_youbot_description)/controller/ros_controller.urdf.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/controller/ros_controller.urdf.xacro"/>
 -->						     
 
   <xacro:youbot_base    name="base"/>
   <xacro:youbot_arm     name="arm"/>
   <xacro:youbot_gripper name="gripper"/>
-
 </robot>
