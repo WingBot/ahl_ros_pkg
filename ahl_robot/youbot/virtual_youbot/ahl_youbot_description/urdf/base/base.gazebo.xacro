@@ -55,6 +55,6 @@
         <robotBaseFrame>base_footprint</robotBaseFrame>
       </plugin>
     </gazebo>
-  </xacro:macro>
 
+  </xacro:macro>
 </robot>

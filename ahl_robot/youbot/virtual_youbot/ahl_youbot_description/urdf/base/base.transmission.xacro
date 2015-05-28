@@ -4,9 +4,8 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <property name="wheel_mechanical_reduction" value="${624/35 * 80/18}" />
-  <property name="caster_mechanical_reduction" value="${624/35 * 80/18}" />
-  <property name="" value="0.360" />
+  <property name="wheel_mechanical_reduction" value="${624/35 * 80/18}"/>
+  <property name="caster_mechanical_reduction" value="${624/35 * 80/18}"/>
 
   <xacro:macro name="youbot_base_transmission">
   <!-- front left wheel -->
@@ -102,5 +101,4 @@
     </transmission>
 
   </xacro:macro>
-  
 </robot>

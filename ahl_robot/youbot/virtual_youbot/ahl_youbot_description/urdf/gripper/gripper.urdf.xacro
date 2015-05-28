@@ -4,36 +4,36 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.gazebo.xacro" />
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.transmission.xacro" />
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/limits.urdf.xacro" />
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.gazebo.xacro"/>
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.transmission.xacro"/>
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/limits.urdf.xacro"/>
 
   <xacro:macro name="youbot_gripper" params="name">
 
     <!-- joint between arm_7_link and sdh_palm_link -->
-    <joint name="${name}_palm_joint" type="fixed" >
+    <joint name="${name}_palm_joint" type="fixed">
       <origin xyz="0 0 0.04" rpy="0 0 0"/>
-      <parent link="arm_link_5" />
-      <child link="${name}_palm_link" />
+      <parent link="arm_link_5"/>
+      <child link="${name}_palm_link"/>
     </joint>
 
     <link name="${name}_palm_link">
       <inertial>
         <origin xyz="0.002737 0 0.02616" rpy="0 0 0"/>
         <mass value="0.199"/>
-        <inertia ixx="0.0003629" ixy="0" ixz="0" iyy="0.0002067" iyz="0" izz="0.0002324" />
+        <inertia ixx="0.0003629" ixy="0" ixz="0" iyy="0.0002067" iyz="0" izz="0.0002324"/>
       </inertial>
       <visual>
-        <origin xyz="-0.00273 0 0.0224" rpy="0 0 0" />
+        <origin xyz="-0.00273 0 0.0224" rpy="0 0 0"/>
         <geometry>
           <mesh filename="package://ahl_youbot_description/meshes/gripper/palm.dae"/>
         </geometry>
         <material name="Black"/>
       </visual>
       <collision>
-        <origin xyz="-0.00273 0 0.0224" rpy="0 0 0" />
+        <origin xyz="-0.00273 0 0.0224" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://ahl_youbot_description/meshes/gripper/palm_convex.stl" />
+          <mesh filename="package://ahl_youbot_description/meshes/gripper/palm_convex.stl"/>
         </geometry>
       </collision>
     </link>
@@ -72,8 +72,8 @@
       <origin xyz="0 -0.0082 0.0548" rpy="0 0 0"/>
       <parent link="${name}_palm_link"/>
       <child link="${name}_finger_link_r"/>
-      <axis xyz="0 1 0" />
-      <dynamics damping="5.0" friction="0.5" />
+      <axis xyz="0 1 0"/>
+      <dynamics damping="5.0" friction="0.5"/>
       <limit effort="0.5" velocity="0.1" lower="-${finger_joint}" upper="0"/> 
     </joint>
 
@@ -81,7 +81,7 @@
       <inertial>
         <origin xyz="0.000270 -0.001337 0.020234" rpy="0 0 0"/>
         <mass value="0.01"/>
-        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
       </inertial>
       <visual>
         <origin xyz="0 0 0.0121" rpy="0 0 0"/>
@@ -98,8 +98,8 @@
     </link>
 
     <!-- extensions -->
-    <xacro:youbot_gripper_gazebo name="${name}" />
-    <xacro:youbot_gripper_transmission name="${name}" />
+    <xacro:youbot_gripper_gazebo name="${name}"/>
+    <xacro:youbot_gripper_transmission name="${name}"/>
 
   </xacro:macro>
 </robot>

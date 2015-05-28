@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" 
-       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" 
-       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" 
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
  
   <xacro:include filename="$(find ahl_youbot_description)/urdf/base/base.gazebo.xacro"/>
@@ -15,7 +15,6 @@
 
   <property name="caster_offset_x" value="0.228"/>
   <property name="caster_offset_y" value="0.158"/>
-<!--  <property name="caster_offset_z" value="-0.034"/> -->
   <property name="caster_offset_z" value="-0.0463"/>
   <property name="caster_mass" value="0.001"/>
 
@@ -75,7 +74,6 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <!--<box size="${base_size_x} ${base_size_y} ${base_size_z}" />-->
           <mesh filename="package://ahl_youbot_description/meshes/base/base_convex.stl"/>
         </geometry>
       </collision>
@@ -279,7 +277,6 @@
 
     <joint name="plate_joint" type="fixed">
       <origin xyz="${plate_offset_x} ${plate_offset_y} ${plate_offset_z}" rpy="0 0 0"/>
-<!-- <parent link="${name}_link"/>-->
       <parent link="base_link"/>
       <child link="plate_link"/>
     </joint>
