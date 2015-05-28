@@ -6,13 +6,29 @@
 
 
   <xacro:macro name="youbot_base_gazebo">
-    <gazebo reference="youbot_base">
+    <gazebo reference="base_link">
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>0.5</mu1>
+      <mu2>0.5</mu2>
+      <fdir1></fdir1>
+      <kp>1000000.0</kp>
+      <kd>10000.0</kd>
+      <selfCollide>true</selfCollide>
     </gazebo>
 
     <!-- front left wheel -->
     <gazebo reference="wheel_link_fl">
-      <kp>1000000</kp>
-      <kd>100</kd>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>1000.0</mu1>
+      <mu2>1000.0</mu2>
+      <fdir1></fdir1>
+      <kp>1000000.0</kp>
+      <kd>10000.0</kd>
+      <selfCollide>true</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_fl">
@@ -20,8 +36,15 @@
 
     <!-- front right wheel -->
     <gazebo reference="wheel_link_fr">
-      <kp>1000000</kp>
-      <kd>100</kd>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>1000.0</mu1>
+      <mu2>1000.0</mu2>
+      <fdir1></fdir1>
+      <kp>1000000.0</kp>
+      <kd>10000.0</kd>
+      <selfCollide>true</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_fr">   
@@ -29,8 +52,15 @@
 
     <!-- back left wheel -->
     <gazebo reference="wheel_link_bl">
-      <kp>1000000</kp>
-      <kd>100</kd>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>1000.0</mu1>
+      <mu2>1000.0</mu2>
+      <fdir1></fdir1>
+      <kp>1000000.0</kp>
+      <kd>10000.0</kd>
+      <selfCollide>true</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_bl">
@@ -38,8 +68,15 @@
 
     <!-- back right wheel -->
     <gazebo reference="wheel_link_br">
-      <kp>1000000</kp>
-      <kd>100</kd>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>1000.0</mu1>
+      <mu2>1000.0</mu2>
+      <fdir1></fdir1>
+      <kp>1000000.0</kp>
+      <kd>10000.0</kd>
+      <selfCollide>true</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_br">
@@ -47,13 +84,13 @@
 
     <!-- position controller -->
     <gazebo>
-      <plugin name="base_controller" filename="libgazebo_ros_planar_move.so">
+<!--      <plugin name="base_controller" filename="libgazebo_ros_planar_move.so">
         <commandTopic>cmd_vel</commandTopic>
         <odometryTopic>odom</odometryTopic>
         <odometryFrame>odom</odometryFrame>
         <odometryRate>100.0</odometryRate>
         <robotBaseFrame>base_footprint</robotBaseFrame>
-      </plugin>
+      </plugin>-->
     </gazebo>
 
   </xacro:macro>
