@@ -14,7 +14,7 @@
           <iyz>0</iyz>
           <izz>0</izz>
         </inertia>
-        <mass>0.100000</mass>
+        <mass>0.000000</mass>
       </inertial>
       <collision name="base_footprint_geom">
         <pose>0 0 -0.050000 0 0 0</pose>
@@ -191,7 +191,6 @@
     <link name="arm_link_1">
       <pose>0.167000 0 0.0921 0 0 0</pose>
       <inertial>
-   <!-- <pose>-0.010838 0.006337 0.034345 0 0 0</pose> -->
         <pose>0.01516 -0.00359 -0.03105 0 0 0</pose>
         <inertia>
           <ixx>0.0029525</ixx>
@@ -252,7 +251,6 @@
     <link name="arm_link_2">
       <pose>0.20000 0 0.161000 0 0 0</pose>
       <inertial>
-   <!-- <pose>0.001377 -0.029369 0.086325 0 0 0</pose> -->
         <pose>0.015 -0.01903 0.11397 0 0 0</pose>
         <inertia>
           <ixx>0.0031145</ixx>
@@ -313,7 +311,6 @@
     <link name="arm_link_3">
       <pose>0.20000 0 0.316000 0 0 0</pose>
       <inertial>
-   <!-- <pose>0.000130 0.028500 0.079400 0 0 0</pose> -->
         <pose>-0.000130 0.02022 0.10441 0 0 0</pose>
         <inertia>
           <ixx>0.0017277</ixx>
@@ -374,7 +371,6 @@
     <link name="arm_link_4">
       <pose>0.20000 0 0.451000 0 0 0</pose>
       <inertial>
-  <!--  <pose>0.000124 -0.005595 0.040469 0 0 0</pose> -->
         <pose>-0.015 -0.02464 0.05353 0 0 0</pose>
         <inertia>
           <ixx>0.00067640</ixx>
