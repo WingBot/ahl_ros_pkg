@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       name="youbot">
+  
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/common.urdf.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/material.urdf.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/base/base.urdf.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/arm.urdf.xacro"/>
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/gripper/gripper.urdf.xacro" />
+<!--
+  <xacro:include filename="$(find ahl_youbot_description)/controller/ros_controller.urdf.xacro" />
+-->						     
+
+  <xacro:youbot_base name="base"/>
+  <xacro:youbot_arm name="arm" parent="base_link">
+    <origin xyz="0.143 0 0.046" rpy="0 0 0" />
+  </xacro:youbot_arm>
+
+  <xacro:youbot_gripper name="gripper" parent="arm_link_5">
+    <origin xyz="0 0 0.04" rpy="0 0 0"/>
+  </xacro:youbot_gripper>
+
+</robot>

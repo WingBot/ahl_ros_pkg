@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<robot  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+        xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/arm.gazebo.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/arm.transmission.xacro" />
+  <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/limits.urdf.xacro" />
+
+  <xacro:macro name="youbot_arm" params="parent name *origin">
+
+    <!-- joint between base_link and arm_0_link -->
+    <joint name="${name}_joint_0" type="fixed" >
+      <origin xyz="0.143 0 0.0207" rpy="0 0 0"/>
+      <parent link="base_link" />
+      <child  link="${name}_link_0" />
+    </joint>
+
+    <link name="${name}_link_0">
+      <inertial>
+        <mass value="${link_0_mass}"/>
+        <xacro:link_0_inertia_tensor />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0.0318" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm0.dae"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0.0318" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm0_convex.stl"/>
+        </geometry>
+      </collision>			
+    </link>
+
+    <!-- joint between arm_0_link and arm_1_link -->
+    <joint name="${name}_joint_1" type="revolute">
+      <origin xyz="0.024 0 0.077" rpy="0 0 0"/>
+      <parent link="${name}_link_0"/>
+      <child link="${name}_link_1"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.1" friction="0" />
+      <limit effort="9.5" velocity="2.5" lower="${joint_1_lower_limit}" upper="${joint_1_upper_limit}"/>
+    </joint>
+
+    <link name="${name}_link_1">
+      <inertial>
+        <mass value="${link_1_mass}"/>
+        <xacro:link_1_inertia_tensor />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0.0499" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm1.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.0499" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm1_convex.stl" />
+        </geometry>
+      </collision>		
+    </link>
+
+    <!-- joint between arm_1_link and arm_2_link -->
+    <joint name="${name}_joint_2" type="revolute">
+      <origin xyz="0.033 0 0.07" rpy="0 0 0"/>
+      <parent link="${name}_link_1"/>
+      <child link="${name}_link_2"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.1" friction="0" />
+      <limit effort="9.5" velocity="2.5" lower="${joint_1_lower_limit}" upper="${joint_1_upper_limit}"/>
+    </joint>
+
+    <link name="${name}_link_2">
+      <inertial>
+        <mass value="${link_2_mass}"/>
+        <xacro:link_2_inertia_tensor/>
+      </inertial>
+			
+      <visual>
+        <origin xyz="0 -0.032 0.078" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm2.dae" />
+        </geometry>
+      </visual>
+			
+      <collision>
+        <origin xyz="0 -0.032 0.078" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm2_convex.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_2_link and arm_3_link -->	
+    <joint name="${name}_joint_3" type="revolute">
+      <origin xyz="0 0 0.155" rpy="0 0 0"/>
+      <parent link="${name}_link_2"/>
+      <child link="${name}_link_3"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.1" friction="0" />
+      <limit effort="6.0" velocity="2.5" lower="${joint_3_lower_limit}" upper="${joint_3_upper_limit}"/>
+    </joint>
+
+    <link name="${name}_link_3">
+      <inertial>
+        <mass value="${link_3_mass}"/>
+        <xacro:link_3_inertia_tensor />
+      </inertial>
+      <visual>
+        <origin xyz="0.000 0.028 0.079" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm3.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.000 0.028 0.079" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm3_convex.stl" />
+        </geometry>
+      </collision>
+    </link>	
+
+    <!-- joint between arm_3_link and arm_4_link -->
+    <joint name="${name}_joint_4" type="revolute">
+      <origin xyz="0.000 0.000 0.135" rpy="0 0 0" />
+      <parent link="${name}_link_3"/>
+      <child link="${name}_link_4"/>
+      <axis xyz="0 1 0" />
+      <dynamics damping="0.1" friction="0" />
+      <limit effort="2.0" velocity="1.5" lower="${joint_4_lower_limit}" upper="${joint_4_upper_limit}"/>
+    </joint>
+
+    <link name="${name}_link_4">
+      <inertial>
+        <mass value="${link_4_mass}"/>
+        <xacro:link_4_inertia_tensor />
+      </inertial>
+      <visual>
+        <origin xyz="0 -0.010 0.029" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm4.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 -0.010 0.029" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm4_convex.stl" />
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_4_link and arm_5_link -->
+    <joint name="${name}_joint_5" type="revolute">
+      <origin xyz="0 0 0.084" rpy="0 0 0" />
+      <parent link="${name}_link_4"/>
+      <child link="${name}_link_5"/>
+      <axis xyz="0 0 1" />
+      <dynamics damping="0.1" friction="0" />
+      <limit effort="1.0" velocity="1.5" lower="${joint_5_lower_limit}" upper="${joint_5_upper_limit}" />
+    </joint>
+
+    <link name="${name}_link_5">
+      <inertial>
+        <mass value="${link_5_mass}"/>
+        <xacro:link_5_inertia_tensor />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0.0188" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm5.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.0188" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://ahl_youbot_description/meshes/arm/arm5_convex.stl" />
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- extensions -->
+    <xacro:youbot_arm_gazebo name="${name}" />
+    <xacro:youbot_arm_transmission name="${name}" />
+
+  </xacro:macro>
+</robot>

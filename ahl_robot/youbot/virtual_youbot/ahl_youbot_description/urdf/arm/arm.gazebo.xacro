@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="arm_gazebo" params="name">
+
+    <gazebo reference="${name}_link_0">
+      <turnGravityOff>false</turnGravityOff>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <fdir1>0 0 0</fdir1>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+	  </ode>
+        </friction>
+        <bounce>
+          <restitution_coefficient>0</restitution_coefficient>
+          <threshold>0</threshold>
+        </bounce>
+        <contact>
+          <ode>
+            <soft_cfm>0</soft_cfm>
+            <soft_erp>0.200000</soft_erp>
+            <kp>10000000000000.000000</kp>
+            <kd>100000000000.000000</kd>
+            <max_vel>-1</max_vel>
+            <min_depth>0</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </gazebo>
+    <gazebo reference="${name}_link_1">
+      <turnGravityOff>false</turnGravityOff>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <fdir1>0 0 0</fdir1>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+	  </ode>
+        </friction>
+        <bounce>
+          <restitution_coefficient>0</restitution_coefficient>
+          <threshold>0</threshold>
+        </bounce>
+        <contact>
+          <ode>
+            <soft_cfm>0</soft_cfm>
+            <soft_erp>0.200000</soft_erp>
+            <kp>10000000000000.000000</kp>
+            <kd>100000000000.000000</kd>
+            <max_vel>-1</max_vel>
+            <min_depth>0</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </gazebo>
+    <gazebo reference="${name}_link_2">
+      <turnGravityOff>false</turnGravityOff>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <fdir1>0 0 0</fdir1>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+	  </ode>
+        </friction>
+        <bounce>
+          <restitution_coefficient>0</restitution_coefficient>
+          <threshold>0</threshold>
+        </bounce>
+        <contact>
+          <ode>
+            <soft_cfm>0</soft_cfm>
+            <soft_erp>0.200000</soft_erp>
+            <kp>10000000000000.000000</kp>
+            <kd>100000000000.000000</kd>
+            <max_vel>-1</max_vel>
+            <min_depth>0</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </gazebo>
+    <gazebo reference="${name}_link_3">
+      <turnGravityOff>false</turnGravityOff>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <fdir1>0 0 0</fdir1>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+	  </ode>
+        </friction>
+        <bounce>
+          <restitution_coefficient>0</restitution_coefficient>
+          <threshold>0</threshold>
+        </bounce>
+        <contact>
+          <ode>
+            <soft_cfm>0</soft_cfm>
+            <soft_erp>0.200000</soft_erp>
+            <kp>10000000000000.000000</kp>
+            <kd>100000000000.000000</kd>
+            <max_vel>-1</max_vel>
+            <min_depth>0</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </gazebo>
+    <gazebo reference="${name}_link_4">
+      <turnGravityOff>false</turnGravityOff>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <fdir1>0 0 0</fdir1>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+	  </ode>
+        </friction>
+        <bounce>
+          <restitution_coefficient>0</restitution_coefficient>
+          <threshold>0</threshold>
+        </bounce>
+        <contact>
+          <ode>
+            <soft_cfm>0</soft_cfm>
+            <soft_erp>0.200000</soft_erp>
+            <kp>10000000000000.000000</kp>
+            <kd>100000000000.000000</kd>
+            <max_vel>-1</max_vel>
+            <min_depth>0</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </gazebo>
+    <gazebo reference="${name}_link_5">
+      <turnGravityOff>false</turnGravityOff>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <fdir1>0 0 0</fdir1>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+	  </ode>
+        </friction>
+        <bounce>
+          <restitution_coefficient>0</restitution_coefficient>
+          <threshold>0</threshold>
+        </bounce>
+        <contact>
+          <ode>
+            <soft_cfm>0</soft_cfm>
+            <soft_erp>0.200000</soft_erp>
+            <kp>10000000000000.000000</kp>
+            <kd>100000000000.000000</kd>
+            <max_vel>-1</max_vel>
+            <min_depth>0</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </gazebo>
+
+  </xacro:macro>
+</robot>
