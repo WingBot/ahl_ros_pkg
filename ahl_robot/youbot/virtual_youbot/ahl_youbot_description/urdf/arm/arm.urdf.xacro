@@ -8,7 +8,7 @@
   <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/arm.transmission.xacro" />
   <xacro:include filename="$(find ahl_youbot_description)/urdf/arm/limits.urdf.xacro" />
 
-  <xacro:macro name="youbot_arm" params="parent name *origin">
+  <xacro:macro name="youbot_arm" params="name">
 
     <!-- joint between base_link and arm_0_link -->
     <joint name="${name}_joint_0" type="fixed" >
@@ -186,8 +186,8 @@
     </link>
 
     <!-- extensions -->
-    <xacro:youbot_arm_gazebo name="${name}" />
-    <xacro:youbot_arm_transmission name="${name}" />
+    <xacro:youbot_arm_gazebo name="${name}"/>
+    <xacro:youbot_arm_transmission name="${name}"/>
 
   </xacro:macro>
 </robot>

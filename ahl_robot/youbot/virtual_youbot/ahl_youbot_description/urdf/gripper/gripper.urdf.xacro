@@ -8,12 +8,12 @@
   <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.transmission.xacro" />
   <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/limits.urdf.xacro" />
 
-  <xacro:macro name="youbot_gripper" params="parent name *origin">
+  <xacro:macro name="youbot_gripper" params="name">
 
     <!-- joint between arm_7_link and sdh_palm_link -->
     <joint name="${name}_palm_joint" type="fixed" >
-      <insert_block name="origin"/>
-      <parent link="${parent}" />
+      <origin xyz="0 0 0.04" rpy="0 0 0"/>
+      <parent link="arm_link_5" />
       <child link="${name}_palm_link" />
     </joint>
 
