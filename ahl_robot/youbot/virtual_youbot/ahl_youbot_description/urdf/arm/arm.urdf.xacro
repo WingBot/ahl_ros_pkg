@@ -74,7 +74,7 @@
       <child link="${name}_link_2"/>
       <axis xyz="0 1 0"/>
       <dynamics damping="0.1" friction="0" />
-      <limit effort="9.5" velocity="2.5" lower="${joint_1_lower_limit}" upper="${joint_1_upper_limit}"/>
+      <limit effort="9.5" velocity="2.5" lower="${joint_2_lower_limit}" upper="${joint_2_upper_limit}"/>
     </joint>
 
     <link name="${name}_link_2">
