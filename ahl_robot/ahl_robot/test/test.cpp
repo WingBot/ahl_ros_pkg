@@ -25,10 +25,12 @@ int main(int argc, char** argv)
 
     const std::string mnp_name = "mnp";
     unsigned long cnt = 0;
+    ros::Rate r(10.0);
+
     while(ros::ok())
     {
+      std::cout << "test" << std::endl;
       Eigen::VectorXd q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), 1.0);
-
       double coeff = 0.5 * sin(2.0 * M_PI * 0.1 * cnt * 0.1);
       ++cnt;
 
@@ -39,7 +41,7 @@ int main(int argc, char** argv)
 
       robot->update(mnp_name, q);
       tf_publisher->publish(robot, false);
-      ros::Duration(0.1).sleep();
+      r.sleep();
     }
   }
   catch(ahl_robot::Exception& e)
