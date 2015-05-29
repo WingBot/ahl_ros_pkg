@@ -1,5 +1,5 @@
 # set urdf joint effort
-string[] joint_name         # joint to apply wrench (linear force and torque)
+string[] name               # joint to apply wrench (linear force and torque)
 float64[] effort            # effort to apply
 time start_time             # optional wrench application start time (seconds)
                             # if start_time < current time, start as soon as possible

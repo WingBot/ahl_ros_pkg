@@ -464,15 +464,6 @@ void GazeboRosApiPlugin::advertiseServices()
   apply_joint_effort_service_ = nh_->advertiseService(apply_joint_effort_aso);
 
   // Advertise more services on the custom queue
-  //std::string apply_joint_efforts_service_name("apply_joint_efforts");
-  //ros::AdvertiseServiceOptions apply_joint_efforts_aso =
-  //ros::AdvertiseServiceOptions::create<gazebo_msgs::ApplyJointEfforts>(
-  //                                                                      apply_joint_efforts_service_name,
-  //                                                                       boost::bind(&GazeboRosApiPlugin::applyJointEfforts,this,_1,_2),
-  //                                                                       ros::VoidPtr(), &gazebo_queue_);
-  //apply_joint_efforts_service_ = nh_->advertiseService(apply_joint_efforts_aso);
-
-  // Advertise more services on the custom queue
   std::string clear_joint_forces_service_name("clear_joint_forces");
   ros::AdvertiseServiceOptions clear_joint_forces_aso =
     ros::AdvertiseServiceOptions::create<gazebo_msgs::JointRequest>(
@@ -1386,15 +1377,13 @@ void GazeboRosApiPlugin::updateModelState(const gazebo_msgs::ModelState::ConstPt
 
 void GazeboRosApiPlugin::applyJointEfforts(const gazebo_msgs::ApplyJointEfforts::ConstPtr& effort)
 {
-  ROS_INFO_STREAM("applyJointEfforts");
-
   gazebo::physics::JointPtr joint;
-  for (unsigned int i = 0; i < effort->joint_name.size(); ++i)
+  for (unsigned int i = 0; i < effort->name.size(); ++i)
   {
     bool found = false;
     for (unsigned int j = 0; j < world_->GetModelCount(); j ++)
     {
-      joint = world_->GetModel(j)->GetJoint(effort->joint_name[i]);
+      joint = world_->GetModel(j)->GetJoint(effort->name[i]);
       if (joint)
       {
         found = true;
