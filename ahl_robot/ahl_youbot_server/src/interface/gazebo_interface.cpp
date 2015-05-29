@@ -3,7 +3,7 @@
 
 using namespace ahl_youbot;
 
-GazeboInterface::GazeboInterface(const std::vector<std::string>& joint_list, const ros::Duration& ctrl_period)
+GazeboInterface::GazeboInterface(const std::vector<std::string>& joint_list, double servo_period)
   : subscribed_joint_states_(false)
 {
   dof_ = joint_list.size();
@@ -17,28 +17,21 @@ GazeboInterface::GazeboInterface(const std::vector<std::string>& joint_list, con
   }
   effort_.effort.resize(effort_.name.size());
   effort_.start_time = ros::Time(0);
-  effort_.duration = ctrl_period;
+  effort_.duration = ros::Duration(servo_period);
 
   ros::NodeHandle nh;
   sub_joint_states_ = nh.subscribe("/gazebo/joint_states", 10, &GazeboInterface::jointStatesCB, this);
   pub_apply_joint_efforts_ = nh.advertise<gazebo_msgs::ApplyJointEfforts>("/gazebo/apply_joint_efforts", 10);
 }
 
-void GazeboInterface::getJointStates(Eigen::VectorXd& q)
+bool GazeboInterface::getJointStates(Eigen::VectorXd& q)
 {
   if(!subscribed_joint_states_)
   {
-    return;
+    return false;
   }
 
-  if(q.rows() != joint_list_.size())
-  {
-    std::stringstream msg;
-    msg << "q.rows() != joint_list.size()" << std::endl
-        << "  q.rows          : " << q.rows() << std::endl
-        << "  joint_list.size : " << joint_list_.size();
-    throw ahl_youbot::Exception("ahl_youbot::GazeboInterface::getJointStates", msg.str());
-  }
+  q.resize(joint_list_.size());
 
   for(unsigned int i = 0; i < joint_list_.size(); ++i)
   {
@@ -46,49 +39,48 @@ void GazeboInterface::getJointStates(Eigen::VectorXd& q)
     {
       q.coeffRef(i) = q_[joint_list_[i]];
     }
+    else
+    {
+      return false;
+    }
   }
+
+  return true;
 }
 
-void GazeboInterface::getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq)
+bool GazeboInterface::getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq)
 {
   if(!subscribed_joint_states_)
   {
-    return;
+    return false;
   }
 
-  if(q.rows() != dq.rows())
-  {
-    std::stringstream msg;
-    msg << "q.rows() != dq.rows()" << std::endl
-        << "  q.rows  : " << q.rows() << std::endl
-        << "  dq.rows : " << dq.rows();
-    throw ahl_youbot::Exception("ahl_youbot::GazeboInterface::getJointStates", msg.str());
-  }
-
-  if(q.rows() != joint_list_.size())
-  {
-    std::stringstream msg;
-    msg << "q.rows() != joint_list.size()" << std::endl
-        << "  q.rows          : " << q.rows() << std::endl
-        << "  joint_list.size : " << joint_list_.size();
-    throw ahl_youbot::Exception("ahl_youbot::GazeboInterface::getJointStates", msg.str());
-  }
+  q.resize(joint_list_.size());
+  dq.resize(joint_list_.size());
 
   for(unsigned int i = 0; i < joint_list_.size(); ++i)
   {
     if(q_.find(joint_list_[i]) != q_.end())
     {
       q.coeffRef(i) = q_[joint_list_[i]];
+    }
+    else
+    {
+      return false;
     }
 
     if(dq_.find(joint_list_[i]) != dq_.end())
     {
       dq.coeffRef(i) = dq_[joint_list_[i]];
     }
+    else
+    {
+      return false;
+    }
   }
 }
 
-void GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
+bool GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
 {
   if(tau.rows() != effort_.name.size())
   {
@@ -118,12 +110,16 @@ void GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
   for(unsigned int i = 0; i < tau.rows(); ++i)
   {
     if(name_to_idx_.find(joint_list_[i]) == name_to_idx_.end())
-      continue;
+    {
+      return false;
+    }
 
     int idx = name_to_idx_[joint_list_[i]];
 
     if(idx > effort_.effort.size() - 1)
-      continue;
+    {
+      return false;
+    }
 
     effort_.effort[idx] = tau.coeff(i);
   }

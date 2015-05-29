@@ -3,6 +3,7 @@ project(ahl_youbot_server)
 
 find_package(
   catkin REQUIRED COMPONENTS
+    ahl_robot
     ahl_robot_actions
     ahl_robot_srvs
     gazebo_msgs
@@ -36,6 +37,7 @@ include_directories(
 
 catkin_package(
   CATKIN_DEPENDS
+    ahl_robot
     ahl_robot_actions
     ahl_robot_srvs
     gazebo_msgs

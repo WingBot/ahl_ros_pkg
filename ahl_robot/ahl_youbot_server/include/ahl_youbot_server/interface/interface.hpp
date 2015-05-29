@@ -18,9 +18,9 @@ namespace ahl_youbot
     };
 
     virtual ~Interface() {}
-    virtual void getJointStates(Eigen::VectorXd& q) = 0;
-    virtual void getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq) = 0;
-    virtual void applyJointEfforts(const Eigen::VectorXd& tau) = 0;
+    virtual bool getJointStates(Eigen::VectorXd& q) = 0;
+    virtual bool getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq) = 0;
+    virtual bool applyJointEfforts(const Eigen::VectorXd& tau) = 0;
   };
 
   typedef boost::shared_ptr<Interface> InterfacePtr;

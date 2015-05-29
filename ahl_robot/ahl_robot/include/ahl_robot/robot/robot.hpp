@@ -66,6 +66,7 @@ namespace ahl_robot
       return mnp_name_;
     }
 
+    void getJointStates(const std::string& mnp_name, Eigen::VectorXd& q);
     unsigned int getDOF(const std::string& mnp_name);
 
   private:

@@ -15,11 +15,11 @@ namespace ahl_youbot
   class GazeboInterface : public Interface
   {
   public:
-    GazeboInterface(const std::vector<std::string>& joint_list, const ros::Duration& ctrl_period);
+    GazeboInterface(const std::vector<std::string>& joint_list, double servo_period);
 
-    void getJointStates(Eigen::VectorXd& q);
-    void getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq);
-    void applyJointEfforts(const Eigen::VectorXd& tau);
+    bool getJointStates(Eigen::VectorXd& q);
+    bool getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq);
+    bool applyJointEfforts(const Eigen::VectorXd& tau);
   private:
     void jointStatesCB(const gazebo_msgs::JointStates::ConstPtr& msg);
 

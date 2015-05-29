@@ -21,6 +21,17 @@ void Robot::add(const ManipulatorPtr& mnp)
   mnp_name_.push_back(mnp->name);
 }
 
+void Robot::getJointStates(const std::string& mnp_name, Eigen::VectorXd& q)
+{
+  if(mnp_.find(mnp_name) == mnp_.end())
+  {
+    return;
+  }
+
+  q.resize(mnp_[mnp_name]->q.rows());
+  q = mnp_[mnp_name]->q;
+}
+
 unsigned int Robot::getDOF(const std::string& mnp_name)
 {
   if(mnp_.find(mnp_name) == mnp_.end())

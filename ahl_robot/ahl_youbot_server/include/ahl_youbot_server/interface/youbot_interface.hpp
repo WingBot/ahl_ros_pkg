@@ -11,9 +11,9 @@ namespace ahl_youbot
   public:
     YoubotInterface() {}
 
-    void getJointStates(Eigen::VectorXd& q) {}
-    void getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq) {}
-    void applyJointEfforts(const Eigen::VectorXd& tau) {}
+    bool getJointStates(Eigen::VectorXd& q) {}
+    bool getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq) {}
+    bool applyJointEfforts(const Eigen::VectorXd& tau) {}
   };
 
 }

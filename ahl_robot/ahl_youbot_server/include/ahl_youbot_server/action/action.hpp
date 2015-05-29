@@ -3,6 +3,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <ros/ros.h>
+#include <ahl_robot/ahl_robot.hpp>
 
 namespace ahl_youbot
 {
