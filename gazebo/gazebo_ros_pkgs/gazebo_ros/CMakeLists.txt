@@ -3,6 +3,7 @@ project(gazebo_ros)
 
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
+  ahl_robot_msgs
   roslib
   roscpp
   geometry_msgs
@@ -39,6 +40,7 @@ catkin_package(
   gazebo_ros_paths_plugin
 
   CATKIN_DEPENDS
+  ahl_robot_msgs
   roslib
   roscpp
   geometry_msgs
@@ -68,13 +70,13 @@ endforeach ()
 
 ## Plugins
 add_library(gazebo_ros_api_plugin src/gazebo_ros_api_plugin.cpp)
-add_dependencies(gazebo_ros_api_plugin gazebo_msgs_gencpp ${PROJECT_NAME}_gencfg) # wait for gazebo_msgs to be built
+add_dependencies(gazebo_ros_api_plugin gazebo_msgs_gencpp ${PROJECT_NAME}_gencfg ahl_robot_msgs_gencpp) # wait for gazebo_msgs to be built
 set_target_properties(gazebo_ros_api_plugin PROPERTIES LINK_FLAGS "${ld_flags}")
 set_target_properties(gazebo_ros_api_plugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
 target_link_libraries(gazebo_ros_api_plugin ${GAZEBO_LIBRARIES} ${SDFormat_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${TinyXML_LIBRARIES})
 
 add_library(gazebo_ros_paths_plugin src/gazebo_ros_paths_plugin.cpp)
-add_dependencies(gazebo_ros_paths_plugin gazebo_msgs_gencpp ${PROJECT_NAME}_gencfg) # wait for gazebo_msgs to be built
+add_dependencies(gazebo_ros_paths_plugin gazebo_msgs_gencpp ${PROJECT_NAME}_gencfg ahl_robot_msgs_gencpp) # wait for gazebo_msgs to be built
 set_target_properties(gazebo_ros_paths_plugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
 set_target_properties(gazebo_ros_paths_plugin PROPERTIES LINK_FLAGS "${ld_flags}")
 target_link_libraries(gazebo_ros_paths_plugin ${GAZEBO_LIBRARIES} ${SDFormat_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES})

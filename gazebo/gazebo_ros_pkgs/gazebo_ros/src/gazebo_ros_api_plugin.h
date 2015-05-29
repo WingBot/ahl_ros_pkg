@@ -66,6 +66,7 @@
 
 #include "gazebo_msgs/GetJointProperties.h"
 #include "gazebo_msgs/ApplyJointEffort.h"
+//#include "gazebo_msgs/ApplyJointEfforts.h"
 
 #include "gazebo_msgs/GetLinkProperties.h"
 #include "gazebo_msgs/SetLinkProperties.h"
@@ -82,6 +83,9 @@
 #include "geometry_msgs/Wrench.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
+
+#include "gazebo_msgs/ApplyJointEfforts.h"
+#include "gazebo_msgs/JointStates.h"
 
 // For model pose transform to set custom joint angles
 #include <ros/ros.h>
@@ -130,10 +134,16 @@ public:
   void onLinkStatesConnect();
 
   /// \brief
+  void onJointStatesConnect();
+
+  /// \brief
   void onModelStatesConnect();
 
   /// \brief
   void onLinkStatesDisconnect();
+
+  /// \brief
+  void onJointStatesDisconnect();
 
   /// \brief
   void onModelStatesDisconnect();
@@ -187,7 +197,13 @@ public:
   void updateModelState(const gazebo_msgs::ModelState::ConstPtr& model_state);
 
   /// \brief
+  void applyJointEfforts(const gazebo_msgs::ApplyJointEfforts::ConstPtr& effort);
+
+  /// \brief
   bool applyJointEffort(gazebo_msgs::ApplyJointEffort::Request &req,gazebo_msgs::ApplyJointEffort::Response &res);
+
+  /// \brief
+  //bool applyJointEfforts(gazebo_msgs::ApplyJointEfforts::Request &req,gazebo_msgs::ApplyJointEfforts::Response &res);
 
   /// \brief
   bool resetSimulation(std_srvs::Empty::Request &req,std_srvs::Empty::Response &res);
@@ -235,6 +251,9 @@ private:
 
   /// \brief
   void publishLinkStates();
+
+  /// \brief
+  void publishJointStates();
 
   /// \brief
   void publishModelStates();
@@ -314,6 +333,7 @@ private:
   gazebo::event::ConnectionPtr force_update_event_;
   gazebo::event::ConnectionPtr time_update_event_;
   gazebo::event::ConnectionPtr pub_link_states_event_;
+  gazebo::event::ConnectionPtr pub_joint_states_event_;
   gazebo::event::ConnectionPtr pub_model_states_event_;
   gazebo::event::ConnectionPtr load_gazebo_ros_api_plugin_event_;
 
@@ -334,6 +354,7 @@ private:
   ros::ServiceServer set_joint_properties_service_;
   ros::ServiceServer set_model_state_service_;
   ros::ServiceServer apply_joint_effort_service_;
+  //ros::ServiceServer apply_joint_efforts_service_;
   ros::ServiceServer set_model_configuration_service_;
   ros::ServiceServer set_link_state_service_;
   ros::ServiceServer reset_simulation_service_;
@@ -344,9 +365,12 @@ private:
   ros::ServiceServer clear_body_wrenches_service_;
   ros::Subscriber    set_link_state_topic_;
   ros::Subscriber    set_model_state_topic_;
+  ros::Subscriber    apply_joint_efforts_topic_;
   ros::Publisher     pub_link_states_;
+  ros::Publisher     pub_joint_states_;
   ros::Publisher     pub_model_states_;
   int                pub_link_states_connection_count_;
+  int                pub_joint_states_connection_count_;
   int                pub_model_states_connection_count_;
 
   // ROS comm
@@ -388,7 +412,6 @@ private:
 
   std::vector<GazeboRosApiPlugin::WrenchBodyJob*> wrench_body_jobs_;
   std::vector<GazeboRosApiPlugin::ForceJointJob*> force_joint_jobs_;
-
 };
 }
 #endif

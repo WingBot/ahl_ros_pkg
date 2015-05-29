@@ -20,6 +20,7 @@
  * Date: Jun 10 2013
  */
 
+#include <boost/shared_ptr.hpp>
 #include <gazebo/common/Events.hh>
 #include <gazebo/gazebo_config.h>
 #include "gazebo_ros_api_plugin.h"
@@ -33,6 +34,7 @@ GazeboRosApiPlugin::GazeboRosApiPlugin() :
   stop_(false),
   plugin_loaded_(false),
   pub_link_states_connection_count_(0),
+  pub_joint_states_connection_count_(0),
   pub_model_states_connection_count_(0)
 {
   robot_namespace_.clear();
@@ -61,6 +63,8 @@ GazeboRosApiPlugin::~GazeboRosApiPlugin()
 
   if (pub_link_states_connection_count_ > 0) // disconnect if there are subscribers on exit
     gazebo::event::Events::DisconnectWorldUpdateBegin(pub_link_states_event_);
+  if (pub_joint_states_connection_count_ > 0)
+    gazebo::event::Events::DisconnectWorldUpdateBegin(pub_joint_states_event_);
   if (pub_model_states_connection_count_ > 0) // disconnect if there are subscribers on exit
     gazebo::event::Events::DisconnectWorldUpdateBegin(pub_model_states_event_);
   ROS_DEBUG_STREAM_NAMED("api_plugin","Disconnected World Updates");
@@ -82,7 +86,7 @@ GazeboRosApiPlugin::~GazeboRosApiPlugin()
   ROS_DEBUG_STREAM_NAMED("api_plugin","Physics reconfigure joined");
 
   // Delete Force and Wrench Jobs
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   for (std::vector<GazeboRosApiPlugin::ForceJointJob*>::iterator iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();)
   {
     delete (*iter);
@@ -96,7 +100,7 @@ GazeboRosApiPlugin::~GazeboRosApiPlugin()
     iter = wrench_body_jobs_.erase(iter);
   }
   wrench_body_jobs_.clear();
-  lock_.unlock();
+  
   ROS_DEBUG_STREAM_NAMED("api_plugin","WrenchBodyJobs deleted");
 
   ROS_DEBUG_STREAM_NAMED("api_plugin","Unloaded");
@@ -158,16 +162,16 @@ void GazeboRosApiPlugin::loadGazeboRosApiPlugin(std::string world_name)
 {
   // make sure things are only called once
   gazebo::event::Events::DisconnectWorldCreated(load_gazebo_ros_api_plugin_event_);
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   if (world_created_)
   {
-    lock_.unlock();
+    
     return;
   }
 
   // set flag to true and load this plugin
   world_created_ = true;
-  lock_.unlock();
+  
 
   world_ = gazebo::physics::get_world(world_name);
   if (!world_)
@@ -187,6 +191,7 @@ void GazeboRosApiPlugin::loadGazeboRosApiPlugin(std::string world_name)
 
   // reset topic connection counts
   pub_link_states_connection_count_ = 0;
+  pub_joint_states_connection_count_ = 0;
   pub_model_states_connection_count_ = 0;
 
   /// \brief advertise all services
@@ -334,6 +339,15 @@ void GazeboRosApiPlugin::advertiseServices()
                                                             ros::VoidPtr(), &gazebo_queue_);
   pub_model_states_ = nh_->advertise(pub_model_states_ao);
 
+  // publish complete joint states in world frame
+  ros::AdvertiseOptions pub_joint_states_ao =
+    ros::AdvertiseOptions::create<gazebo_msgs::JointStates>(
+                                                            "joint_states",10,
+                                                            boost::bind(&GazeboRosApiPlugin::onJointStatesConnect,this),
+                                                            boost::bind(&GazeboRosApiPlugin::onJointStatesDisconnect,this),
+                                                            ros::VoidPtr(), &gazebo_queue_);
+  pub_joint_states_ = nh_->advertise(pub_joint_states_ao);
+
   // Advertise more services on the custom queue
   std::string set_link_properties_service_name("set_link_properties");
   ros::AdvertiseServiceOptions set_link_properties_aso =
@@ -405,6 +419,14 @@ void GazeboRosApiPlugin::advertiseServices()
                                                            ros::VoidPtr(), &gazebo_queue_);
   set_model_state_topic_ = nh_->subscribe(model_state_so);
 
+  // topic callback version for apply_joint_efforts
+  ros::SubscribeOptions apply_joint_efforts_so =
+    ros::SubscribeOptions::create<gazebo_msgs::ApplyJointEfforts>(
+                                                           "apply_joint_efforts",10,
+                                                           boost::bind( &GazeboRosApiPlugin::applyJointEfforts,this,_1),
+                                                           ros::VoidPtr(), &gazebo_queue_);
+  apply_joint_efforts_topic_ = nh_->subscribe(apply_joint_efforts_so);
+
   // Advertise more services on the custom queue
   std::string pause_physics_service_name("pause_physics");
   ros::AdvertiseServiceOptions pause_physics_aso =
@@ -440,6 +462,15 @@ void GazeboRosApiPlugin::advertiseServices()
                                                                         boost::bind(&GazeboRosApiPlugin::applyJointEffort,this,_1,_2),
                                                                         ros::VoidPtr(), &gazebo_queue_);
   apply_joint_effort_service_ = nh_->advertiseService(apply_joint_effort_aso);
+
+  // Advertise more services on the custom queue
+  //std::string apply_joint_efforts_service_name("apply_joint_efforts");
+  //ros::AdvertiseServiceOptions apply_joint_efforts_aso =
+  //ros::AdvertiseServiceOptions::create<gazebo_msgs::ApplyJointEfforts>(
+  //                                                                      apply_joint_efforts_service_name,
+  //                                                                       boost::bind(&GazeboRosApiPlugin::applyJointEfforts,this,_1,_2),
+  //                                                                       ros::VoidPtr(), &gazebo_queue_);
+  //apply_joint_efforts_service_ = nh_->advertiseService(apply_joint_efforts_aso);
 
   // Advertise more services on the custom queue
   std::string clear_joint_forces_service_name("clear_joint_forces");
@@ -492,6 +523,13 @@ void GazeboRosApiPlugin::onLinkStatesConnect()
     pub_link_states_event_   = gazebo::event::Events::ConnectWorldUpdateBegin(boost::bind(&GazeboRosApiPlugin::publishLinkStates,this));
 }
 
+void GazeboRosApiPlugin::onJointStatesConnect()
+{
+  pub_joint_states_connection_count_++;
+  if (pub_joint_states_connection_count_ == 1) // connect on first subscriber
+    pub_joint_states_event_   = gazebo::event::Events::ConnectWorldUpdateBegin(boost::bind(&GazeboRosApiPlugin::publishJointStates,this));
+}
+
 void GazeboRosApiPlugin::onModelStatesConnect()
 {
   pub_model_states_connection_count_++;
@@ -507,6 +545,17 @@ void GazeboRosApiPlugin::onLinkStatesDisconnect()
     gazebo::event::Events::DisconnectWorldUpdateBegin(pub_link_states_event_);
     if (pub_link_states_connection_count_ < 0) // should not be possible
       ROS_ERROR("one too mandy disconnect from pub_link_states_ in gazebo_ros.cpp? something weird");
+  }
+}
+
+void GazeboRosApiPlugin::onJointStatesDisconnect()
+{
+  pub_joint_states_connection_count_--;
+  if (pub_joint_states_connection_count_ <= 0) // disconnect with no subscribers
+  {
+    gazebo::event::Events::DisconnectWorldUpdateBegin(pub_joint_states_event_);
+    if (pub_joint_states_connection_count_ < 0) // should not be possible
+      ROS_ERROR("one too mandy disconnect from pub_joint_states_ in gazebo_ros.cpp? something weird");
   }
 }
 
@@ -1335,6 +1384,40 @@ void GazeboRosApiPlugin::updateModelState(const gazebo_msgs::ModelState::ConstPt
   /*bool success =*/ setModelState(req,res);
 }
 
+void GazeboRosApiPlugin::applyJointEfforts(const gazebo_msgs::ApplyJointEfforts::ConstPtr& effort)
+{
+  ROS_INFO_STREAM("applyJointEfforts");
+
+  gazebo::physics::JointPtr joint;
+  for (unsigned int i = 0; i < effort->joint_name.size(); ++i)
+  {
+    bool found = false;
+    for (unsigned int j = 0; j < world_->GetModelCount(); j ++)
+    {
+      joint = world_->GetModel(j)->GetJoint(effort->joint_name[i]);
+      if (joint)
+      {
+        found = true;
+        GazeboRosApiPlugin::ForceJointJob* fjj = new GazeboRosApiPlugin::ForceJointJob;
+        fjj->joint = joint;
+        fjj->force = effort->effort[i];
+        fjj->start_time = effort->start_time;
+        if (fjj->start_time < ros::Time(world_->GetSimTime().Double()))
+          fjj->start_time = ros::Time(world_->GetSimTime().Double());
+        fjj->duration = effort->duration;
+        boost::mutex::scoped_lock lock(lock_);
+        force_joint_jobs_.push_back(fjj);
+      }
+    }
+
+    if (!found)
+    {
+      ROS_ERROR_STREAM("ApplyJointEfforts: joint not found");
+      return;
+    }
+  }
+}
+
 bool GazeboRosApiPlugin::applyJointEffort(gazebo_msgs::ApplyJointEffort::Request &req,
                                           gazebo_msgs::ApplyJointEffort::Response &res)
 {
@@ -1351,9 +1434,9 @@ bool GazeboRosApiPlugin::applyJointEffort(gazebo_msgs::ApplyJointEffort::Request
       if (fjj->start_time < ros::Time(world_->GetSimTime().Double()))
         fjj->start_time = ros::Time(world_->GetSimTime().Double());
       fjj->duration = req.duration;
-      lock_.lock();
+      boost::mutex::scoped_lock lock(lock_);
       force_joint_jobs_.push_back(fjj);
-      lock_.unlock();
+      
 
       res.success = true;
       res.status_message = "ApplyJointEffort: effort set";
@@ -1365,6 +1448,55 @@ bool GazeboRosApiPlugin::applyJointEffort(gazebo_msgs::ApplyJointEffort::Request
   res.status_message = "ApplyJointEffort: joint not found";
   return true;
 }
+
+/*
+bool GazeboRosApiPlugin::applyJointEfforts(gazebo_msgs::ApplyJointEfforts::Request &req,
+                                           gazebo_msgs::ApplyJointEfforts::Response &res)
+{
+  GazeboRosApiPlugin::ForceJointJob* fjj[req.joint_name.size()];
+  gazebo::physics::JointPtr joint[req.joint_name.size()];
+
+  for (unsigned int i = 0; i < req.joint_name.size(); ++i)
+  {
+    fjj[i] = new GazeboRosApiPlugin::ForceJointJob;
+
+    bool found = false;
+    for (unsigned int j = 0; j < world_->GetModelCount(); ++j)
+    {
+      joint[i] = world_->GetModel(j)->GetJoint(req.joint_name[i]);
+      if (joint[i])
+      {
+        found = true;
+        fjj[i]->joint = joint[i];
+        fjj[i]->force = req.effort[i];
+        fjj[i]->start_time = req.start_time;
+        if (fjj[i]->start_time < ros::Time(world_->GetSimTime().Double()))
+          fjj[i]->start_time = ros::Time(world_->GetSimTime().Double());
+        fjj[i]->duration = req.duration;
+      }
+    }
+
+    if (!found)
+    {
+      res.success = false;
+      res.status_message = "ApplyJointEfforts: joint not found";
+      return true;
+    }
+  }
+
+  force_joint_jobs_.clear();
+  for (unsigned int i = 0; i < req.joint_name.size(); ++i)
+  {
+    boost::mutex::scoped_lock lock(lock_);
+    force_joint_jobs_.push_back(fjj[i]);
+    
+  }
+
+  res.success = true;
+  res.status_message = "ApplyJointEffort: effort set";
+  return true;
+}
+*/
 
 bool GazeboRosApiPlugin::resetSimulation(std_srvs::Empty::Request &req,std_srvs::Empty::Response &res)
 {
@@ -1398,7 +1530,7 @@ bool GazeboRosApiPlugin::clearJointForces(gazebo_msgs::JointRequest::Request &re
 bool GazeboRosApiPlugin::clearJointForces(std::string joint_name)
 {
   bool search = true;
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   while(search)
   {
     search = false;
@@ -1414,7 +1546,7 @@ bool GazeboRosApiPlugin::clearJointForces(std::string joint_name)
       }
     }
   }
-  lock_.unlock();
+  
   return true;
 }
 
@@ -1426,7 +1558,7 @@ bool GazeboRosApiPlugin::clearBodyWrenches(gazebo_msgs::BodyRequest::Request &re
 bool GazeboRosApiPlugin::clearBodyWrenches(std::string body_name)
 {
   bool search = true;
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   while(search)
   {
     search = false;
@@ -1443,7 +1575,7 @@ bool GazeboRosApiPlugin::clearBodyWrenches(std::string body_name)
       }
     }
   }
-  lock_.unlock();
+  
   return true;
 }
 
@@ -1682,9 +1814,9 @@ bool GazeboRosApiPlugin::applyBodyWrench(gazebo_msgs::ApplyBodyWrench::Request &
   if (wej->start_time < ros::Time(world_->GetSimTime().Double()))
     wej->start_time = ros::Time(world_->GetSimTime().Double());
   wej->duration = req.duration;
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   wrench_body_jobs_.push_back(wej);
-  lock_.unlock();
+  
 
   res.success = true;
   res.status_message = "";
@@ -1717,7 +1849,7 @@ void GazeboRosApiPlugin::wrenchBodySchedulerSlot()
 {
   // MDMutex locks in case model is getting deleted, don't have to do this if we delete jobs first
   // boost::recursive_mutex::scoped_lock lock(*world->GetMDMutex());
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   for (std::vector<GazeboRosApiPlugin::WrenchBodyJob*>::iterator iter=wrench_body_jobs_.begin();iter!=wrench_body_jobs_.end();)
   {
     // check times and apply wrench if necessary
@@ -1744,14 +1876,14 @@ void GazeboRosApiPlugin::wrenchBodySchedulerSlot()
     else
       ++iter;
   }
-  lock_.unlock();
+  
 }
 
 void GazeboRosApiPlugin::forceJointSchedulerSlot()
 {
   // MDMutex locks in case model is getting deleted, don't have to do this if we delete jobs first
   // boost::recursive_mutex::scoped_lock lock(*world->GetMDMutex());
-  lock_.lock();
+  boost::mutex::scoped_lock lock(lock_);
   for (std::vector<GazeboRosApiPlugin::ForceJointJob*>::iterator iter=force_joint_jobs_.begin();iter!=force_joint_jobs_.end();)
   {
     // check times and apply force if necessary
@@ -1774,7 +1906,7 @@ void GazeboRosApiPlugin::forceJointSchedulerSlot()
     else
       ++iter;
   }
-  lock_.unlock();
+  
 }
 
 void GazeboRosApiPlugin::publishSimTime(const boost::shared_ptr<gazebo::msgs::WorldStatistics const> &msg)
@@ -1838,6 +1970,31 @@ void GazeboRosApiPlugin::publishLinkStates()
   }
 
   pub_link_states_.publish(link_states);
+}
+
+void GazeboRosApiPlugin::publishJointStates()
+{
+  gazebo_msgs::JointStates joint_states;
+
+  // fill joint_states
+  for (unsigned int i = 0; i < world_->GetModelCount(); i ++)
+  {
+    gazebo::physics::ModelPtr model = world_->GetModel(i);
+
+    for (unsigned int j = 0 ; j < model->GetChildCount(); j ++)
+    {
+      gazebo::physics::JointPtr joint = boost::dynamic_pointer_cast<gazebo::physics::Joint>(model->GetChild(j));
+
+      if (joint)
+      {
+        joint_states.name.push_back(joint->GetScopedName());
+        joint_states.q.push_back(joint->GetAngle(0).Radian());
+        joint_states.dq.push_back(joint->GetVelocity(0));
+      }
+    }
+  }
+
+  pub_joint_states_.publish(joint_states);
 }
 
 void GazeboRosApiPlugin::publishModelStates()

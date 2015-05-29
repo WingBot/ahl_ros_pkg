@@ -13,10 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   DIRECTORY msg
   FILES
+  ApplyJointEfforts.msg
   ContactsState.msg
   ContactState.msg
   LinkState.msg
   LinkStates.msg
+  JointStates.msg
   ModelState.msg
   ModelStates.msg
   ODEJointProperties.msg
