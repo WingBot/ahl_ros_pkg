@@ -9,7 +9,7 @@
 
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
 #include "ahl_youbot_server/action/action.hpp"
-#include "ahl_youbot_server/youbot/youbot.hpp"
+#include "ahl_youbot_server/interface/interface.hpp"
 
 namespace ahl_youbot
 {
@@ -31,7 +31,7 @@ namespace ahl_youbot
     std::map<Action::Type, ros::ServiceServer> ros_server_;
     Action::Type action_type_;
 
-    YouBotPtr youbot_;
+    InterfacePtr interface_;
 
     ros::Timer timer_;
   };
