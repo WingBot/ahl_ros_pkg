@@ -82,6 +82,16 @@ target_link_libraries(
     ${catkin_LIBRARIES}
 )
 
+add_executable(
+  youbot_test
+    test/test.cpp
+)
+
+target_link_libraries(
+  youbot_test
+    ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
