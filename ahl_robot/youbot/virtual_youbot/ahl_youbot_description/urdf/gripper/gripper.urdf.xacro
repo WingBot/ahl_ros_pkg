@@ -28,7 +28,6 @@
         <geometry>
           <mesh filename="package://ahl_youbot_description/meshes/gripper/palm.dae"/>
         </geometry>
-        <material name="Black"/>
       </visual>
       <collision>
         <origin xyz="-0.00273 0 0.0224" rpy="0 0 0"/>
@@ -43,8 +42,7 @@
       <parent link="${name}_palm_link"/>
       <child link="${name}_finger_link_l"/>
       <axis xyz="0 1 0"/>
-
-      <dynamics damping="5.0" friction="0.5"/>
+      <dynamics damping="10.0" friction="0"/>
       <limit effort="0.5" velocity="0.1" lower="0" upper="${finger_joint}"/>
     </joint>
 
@@ -73,7 +71,7 @@
       <parent link="${name}_palm_link"/>
       <child link="${name}_finger_link_r"/>
       <axis xyz="0 1 0"/>
-      <dynamics damping="5.0" friction="0.5"/>
+      <dynamics damping="10.0" friction="0"/>
       <limit effort="0.5" velocity="0.1" lower="-${finger_joint}" upper="0"/> 
     </joint>
 

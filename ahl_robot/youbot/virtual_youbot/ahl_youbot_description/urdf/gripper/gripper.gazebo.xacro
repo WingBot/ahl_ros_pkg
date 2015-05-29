@@ -6,20 +6,35 @@
 
   <xacro:macro name="gripper_gazebo" params="name">
     <gazebo reference="${name}_palm_link">
-      <material>Gazebo/Black</material>
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
 
     <gazebo reference="${name}_finger_l_link">
-      <material>Gazebo/Black</material>
-      <turnGravityOff>false</turnGravityOff>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>0.5</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
       <selfCollide>true</selfCollide>
     </gazebo>
 
     <gazebo reference="${name}_finger_r_link">
-      <material>Gazebo/Black</material>
-      <turnGravityOff>false</turnGravityOff>
+      <gravity>true</gravity>
+      <maxVel>-1</maxVel>
+      <minDepth>0</minDepth>
+      <mu1>0.5</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
       <selfCollide>true</selfCollide>
     </gazebo>
 

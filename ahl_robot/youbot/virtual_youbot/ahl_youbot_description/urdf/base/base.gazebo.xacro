@@ -10,12 +10,11 @@
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.5</mu1>
-      <mu2>0.5</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>0</selfCollide>
     </gazebo>
 
     <!-- front left wheel -->
@@ -23,12 +22,11 @@
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>1000.0</mu1>
-      <mu2>1000.0</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>10000.0</mu1>
+      <mu2>10000.0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>0</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_fl">
@@ -39,12 +37,11 @@
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>1000.0</mu1>
-      <mu2>1000.0</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>10000.0</mu1>
+      <mu2>10000.0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>0</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_fr">   
@@ -55,12 +52,11 @@
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>1000.0</mu1>
-      <mu2>1000.0</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>10000.0</mu1>
+      <mu2>10000.0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>0</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_bl">
@@ -71,12 +67,11 @@
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>1000.0</mu1>
-      <mu2>1000.0</mu2>
-      <fdir1></fdir1>
+      <mu1>10000.0</mu1>
+      <mu2>10000.0</mu2>
       <kp>1000000.0</kp>
       <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <selfCollide>0</selfCollide>
     </gazebo>
     
     <gazebo reference="caster_link_br">

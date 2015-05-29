@@ -10,67 +10,61 @@
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.3</mu1>
-      <mu2>0.3</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
     <gazebo reference="${name}_link_1">
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.3</mu1>
-      <mu2>0.3</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
     <gazebo reference="${name}_link_2">
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.3</mu1>
-      <mu2>0.3</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
     <gazebo reference="${name}_link_3">
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.3</mu1>
-      <mu2>0.3</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
     <gazebo reference="${name}_link_4">
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.3</mu1>
-      <mu2>0.3</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
     <gazebo reference="${name}_link_5">
       <gravity>true</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
-      <mu1>0.3</mu1>
-      <mu2>0.3</mu2>
-      <fdir1></fdir1>
-      <kp>1000000.0</kp>
-      <kd>10000.0</kd>
-      <selfCollide>true</selfCollide>
+      <mu1>0</mu1>
+      <mu2>0</mu2>
+      <kp>10000000000.0</kp>
+      <kd>100000000.0</kd>
+      <selfCollide>false</selfCollide>
     </gazebo>
 
   </xacro:macro>
