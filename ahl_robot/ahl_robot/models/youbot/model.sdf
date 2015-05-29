@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <model name="youbot">
-    <pose>0 0 0.084 0 0 0</pose>
     <link name="base_footprint">
       <pose>0 0 0 0 0 0</pose>
       <inertial>
@@ -14,13 +13,13 @@
           <iyz>0</iyz>
           <izz>0</izz>
         </inertia>
-        <mass>0.000000</mass>
+        <mass>0.1</mass>
       </inertial>
       <collision name="base_footprint_geom">
         <pose>0 0 -0.050000 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.001000 0.001000 0.001000</size>
+            <size>0 0 0</size>
           </box>
         </geometry>
         <surface>
@@ -54,7 +53,7 @@
         <pose>0 0 0 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.001000 0.001000 0.001000</size>
+            <size>0 0 0</size>
           </box>
         </geometry>
       </visual>
@@ -63,7 +62,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="base_link">
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 0.096300 0 0 0</pose>
       <inertial>
         <pose>-0.001408 0.000569 -0.024801 0 0 0</pose>
         <inertia>
@@ -123,7 +122,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="arm_link_0">
-      <pose>0.143000 0 0.014200 0 0 0</pose>
+      <pose>0.143000 0 0.117000 0 0 0</pose>
       <inertial>
         <pose>0.015221 -0.000041 0.033843 0 0 0</pose>
         <inertia>
@@ -137,7 +136,7 @@
         <mass>0.961000</mass>
       </inertial>
       <collision name="arm_link_0_geom">
-        <pose>0 0 0.0318 0 0 0</pose>
+        <pose>0 0 0.031800 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/arm/arm0_convex.stl</uri>
@@ -171,34 +170,28 @@
         <laser_retro>0</laser_retro>
       </collision>
       <visual name="arm_link_0_geom_visual">
-        <pose>0 0 0.0318 0 0 0</pose>
+        <pose>0 0 0.031800 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/arm/arm0.dae</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <uri>model://youbot/materials/scripts/youbot.material</uri>
-            <name>youbot/DarkGrey</name>
-          </script>
-        </material>
       </visual>
       <gravity>1</gravity>
-      <self_collide>0</self_collide>
+      <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="arm_link_1">
-      <pose>0.167000 0 0.0921 0 0 0</pose>
+      <pose>0.167000 0 0.194 0 0 0</pose>
       <inertial>
-        <pose>0.01516 -0.00359 -0.03105 0 0 0</pose>
+        <pose>-0.010838 0.006337 0.034345 0 0 0</pose>
         <inertia>
-          <ixx>0.0029525</ixx>
+          <ixx>0.003003</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0059942</iyy>
-          <iyz>-0.0000408</iyz>
-          <izz>0.0058970</izz>
+          <iyy>0.003003</iyy>
+          <iyz>0</iyz>
+          <izz>0.004904</izz>
         </inertia>
         <mass>1.390000</mass>
       </inertial>
@@ -245,20 +238,20 @@
         </geometry>
       </visual>
       <gravity>1</gravity>
-      <self_collide>0</self_collide>
+      <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="arm_link_2">
-      <pose>0.20000 0 0.161000 0 0 0</pose>
+      <pose>0.20000 0 0.264000 0 0 0</pose>
       <inertial>
-        <pose>0.015 -0.01903 0.11397 0 0 0</pose>
+        <pose>0.001377 -0.029369 0.086325 0 0 0</pose>
         <inertia>
-          <ixx>0.0031145</ixx>
+          <ixx>0.0031163</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0005843</iyy>
+          <iyy>0.003115</iyy>
           <iyz>0</iyz>
-          <izz>0.0031631</izz>
+          <izz>0.000584</izz>
         </inertia>
         <mass>1.318000</mass>
       </inertial>
@@ -305,20 +298,20 @@
         </geometry>
       </visual>
       <gravity>1</gravity>
-      <self_collide>0</self_collide>
+      <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="arm_link_3">
-      <pose>0.20000 0 0.316000 0 0 0</pose>
+      <pose>0.200000 0 0.419000 0 0 0</pose>
       <inertial>
-        <pose>-0.000130 0.02022 0.10441 0 0 0</pose>
+        <pose>0.000130 0.028500 0.079400 0 0 0</pose>
         <inertia>
-          <ixx>0.0017277</ixx>
+          <ixx>0.001847</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0004197</iyy>
+          <iyy>0.001728</iyy>
           <iyz>0</iyz>
-          <izz>0.0018468</izz>
+          <izz>0.000584</izz>
         </inertia>
         <mass>0.821000</mass>
       </inertial>
@@ -365,20 +358,20 @@
         </geometry>
       </visual>
       <gravity>1</gravity>
-      <self_collide>0</self_collide>
+      <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="arm_link_4">
-      <pose>0.20000 0 0.451000 0 0 0</pose>
+      <pose>0.200000 0 0.554000 0 0 0</pose>
       <inertial>
-        <pose>-0.015 -0.02464 0.05353 0 0 0</pose>
+        <pose>0.000124 -0.005595 0.040469 0 0 0</pose>
         <inertia>
-          <ixx>0.00067640</ixx>
+          <ixx>0.001057</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.00082474</iyy>
-          <iyz>-0.00019514</iyz>
-          <izz>0.00089356</izz>
+          <iyy>0.000676</iyy>
+          <iyz>0</iyz>
+          <izz>0.000661</izz>
         </inertia>
         <mass>0.769000</mass>
       </inertial>
@@ -425,26 +418,25 @@
         </geometry>
       </visual>
       <gravity>1</gravity>
-      <self_collide>0</self_collide>
+      <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="arm_link_5">
-      <pose>0.20000 0 0.535000 0 0 0</pose>
+      <pose>0.200000 0 0.638000 0 0 0</pose>
       <inertial>
-   <!-- <pose>-0.000903 0.000638 0.006573 0 0 0</pose> -->
-        <pose>0 -0.0012 -0.01648 0 0 0</pose>
+        <pose>-0.000903 0.000638 0.006573 0 0 0</pose>
         <inertia>
-          <ixx>0.0000689</ixx>
+          <ixx>0.000160</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0001602</iyy>
+          <iyy>0.000069</iyy>
           <iyz>0</iyz>
-          <izz>0.0001934</izz>
+          <izz>0.000193</izz>
         </inertia>
         <mass>0.687000</mass>
       </inertial>
       <collision name="arm_link_5_geom">
-        <pose>0 0 0.0110 0 0 0</pose>
+        <pose>0 0 0.018800 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/arm/arm5_convex.stl</uri>
@@ -478,7 +470,7 @@
         <laser_retro>0</laser_retro>
       </collision>
       <visual name="arm_link_5_geom_visual">
-        <pose>0 0 0.0110 0 0 0</pose>
+        <pose>0 0 0.018800 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/arm/arm5.dae</uri>
@@ -486,26 +478,25 @@
         </geometry>
       </visual>
       <gravity>1</gravity>
-      <self_collide>0</self_collide>
+      <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="gripper_palm_link">
-      <pose>0.20000 0 0.5567 0 0 0</pose>
+      <pose>0.200000 0 0.678000 0 0 0</pose>
       <inertial>
-   <!-- <pose>0.002737 0 0.02616 0 0 0</pose> -->
-        <pose>0 0 0.0289 0 0 0</pose>
+        <pose>0.002737 0 0.02616 0 0 0</pose>
         <inertia>
-          <ixx>0.0002324</ixx>
+          <ixx>0.000363</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0002067</iyy>
+          <iyy>0.000207</iyy>
           <iyz>0</iyz>
-          <izz>0.0003629</izz>
+          <izz>0.000232</izz>
         </inertia>
         <mass>0.199000</mass>
       </inertial>
       <collision name="gripper_palm_link_geom">
-        <pose>-0.00273 0 0.022400 0 0 0</pose>
+        <pose>-0.002730 0 0.022400 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/gripper/palm_convex.stl</uri>
@@ -539,25 +530,19 @@
         <laser_retro>0</laser_retro>
       </collision>
       <visual name="gripper_palm_link_geom_visual">
-        <pose>-0.00273 0 0.022400 0 0 0</pose>
+        <pose>-0.002730 0 0.022400 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://youbot/meshes/gripper/palm.stl</uri>
+            <uri>model://youbot/meshes/gripper/palm.dae</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Black</name>
-          </script>
-        </material>
       </visual>
       <gravity>1</gravity>
       <self_collide>1</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="gripper_finger_link_l">
-      <pose>0.20000 0.008200 0.6115 0 0 0</pose>
+      <pose>0.200000 0.008200 0.733000 0 0 0</pose>
       <inertial>
         <pose>0.000270 -0.001337 0.020234 0 0 0</pose>
         <inertia>
@@ -571,7 +556,7 @@
         <mass>0.010000</mass>
       </inertial>
       <collision name="gripper_finger_link_l_geom">
-        <pose>0 0 0.0121 0 0 3.141592</pose>
+        <pose>0 0 0.012100 0 0 3.1415926535897932</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/gripper/finger_convex.stl</uri>
@@ -605,10 +590,10 @@
         <laser_retro>0</laser_retro>
       </collision>
       <visual name="gripper_finger_link_l_geom_visual">
-        <pose>0 0 0.0121 0 0 3.141592</pose>
+        <pose>0 0 0.012100 0 0 3.1415926535897932</pose>
         <geometry>
           <mesh>
-            <uri>model://youbot/meshes/gripper/finger.stl</uri>
+            <uri>model://youbot/meshes/gripper/finger.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -617,9 +602,9 @@
       <kinematic>0</kinematic>
     </link>
     <link name="gripper_finger_link_r">
-      <pose>0.20000 -0.008200 0.6115 0 0 0</pose>
+      <pose>0.200000 -0.008200 0.733000 0 0 0</pose>
       <inertial>
-        <pose>-0.000270 0.001337 0.020234 0 0 0</pose>
+        <pose>0.000270 0.001337 0.020234 0 0 0</pose>
         <inertia>
           <ixx>0</ixx>
           <ixy>0</ixy>
@@ -631,7 +616,7 @@
         <mass>0.010000</mass>
       </inertial>
       <collision name="gripper_finger_link_r_geom">
-        <pose>0 0 0.0121 0 0 0</pose>
+        <pose>0 0 0.012100 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://youbot/meshes/gripper/finger_convex.stl</uri>
@@ -665,10 +650,10 @@
         <laser_retro>0</laser_retro>
       </collision>
       <visual name="gripper_finger_link_r_geom_visual">
-        <pose>0 0 0.0121 0 0 0</pose>
+        <pose>0 0 0.012100 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://youbot/meshes/gripper/finger.stl</uri>
+            <uri>model://youbot/meshes/gripper/finger.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -677,7 +662,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="base_laser_front_link">
-      <pose>0.300000 0 -0.030000 0 0 0</pose>
+      <pose>0.300000 0 0.054000 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -758,7 +743,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="caster_link_bl">
-      <pose>-0.228000 0.158000 -0.034000 0 0 0</pose>
+      <pose>-0.228000 0.158000 -0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -776,7 +761,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="wheel_link_bl">
-      <pose>-0.228000 0.158000 -0.034000 0 0 0</pose>
+      <pose>-0.228000 0.158000 0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -831,19 +816,13 @@
             <uri>model://youbot/meshes/base/back-left_wheel.dae</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <uri>model://youbot/materials/scripts/youbot.material</uri>
-            <name>youbot/Orange</name>
-          </script>
-        </material>
       </visual>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="caster_link_br">
-      <pose>-0.228000 -0.158000 -0.034000 0 0 0</pose>
+      <pose>-0.228000 -0.158000 -0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -861,7 +840,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="wheel_link_br">
-      <pose>-0.228000 -0.158000 -0.034000 0 0 0</pose>
+      <pose>-0.228000 -0.158000 0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -916,19 +895,13 @@
             <uri>model://youbot/meshes/base/back-right_wheel.dae</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <uri>model://youbot/materials/scripts/youbot.material</uri>
-            <name>youbot/Orange</name>
-          </script>
-        </material>
       </visual>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="caster_link_fl">
-      <pose>0.228000 0.158000 -0.034000 0 0 0</pose>
+      <pose>0.228000 0.158000 -0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -946,7 +919,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="wheel_link_fl">
-      <pose>0.228000 0.158000 -0.034000 0 0 0</pose>
+      <pose>0.228000 0.158000 0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -1001,19 +974,13 @@
             <uri>model://youbot/meshes/base/front-left_wheel.dae</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <uri>model://youbot/materials/scripts/youbot.material</uri>
-            <name>youbot/Orange</name>
-          </script>
-        </material>
       </visual>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="caster_link_fr">
-      <pose>0.228000 -0.158000 -0.034000 0 0 0</pose>
+      <pose>0.228000 -0.158000 -0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -1031,7 +998,7 @@
       <kinematic>0</kinematic>
     </link>
     <link name="wheel_link_fr">
-      <pose>0.228000 -0.158000 -0.034000 0 0 0</pose>
+      <pose>0.228000 -0.158000 0.046300 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
         <inertia>
@@ -1086,19 +1053,13 @@
             <uri>model://youbot/meshes/base/front-right_wheel.dae</uri>
           </mesh>
         </geometry>
-        <material>
-          <script>
-            <uri>model://youbot/materials/scripts/youbot.material</uri>
-            <name>youbot/Orange</name>
-          </script>
-        </material>
       </visual>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
     </link>
     <link name="plate_link">
-      <pose>-0.159000 0 0.046000 0 0 0</pose>
+      <pose>-0.159000 0 0.117000 0 0 0</pose>
       <inertial>
         <pose>-0.003761 0 0.007459 0 0 0</pose>
         <inertia>
