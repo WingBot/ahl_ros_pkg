@@ -69,6 +69,8 @@ add_executable(
     src/youbot/gazebo_youbot_base.cpp
     src/youbot/real_youbot_manipulator.cpp
     src/youbot/gazebo_youbot_manipulator.cpp
+    src/interface/youbot_interface.cpp
+    src/interface/gazebo_interface.cpp
 )
 
 add_dependencies(
