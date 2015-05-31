@@ -20,9 +20,10 @@ const Eigen::Matrix4d& RevoluteX::T(double q)
   return T_;
 }
 
-void RevoluteX::transform(double q, Eigen::Matrix4d& T)
+void RevoluteX::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
-  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3);
+  T = T_org;
+  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3) * T.block(0, 0, 3, 3);
 }
 
 RevoluteY::RevoluteY()
@@ -38,9 +39,10 @@ const Eigen::Matrix4d& RevoluteY::T(double q)
   return T_;
 }
 
-void RevoluteY::transform(double q, Eigen::Matrix4d& T)
+void RevoluteY::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
-  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3);
+  T = T_org;
+  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3) * T.block(0, 0, 3, 3);
 }
 
 RevoluteZ::RevoluteZ()
@@ -56,9 +58,10 @@ const Eigen::Matrix4d& RevoluteZ::T(double q)
   return T_;
 }
 
-void RevoluteZ::transform(double q, Eigen::Matrix4d& T)
+void RevoluteZ::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
-  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3);
+  T = T_org;
+  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3) * T.block(0, 0, 3, 3);
 }
 
 PrismaticX::PrismaticX()
@@ -72,9 +75,10 @@ const Eigen::Matrix4d& PrismaticX::T(double q)
   return T_;
 }
 
-void PrismaticX::transform(double q, Eigen::Matrix4d& T)
+void PrismaticX::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
-  T.block(0, 3, 3, 1) = this->T(q).block(0, 3, 3, 1);
+  T = T_org;
+  T.block(0, 3, 3, 1) += this->T(q).block(0, 3, 3, 1);
 }
 
 PrismaticY::PrismaticY()
@@ -88,9 +92,10 @@ const Eigen::Matrix4d& PrismaticY::T(double q)
   return T_;
 }
 
-void PrismaticY::transform(double q, Eigen::Matrix4d& T)
+void PrismaticY::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
-  T.block(0, 3, 3, 1) = this->T(q).block(0, 3, 3, 1);
+  T = T_org;
+  T.block(0, 3, 3, 1) += this->T(q).block(0, 3, 3, 1);
 }
 
 PrismaticZ::PrismaticZ()
@@ -104,7 +109,8 @@ const Eigen::Matrix4d& PrismaticZ::T(double q)
   return T_;
 }
 
-void PrismaticZ::transform(double q, Eigen::Matrix4d& T)
+void PrismaticZ::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
-  T.block(0, 3, 3, 1) = this->T(q).block(0, 3, 3, 1);
+  T = T_org;
+  T.block(0, 3, 3, 1) += this->T(q).block(0, 3, 3, 1);
 }

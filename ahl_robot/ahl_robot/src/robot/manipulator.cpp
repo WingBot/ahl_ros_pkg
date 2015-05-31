@@ -70,7 +70,7 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
   this->computeForwardKinematics();
   this->computeBasicJacobian(link[link.size() - 1]->name, J0);
 
-  std::cout << J0 * dq << std::endl;
+  //std::cout << J0 * dq << std::endl;
 }
 
 void Manipulator::computeBasicJacobian(const std::string& name, Eigen::MatrixXd& J)
@@ -152,8 +152,11 @@ void Manipulator::computeForwardKinematics()
     if(link[i]->joint_type == joint::FIXED)
       continue;
 
-    link[i]->tf->transform(q.coeff(idx), T[i]);
+    link[i]->tf->transform(q.coeff(idx), link[i]->T_org, T[i]);
     ++idx;
+
+    if(link[i]->name == std::string("base_x"))
+       std::cout << T[i] << std::endl;
   }
 
   // Absolute transformation matrix
