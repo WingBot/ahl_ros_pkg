@@ -43,8 +43,14 @@ namespace ahl_youbot
 
     InterfacePtr interface_;
     ahl_robot::RobotPtr robot_;
+    ahl_robot::TfPublisherPtr tf_pub_;
+    std::string mnp_name_;
     Eigen::VectorXd q_;
     Eigen::VectorXd dq_;
+    Eigen::VectorXd q_arm_;
+    Eigen::VectorXd dq_arm_;
+    Eigen::VectorXd q_base_;
+    Eigen::VectorXd dq_base_;
 
     boost::mutex mutex_;
     ros::Timer timer_;

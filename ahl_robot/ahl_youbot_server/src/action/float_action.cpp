@@ -11,6 +11,5 @@ FloatAction::FloatAction(const std::string& action_name, const ahl_robot::RobotP
 void FloatAction::execute(void* goal)
 {
   req_.get();
-
-  ROS_INFO_STREAM("FloatAction");
+  //ROS_INFO_STREAM("FloatAction");
 }

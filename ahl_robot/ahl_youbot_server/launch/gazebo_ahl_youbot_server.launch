@@ -3,8 +3,8 @@
     <param name="robot/real" value="false"/>
     <param name="robot/name" value="youbot"/>
     <param name="robot/mnp_name" value="mnp"/>
-    <param name="robot/period" value="0.01"/>
-    <param name="robot/servo_period" value="0.001"/>
+    <param name="robot/period" value="0.1"/>
+    <param name="robot/servo_period" value="0.01"/>
     <param name="robot/yaml" value="$(find ahl_youbot_server)/yaml/youbot.yaml"/>
   </node>
 </launch>
