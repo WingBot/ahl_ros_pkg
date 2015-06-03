@@ -1,6 +1,7 @@
 #ifndef __AHL_ROBOT_MANIPULATOR_HPP
 #define __AHL_ROBOT_MANIPULATOR_HPP
 
+#include <map>
 #include <vector>
 #include <Eigen/StdVector>
 #include "ahl_robot/robot/link.hpp"
@@ -10,7 +11,9 @@ namespace ahl_robot
   typedef std::vector< LinkPtr, Eigen::aligned_allocator<LinkPtr> > VectorLinkPtr;
   typedef std::vector< Eigen::Matrix4d, Eigen::aligned_allocator<Eigen::Matrix4d> > VectorMatrix4d;
   typedef std::vector<Eigen::Matrix3d> VectorMatrix3d;
+  typedef std::vector<Eigen::MatrixXd> VectorMatrixXd;
   typedef std::vector<Eigen::Vector3d> VectorVector3d;
+  typedef std::map<std::string, Eigen::MatrixXd, std::less<std::string>, Eigen::aligned_allocator<std::pair<const std::string, Eigen::MatrixXd> > > MapMatrixXd;
 
   class Manipulator
   {
@@ -19,15 +22,21 @@ namespace ahl_robot
     void print();
     void init(unsigned int dof, const Eigen::VectorXd& init_q);
     void update(const Eigen::VectorXd& q_msr);
-    void computeBasicJacobian(const std::string& name, Eigen::MatrixXd& J);
+    void computeBasicJacobian();
+    //void computeBasicJacobian(const std::string& name);
+    void computeMassMatrix();
     void computeVelocity();
 
     std::string name;
     VectorLinkPtr link;
+    std::map<std::string, int> name_to_idx;
 
     unsigned int dof;
 
-    Eigen::MatrixXd J0; // Basic jacobian associated with end effector
+    //Eigen::MatrixXd J0; // Basic jacobian associated with end effector
+    VectorMatrixXd J0; // Basic jacobian associated with link jacobian
+    Eigen::MatrixXd M;
+
     Eigen::VectorXd q; // Generalized coordinates
     Eigen::VectorXd pre_q; // Generalized coordinates
     Eigen::VectorXd dq; // Velocity of generalized coordinates
@@ -36,14 +45,17 @@ namespace ahl_robot
     Eigen::Quaternion<double> xr;  // Quaternion
 
     VectorMatrix4d T; // Relative transformation matrix associated with each link frame
+
   private:
     void computeForwardKinematics();
     void computeTabs(); // Should be called after updating xp
+    void computeCabs(); // Should be called after updating xp
     void computeBasicJacobian(int idx, Eigen::MatrixXd& J);
 
     double time_;
     double pre_time_;
     VectorMatrix4d T_abs_; // Transformation matrix of i-th link w.r.t base
+    VectorMatrix4d C_abs_; // Transformation matrix of i-th center of mass w.r.t base
     VectorVector3d Pin_; // End-effector position w.r.t i-th link w.r.t link
   };
 

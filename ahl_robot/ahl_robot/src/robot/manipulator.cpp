@@ -36,11 +36,15 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   pre_q = Eigen::VectorXd::Zero(dof);
   dq    = Eigen::VectorXd::Zero(dof);
 
-  J0 = Eigen::MatrixXd::Zero(6, dof);
   T_abs_.resize(dof + 1);
   for(unsigned int i = 0; i < T_abs_.size(); ++i)
   {
     T_abs_[i] = Eigen::Matrix4d::Identity();
+  }
+  C_abs_.resize(dof + 1);
+  for(unsigned int i = 0; i < C_abs_.size(); ++i)
+  {
+    C_abs_[i] = Eigen::Matrix4d::Identity();
   }
   Pin_.resize(dof + 1);
   for(unsigned int i = 0; i < Pin_.size(); ++i)
@@ -51,6 +55,13 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   q = init_q;
   this->computeForwardKinematics();
   pre_q  = q;
+
+  J0.resize(link.size());
+
+  for(unsigned int i = 0; i < link.size(); ++i)
+  {
+    name_to_idx[link[i]->name] = i;
+  }
 }
 
 void Manipulator::update(const Eigen::VectorXd& q_msr)
@@ -68,12 +79,31 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
 
   q = q_msr;
   this->computeForwardKinematics();
-  this->computeBasicJacobian(link[link.size() - 1]->name, J0);
-
-  //std::cout << J0 * dq << std::endl;
+  this->computeBasicJacobian();
 }
 
-void Manipulator::computeBasicJacobian(const std::string& name, Eigen::MatrixXd& J)
+void Manipulator::computeBasicJacobian()
+{
+  if(J0.size() != link.size())
+  {
+    std::stringstream msg;
+    msg << "J0.size() != link.size()" << std::endl
+        << "  J0.size   : " << J0.size() << std::endl
+        << "  link.size : " << link.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
+  }
+
+  for(unsigned int i = 0; i < link.size(); ++i)
+  {
+    this->computeBasicJacobian(i, J0[i]);
+  }
+
+
+  //std::string name = link[link.size() - 1]->name;
+  //this->computeBasicJacobian(name);
+}
+/*
+void Manipulator::computeBasicJacobian(const std::string& name)
 {
   if(link.size() != T.size())
   {
@@ -114,8 +144,9 @@ void Manipulator::computeBasicJacobian(const std::string& name, Eigen::MatrixXd&
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
-  this->computeBasicJacobian(idx, J);
+  //this->computeBasicJacobian(idx, J0[name]);
 }
+*/
 
 void Manipulator::print()
 {
@@ -154,22 +185,28 @@ void Manipulator::computeForwardKinematics()
 
     link[i]->tf->transform(q.coeff(idx), link[i]->T_org, T[i]);
     ++idx;
-
-    if(link[i]->name == std::string("base_x"))
-       std::cout << T[i] << std::endl;
   }
 
   // Absolute transformation matrix
   this->computeTabs();
+  this->computeCabs();
 
   // Compute distance between i-th link and end-effector w.r.t base
-  if(T_abs_.size() != Pin_.size())
+  if(T_abs_.size() != C_abs_.size())
+  {
+    std::stringstream msg;
+    msg << "T_abs_.size() != C_abs_.size()" << std::endl
+        << "  T_abs_.size    : " << T_abs_.size() << std::endl
+        << "  C_abs_.size : " << C_abs_.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeForwardKinematics", msg.str());
+  }
+  else if(T_abs_.size() != Pin_.size())
   {
     std::stringstream msg;
     msg << "T_abs_.size() != Pin_.size()" << std::endl
         << "  T_abs_.size    : " << T_abs_.size() << std::endl
         << "  Pin_.size : " << Pin_.size();
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeTabs", msg.str());
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeForwardKinematics", msg.str());
   }
   else if(Pin_.size() == 0)
   {
@@ -224,6 +261,40 @@ void Manipulator::computeTabs()
   }
 }
 
+void Manipulator::computeCabs()
+{
+  if(C_abs_.size() != T_abs_.size())
+  {
+    std::stringstream msg;
+    msg << "C_abs_.size() != T_abs_.size()" << std::endl
+        << "  C_abs_.size : " << C_abs_.size() << std::endl
+        << "  T_abs_.size : " << T_abs_.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeCabs", msg.str());
+  }
+  else if(C_abs_.size() != link.size())
+  {
+    std::stringstream msg;
+    msg << "C_abs_.size() != link.size()" << std::endl
+        << "  C_abs_.size : " << C_abs_.size() << std::endl
+        << "  link.size   : " << link.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeCabs", msg.str());
+  }
+  else if(C_abs_.size() == 0)
+  {
+    std::stringstream msg;
+    msg << "C_abs_.size() == 0" << std::endl
+        << "  C_abs_.size    : " << C_abs_.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeCabs", msg.str());
+  }
+
+  for(unsigned int i = 1; i < C_abs_.size(); ++i)
+  {
+    Eigen::Matrix4d Tlc = Eigen::Matrix4d::Identity();
+    Tlc.block(0, 3, 3, 1) = link[i]->C;
+    C_abs_[i] = T_abs_[i] * Tlc;
+  }
+}
+
 void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
 {
   J = Eigen::MatrixXd::Zero(6, dof);
@@ -233,22 +304,27 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
   {
     if(link[i]->ep) // joint_type is prismatic
     {
-      J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
-      J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      J.block(0, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      J.block(3, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
     }
     else // joint_type is revolute
     {
-      J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(Pin_[i]);
-      J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      J.block(0, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(Pin_[i]);
+      J.block(3, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
     }
+  }
+
+  if(idx < dof)
+  {
+    return;
   }
 
   // Pne is the distance between end-effector and last joint w.r.t base
   Eigen::MatrixXd J_Pne = Eigen::MatrixXd::Identity(6, 6);
   Eigen::Vector3d Pne;
-  if(T_abs_.size() - 2 >= 0.0)
+  if(T_abs_.size() - 1 - 1 >= 0.0)
   {
-    Pne = xp - T_abs_[T_abs_.size() - 2].block(0, 3, 3, 1);
+    Pne = xp - T_abs_[T_abs_.size() - 1 - 1].block(0, 3, 3, 1);
   }
   else
   {
@@ -258,6 +334,7 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
   }
 
+  // TODO : If link is not end-effector, the following procedures are wrong.
   // Compute basic jacobian associated with end-effector
   Eigen::Matrix3d Pne_cross;
   Pne_cross <<           0.0,  Pne.coeff(2), -Pne.coeff(1),
@@ -265,6 +342,11 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
                 Pne.coeff(1), -Pne.coeff(0),           0.0;
   J_Pne.block(0, 3, 3, 3) = Pne_cross;
   J = J_Pne * J;
+}
+
+void computeMassMatrix()
+{
+
 }
 
 void Manipulator::computeVelocity()

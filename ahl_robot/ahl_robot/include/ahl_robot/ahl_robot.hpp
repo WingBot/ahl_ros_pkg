@@ -3,6 +3,7 @@
 
 #include "ahl_robot/exception.hpp"
 #include "ahl_robot/robot/robot.hpp"
+#include "ahl_robot/robot/manipulator.hpp"
 #include "ahl_robot/robot/parser.hpp"
 #include "ahl_robot/tf/tf_publisher.hpp"
 
