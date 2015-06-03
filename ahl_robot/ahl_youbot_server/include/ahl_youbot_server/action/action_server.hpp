@@ -5,6 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <ros/ros.h>
+#include <ahl_robot_controller/robot_controller.hpp>
 
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
 #include "ahl_youbot_server/action/action.hpp"
@@ -51,6 +52,8 @@ namespace ahl_youbot
     Eigen::VectorXd dq_arm_;
     Eigen::VectorXd q_base_;
     Eigen::VectorXd dq_base_;
+
+    ahl_ctrl::RobotControllerPtr controller_;
 
     boost::mutex mutex_;
     ros::Timer timer_;

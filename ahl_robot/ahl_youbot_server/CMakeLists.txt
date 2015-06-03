@@ -5,6 +5,7 @@ find_package(
   catkin REQUIRED COMPONENTS
     ahl_robot
     ahl_robot_actions
+    ahl_robot_controller
     ahl_robot_srvs
     gazebo_msgs
     geometry_msgs
@@ -39,6 +40,7 @@ catkin_package(
   CATKIN_DEPENDS
     ahl_robot
     ahl_robot_actions
+    ahl_robot_controller
     ahl_robot_srvs
     gazebo_msgs
     geometry_msgs

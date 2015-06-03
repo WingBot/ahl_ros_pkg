@@ -39,7 +39,7 @@ ActionServer::ActionServer(
   robot_ = RobotPtr(new Robot(robot_name));
   ParserPtr parser = ParserPtr(new Parser());
   parser->load(yaml, robot_);
-  robot_->getJointStates(mnp_name, q_);
+  q_ = robot_->getJointPosition(mnp_name);
   dq_ = Eigen::VectorXd::Zero(q_.rows());
 
   const int xy_yaw = 3;
@@ -73,9 +73,13 @@ ActionServer::ActionServer(
   // Initialize TfPublisher
   tf_pub_ = ahl_robot::TfPublisherPtr(new ahl_robot::TfPublisher());
 
+  // Initialize robot controller
+  //controller_ = ahl_ctrl::RobotControllerPtr();
+  //controller_->init(robot_, mnp_name);
+
   // Initialize action
   action_[Action::FLOAT] = ActionPtr(
-    new FloatAction("float", robot_));
+    new FloatAction("float", robot_, controller_));
   action_[Action::SET_JOINT] = ActionPtr(
     new SetJointAction("set_joint_action", robot_));
   action_[Action::JOINT_SPACE_CONTROL] = ActionPtr(
@@ -126,10 +130,17 @@ void ActionServer::timerCB(const ros::TimerEvent&)
         q_.coeffRef(i + q_base_.rows()) = q_arm_.coeff(i);
       }
 
-      std::cout << "q : " << std::endl;
-      std::cout << q_ << std::endl;
+      //std::cout << "q : " << std::endl;
+      //std::cout << q_ << std::endl;
 
       robot_->update(mnp_name_, q_);
+
+      Eigen::VectorXd dq = robot_->getJointVelocity(mnp_name_);
+      Eigen::MatrixXd J0 = robot_->getBasicJacobian(mnp_name_, "gripper");
+
+      std::cout << dq << std::endl;
+      std::cout << J0 * dq << std::endl << std::endl;
+
       tf_pub_->publish(robot_, false);
       updated_model_ = true;
     }

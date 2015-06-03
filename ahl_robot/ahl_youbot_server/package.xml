@@ -11,6 +11,7 @@
 
   <build_depend>ahl_robot</build_depend>
   <build_depend>ahl_robot_actions</build_depend>
+  <build_depend>ahl_robot_controller</build_depend>
   <build_depend>ahl_robot_srvs</build_depend>
   <build_depend>gazebo_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
@@ -20,6 +21,7 @@
 
   <run_depend>ahl_robot</run_depend>
   <run_depend>ahl_robot_actions</run_depend>
+  <run_depend>ahl_robot_controller</run_depend>
   <run_depend>ahl_robot_srvs</run_depend>
   <run_depend>gazebo_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
