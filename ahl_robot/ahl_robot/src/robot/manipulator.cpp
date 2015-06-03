@@ -80,73 +80,8 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
   q = q_msr;
   this->computeForwardKinematics();
   this->computeBasicJacobian();
+  this->computeMassMatrix();
 }
-
-void Manipulator::computeBasicJacobian()
-{
-  if(J0.size() != link.size())
-  {
-    std::stringstream msg;
-    msg << "J0.size() != link.size()" << std::endl
-        << "  J0.size   : " << J0.size() << std::endl
-        << "  link.size : " << link.size();
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
-  }
-
-  for(unsigned int i = 0; i < link.size(); ++i)
-  {
-    this->computeBasicJacobian(i, J0[i]);
-  }
-
-
-  //std::string name = link[link.size() - 1]->name;
-  //this->computeBasicJacobian(name);
-}
-/*
-void Manipulator::computeBasicJacobian(const std::string& name)
-{
-  if(link.size() != T.size())
-  {
-    std::stringstream msg;
-    msg << "link.size() != T.size()" << std::endl
-        << "  link.size : " << link.size() << std::endl
-        << "  T.size    : " << T.size();
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
-  }
-
-  if(link.size() != dof + 1)
-  {
-    std::stringstream msg;
-    msg << "mnp->link.size() != dof + 1" << std::endl
-        << "The number of link should be DOF + 1,"
-        << "including virtual link which is attached to operational point frame and following the last link." << std::endl
-        << "  mnp : " << name << std::endl
-        << "  link.size : " << link.size() << std::endl
-        << "  dof : " << dof;
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
-  }
-
-  // Find the index of the link of the name
-  int idx = -1;
-  for(unsigned int i = 0; i < link.size(); ++i)
-  {
-    if(link[i]->name == name)
-    {
-      idx = i;
-      break;
-    }
-  }
-
-  if(idx < 0)
-  {
-    std::stringstream msg;
-    msg << "Could not find link : " << name << ".";
-    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
-  }
-
-  //this->computeBasicJacobian(idx, J0[name]);
-}
-*/
 
 void Manipulator::print()
 {
@@ -295,6 +230,24 @@ void Manipulator::computeCabs()
   }
 }
 
+
+void Manipulator::computeBasicJacobian()
+{
+  if(J0.size() != link.size())
+  {
+    std::stringstream msg;
+    msg << "J0.size() != link.size()" << std::endl
+        << "  J0.size   : " << J0.size() << std::endl
+        << "  link.size : " << link.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
+  }
+
+  for(unsigned int i = 0; i < link.size(); ++i)
+  {
+    this->computeBasicJacobian(i, J0[i]);
+  }
+}
+
 void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
 {
   J = Eigen::MatrixXd::Zero(6, dof);
@@ -344,7 +297,7 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
   J = J_Pne * J;
 }
 
-void computeMassMatrix()
+void Manipulator::computeMassMatrix()
 {
 
 }

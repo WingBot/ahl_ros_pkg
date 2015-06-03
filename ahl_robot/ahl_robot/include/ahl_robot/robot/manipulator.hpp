@@ -19,13 +19,11 @@ namespace ahl_robot
   {
   public:
     Manipulator();
-    void print();
     void init(unsigned int dof, const Eigen::VectorXd& init_q);
     void update(const Eigen::VectorXd& q_msr);
-    void computeBasicJacobian();
+    void print();
+
     //void computeBasicJacobian(const std::string& name);
-    void computeMassMatrix();
-    void computeVelocity();
 
     std::string name;
     VectorLinkPtr link;
@@ -35,7 +33,7 @@ namespace ahl_robot
 
     //Eigen::MatrixXd J0; // Basic jacobian associated with end effector
     VectorMatrixXd J0; // Basic jacobian associated with link jacobian
-    Eigen::MatrixXd M;
+    Eigen::MatrixXd M; // Mass matrix
 
     Eigen::VectorXd q; // Generalized coordinates
     Eigen::VectorXd pre_q; // Generalized coordinates
@@ -50,7 +48,10 @@ namespace ahl_robot
     void computeForwardKinematics();
     void computeTabs(); // Should be called after updating xp
     void computeCabs(); // Should be called after updating xp
+    void computeBasicJacobian();
     void computeBasicJacobian(int idx, Eigen::MatrixXd& J);
+    void computeMassMatrix();
+    void computeVelocity();
 
     double time_;
     double pre_time_;
