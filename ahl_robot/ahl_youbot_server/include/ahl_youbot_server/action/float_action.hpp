@@ -5,6 +5,7 @@
 #include <ahl_robot_controller/robot_controller.hpp>
 #include <ahl_robot_controller/task/task.hpp>
 #include "ahl_youbot_server/action/action.hpp"
+#include "ahl_youbot_server/interface/interface.hpp"
 
 namespace ahl_youbot
 {
@@ -12,7 +13,7 @@ namespace ahl_youbot
   class FloatAction : public Action
   {
   public:
-    FloatAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller);
+    FloatAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface);
 
     virtual void execute(void* goal);
 
@@ -23,6 +24,7 @@ namespace ahl_youbot
     ahl_ctrl::RobotControllerPtr controller_;
     ahl_ctrl::TaskPtr task_;
     ahl_robot::RobotPtr robot_;
+    InterfacePtr interface_;
     FloatRequestPtr req_;
   };
 

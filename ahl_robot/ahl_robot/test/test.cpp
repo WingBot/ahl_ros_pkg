@@ -41,7 +41,6 @@ int main(int argc, char** argv)
       robot->update(mnp_name, q);
       Eigen::VectorXd dq = robot->getJointVelocity(mnp_name);
       Eigen::MatrixXd J0 = robot->getBasicJacobian(mnp_name);
-      std::cout << J0 * dq << std::endl << std::endl;
       tf_publisher->publish(robot, false);
       r.sleep();
     }

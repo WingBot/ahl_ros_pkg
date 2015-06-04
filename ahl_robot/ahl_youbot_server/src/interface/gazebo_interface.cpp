@@ -123,6 +123,8 @@ bool GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
 
     effort_.effort[idx] = tau.coeff(i);
   }
+
+  pub_apply_joint_efforts_.publish(effort_);
 }
 
 void GazeboInterface::jointStatesCB(const gazebo_msgs::JointStates::ConstPtr& msg)

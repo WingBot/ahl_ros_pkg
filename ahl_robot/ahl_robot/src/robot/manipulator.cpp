@@ -57,6 +57,7 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   pre_q  = q;
 
   J0.resize(link.size());
+  M.resize(dof, dof);
 
   for(unsigned int i = 0; i < link.size(); ++i)
   {
@@ -222,7 +223,7 @@ void Manipulator::computeCabs()
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeCabs", msg.str());
   }
 
-  for(unsigned int i = 1; i < C_abs_.size(); ++i)
+  for(unsigned int i = 0; i < C_abs_.size(); ++i)
   {
     Eigen::Matrix4d Tlc = Eigen::Matrix4d::Identity();
     Tlc.block(0, 3, 3, 1) = link[i]->C;
@@ -252,18 +253,125 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
 {
   J = Eigen::MatrixXd::Zero(6, dof);
 
+  if(idx < dof) // Not required to consider end-effector
+  {
+    for(unsigned int i = 0; i <= idx; ++i)
+    {
+      if(link[i]->ep) // joint_type is prismatic
+      {
+        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      }
+      else // joint_type is revolute
+      {
+        Eigen::Matrix4d Tib;
+        math::calculateInverseTransformationMatrix(T_abs_[i], Tib);
+        Eigen::Matrix4d Cin = Tib * C_abs_[idx];
+        Eigen::Vector3d P = Cin.block(0, 3, 3, 1);
+
+        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
+        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      }
+    }
+/*    if(link[idx]->ep) // joint_type is prismatic
+    {
+      J.block(0, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * link[idx]->tf->axis();
+      J.block(3, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+    }
+    else
+    {
+      J.block(0, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      J.block(3, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * link[idx]->tf->axis();
+    }
+*/
+  }
+  else // Required to consider the offset of end-effector
+  {
+    //idx == 6 if 6dof
+    --idx;
+    for(unsigned int i = 0; i <= idx; ++i)
+    {
+      if(link[i]->ep) // joint_type is prismatic
+      {
+        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      }
+      else // joint_type is revolute
+      {
+        Eigen::Matrix4d Tib;
+        math::calculateInverseTransformationMatrix(T_abs_[i], Tib);
+        Eigen::Matrix4d Cin = Tib * C_abs_[idx];
+        Eigen::Vector3d P = Cin.block(0, 3, 3, 1);
+
+        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
+        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      }
+    }
+/*
+    if(link[idx]->ep) // joint_type is prismatic
+    {
+      J.block(0, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * link[idx]->tf->axis();
+      J.block(3, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+    }
+    else
+    {
+      J.block(0, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      J.block(3, idx, 3, 1) = T_abs_[idx].block(0, 0, 3, 3) * link[idx]->tf->axis();
+    }
+*/
+    Eigen::MatrixXd J_Pne = Eigen::MatrixXd::Identity(6, 6);
+    Eigen::Vector3d Pne;
+    if(C_abs_.size() - 1 - 1 >= 0.0)
+    {
+      Pne = xp - C_abs_[C_abs_.size() - 1 - 1].block(0, 3, 3, 1);
+    }
+    else
+    {
+      std::stringstream msg;
+      msg << "C_abs_.size() <= 1" << std::endl
+          << "Manipulator doesn't have enough links." << std::endl;
+      throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
+    }
+
+    Eigen::Matrix3d Pne_cross;
+    Pne_cross <<           0.0,  Pne.coeff(2), -Pne.coeff(1),
+                 -Pne.coeff(2),           0.0,  Pne.coeff(0),
+                  Pne.coeff(1), -Pne.coeff(0),           0.0;
+    J_Pne.block(0, 3, 3, 3) = Pne_cross;
+    J = J_Pne * J;
+  }
+}
+
+/*
+void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
+{
+  J = Eigen::MatrixXd::Zero(6, dof);
+
+  int max_iterations = idx;
+  if(idx < dof)
+    ++max_iterations;
+
   // Compute basic jacobian
-  for(unsigned int i = 0; i < idx; ++i)
+  for(unsigned int i = 0; i < max_iterations; ++i)
   {
     if(link[i]->ep) // joint_type is prismatic
     {
-      J.block(0, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
-      J.block(3, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+      J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
     }
     else // joint_type is revolute
     {
-      J.block(0, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(Pin_[i]);
-      J.block(3, i, 3, 1) = C_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+      Eigen::Matrix4d Tib;
+      math::calculateInverseTransformationMatrix(T_abs_[i], Tib);
+      Eigen::Matrix4d Tin = Tib * T_abs_[idx];
+      Eigen::Vector3d P = Tin.block(0, 3, 3, 1); // Vector from i-th frame to idx-th frame w.r.t i-th frame
+
+      //J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(Pin_[i]);
+      J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
+      J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+
+      std::cout << i << ", " << idx << std::endl;
+      std::cout << link[i]->tf->axis().cross(P) << std::endl << std::endl;
     }
   }
 
@@ -296,15 +404,25 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
   J_Pne.block(0, 3, 3, 3) = Pne_cross;
   J = J_Pne * J;
 }
-
+*/
 void Manipulator::computeMassMatrix()
 {
+  M = Eigen::MatrixXd::Zero(M.rows(), M.cols());
 
+  for(unsigned int i = 0; i < link.size(); ++i)
+  {
+    Eigen::MatrixXd Jv = J0[i].block(0, 0, 3, J0[i].cols());
+    Eigen::MatrixXd Jw = J0[i].block(3, 0, 3, J0[i].cols());
+
+    M += link[i]->m * Jv.transpose() * Jv + Jw.transpose() * link[i]->I * Jw;
+  }
 }
 
 void Manipulator::computeVelocity()
 {
   double dt = (time_ - pre_time_) * 0.001;
+  dt = 0.01;
+
   if(dt > 0.0)
   {
     dq  = (q - pre_q) / dt;

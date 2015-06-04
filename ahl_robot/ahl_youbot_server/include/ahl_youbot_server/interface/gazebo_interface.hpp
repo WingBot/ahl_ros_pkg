@@ -35,7 +35,6 @@ namespace ahl_youbot
     std::map<std::string, double> dq_;
     gazebo_msgs::ApplyJointEfforts effort_;
     ros::Time start_time_;
-
   };
 
 }

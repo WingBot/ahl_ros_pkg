@@ -81,6 +81,21 @@ target_link_libraries(
     ahl_robot
 )
 
+add_executable(
+  parser_test2
+    test/test2.cpp
+)
+
+add_dependencies(
+  parser_test2
+    ahl_robot_gencpp
+)
+
+target_link_libraries(
+  parser_test2
+    ahl_robot
+)
+
 #############
 ## Install ##
 #############
