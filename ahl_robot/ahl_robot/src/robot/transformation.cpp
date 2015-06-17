@@ -23,7 +23,7 @@ const Eigen::Matrix4d& RevoluteX::T(double q)
 void RevoluteX::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
   T = T_org;
-  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3) * T.block(0, 0, 3, 3);
+  T.block(0, 0, 3, 3) = T_org.block(0, 0, 3, 3) * this->T(q).block(0, 0, 3, 3);
 }
 
 RevoluteY::RevoluteY()
@@ -42,7 +42,7 @@ const Eigen::Matrix4d& RevoluteY::T(double q)
 void RevoluteY::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
   T = T_org;
-  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3) * T.block(0, 0, 3, 3);
+  T.block(0, 0, 3, 3) = T_org.block(0, 0, 3, 3) * this->T(q).block(0, 0, 3, 3);
 }
 
 RevoluteZ::RevoluteZ()
@@ -61,7 +61,7 @@ const Eigen::Matrix4d& RevoluteZ::T(double q)
 void RevoluteZ::transform(double q, const Eigen::Matrix4d& T_org, Eigen::Matrix4d& T)
 {
   T = T_org;
-  T.block(0, 0, 3, 3) = this->T(q).block(0, 0, 3, 3) * T.block(0, 0, 3, 3);
+  T.block(0, 0, 3, 3) = T_org.block(0, 0, 3, 3) * this->T(q).block(0, 0, 3, 3);
 }
 
 PrismaticX::PrismaticX()
