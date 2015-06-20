@@ -48,7 +48,7 @@ int main(int argc, char** argv)
       {
         q.coeffRef(i) = M_PI / 4.0 * goal;
       }
-      q = Eigen::VectorXd::Constant(q.rows(), M_PI / 4.0);
+      q = Eigen::VectorXd::Constant(q.rows(), 0.0 * M_PI / 4.0);
 
       robot->update(mnp_name, q);
       M = robot->getMassMatrix(mnp_name);
