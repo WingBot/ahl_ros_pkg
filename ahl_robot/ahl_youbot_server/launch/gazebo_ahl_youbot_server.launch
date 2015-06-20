@@ -6,6 +6,6 @@
     <param name="robot/mnp_name" value="mnp"/>
     <param name="robot/period" value="0.01"/>
     <param name="robot/servo_period" value="0.001"/>
-    <param name="robot/yaml" value="$(find ahl_youbot_server)/yaml/youbot.yaml"/>
+    <param name="robot/yaml" value="$(find ahl_youbot_server)/yaml/youbot_sim.yaml"/>
   </node>
 </launch>

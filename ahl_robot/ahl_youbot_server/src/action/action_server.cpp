@@ -31,7 +31,7 @@ ActionServer::ActionServer(
     joint_list.push_back("youbot::arm_joint_3");
     joint_list.push_back("youbot::arm_joint_4");
     joint_list.push_back("youbot::arm_joint_5");
-    interface_ = InterfacePtr(new GazeboInterface(joint_list, servo_period * 10.0));
+    interface_ = InterfacePtr(new GazeboInterface(joint_list, servo_period * 5.0));
   }
 
   // Initialize robot
@@ -121,8 +121,6 @@ void ActionServer::timerCB(const ros::TimerEvent&)
     if(interface_->getJointStates(q_arm_))
     // TO DO : get base motion
     {
-      std::cout << q_arm_ << std::endl << std::endl;
-
       for(unsigned int i = 0; i < q_base_.rows(); ++i)
       {
         q_.coeffRef(i) = q_base_.coeff(i);
@@ -142,12 +140,6 @@ void ActionServer::timerCB(const ros::TimerEvent&)
         mnp->dq(i + q_base_.rows()) = dq_arm_.coeff(i);
       }
 */
-      Eigen::VectorXd dq = robot_->getJointVelocity(mnp_name_);
-      Eigen::MatrixXd J0 = robot_->getBasicJacobian(mnp_name_, "gripper");
-
-      //std::cout << dq << std::endl;
-      //std::cout << J0 * dq << std::endl << std::endl;
-
       tf_pub_->publish(robot_, false);
       updated_model_ = true;
     }

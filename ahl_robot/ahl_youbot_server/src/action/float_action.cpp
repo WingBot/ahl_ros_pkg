@@ -1,3 +1,4 @@
+#include <ros/ros.h>
 #include <ahl_robot/robot/manipulator.hpp>
 #include <ahl_robot_controller/task/joint_control.hpp>
 #include <ahl_robot_controller/task/gravity_compensation.hpp>
@@ -20,7 +21,22 @@ FloatAction::FloatAction(const std::string& action_name, const ahl_robot::RobotP
 void FloatAction::execute(void* goal)
 {
   ManipulatorPtr mnp = robot_->getManipulator("mnp");
-  task_->setGoal(mnp->q);
+  Eigen::VectorXd q = Eigen::VectorXd::Zero(mnp->dof);
+  double sinval = sin(2.0 * M_PI * 0.1 * ros::Time::now().toNSec() * 0.001 * 0.001 * 0.001);
+
+  q.coeffRef(0) = mnp->q.coeff(0);
+  q.coeffRef(1) = mnp->q.coeff(1);
+  q.coeffRef(2) = mnp->q.coeff(2);
+
+  q.coeffRef(3) =  M_PI / 4.0 * sinval;
+  q.coeffRef(4) =  M_PI / 4.0 * sinval;
+  q.coeffRef(5) =  M_PI / 4.0 * sinval;
+  q.coeffRef(6) =  M_PI / 4.0 * sinval;
+  q.coeffRef(7) =  M_PI / 4.0 * sinval;
+
+  std::cout << "diff : " << std::endl << (q.coeff(7) - mnp->q.coeff(7)) * (1.0 / M_PI) * 180.0 << std::endl << std::endl;
+
+  task_->setGoal(q);
 
   //std::cout << "q : " << std::endl << mnp->q << std::endl
   //          << "dq : " << std::endl << mnp->dq << std::endl;
@@ -36,5 +52,4 @@ void FloatAction::execute(void* goal)
 
   interface_->applyJointEfforts(tau_arm);
   //ROS_INFO_STREAM("FloatAction");
-  //std::cout << tau_arm << std::endl << std::endl;
 }
