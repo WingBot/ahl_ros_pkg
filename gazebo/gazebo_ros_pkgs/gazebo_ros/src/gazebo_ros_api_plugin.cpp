@@ -1378,6 +1378,7 @@ void GazeboRosApiPlugin::updateModelState(const gazebo_msgs::ModelState::ConstPt
 void GazeboRosApiPlugin::applyJointEfforts(const gazebo_msgs::ApplyJointEfforts::ConstPtr& effort)
 {
   gazebo::physics::JointPtr joint;
+
   for (unsigned int i = 0; i < effort->name.size(); ++i)
   {
     bool found = false;
@@ -1401,7 +1402,7 @@ void GazeboRosApiPlugin::applyJointEfforts(const gazebo_msgs::ApplyJointEfforts:
 
     if (!found)
     {
-      ROS_ERROR_STREAM("ApplyJointEfforts: joint not found");
+      ROS_ERROR_STREAM("ApplyJointEfforts: " << effort->name[i] << " was not found");
       return;
     }
   }
