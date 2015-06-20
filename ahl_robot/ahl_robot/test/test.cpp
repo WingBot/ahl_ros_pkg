@@ -34,13 +34,23 @@ int main(int argc, char** argv)
       ++cnt;
 
       q = coeff * q;
-      q.coeffRef(0) = coeff;
-      q.coeffRef(1) = coeff;
-      q.coeffRef(2) = coeff;
+      q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), M_PI / 2.0);
+      q.coeffRef(0) = 0.0;
+      q.coeffRef(1) = 0.0;
+      q.coeffRef(2) = 0.0;
 
       robot->update(mnp_name, q);
       Eigen::VectorXd dq = robot->getJointVelocity(mnp_name);
       Eigen::MatrixXd J0 = robot->getBasicJacobian(mnp_name);
+
+      std::cout << robot->getMassMatrix(mnp_name) << std::endl << std::endl;
+      ManipulatorPtr mnp = robot->getManipulator(mnp_name);
+      for(unsigned int i = 0; i < mnp->J0.size(); ++i)
+      {
+        //  std::cout << "J0[" << i << "] : " << std::endl
+        //          << mnp->J0[i] << std::endl;
+      }
+
       tf_publisher->publish(robot, false);
       r.sleep();
     }
