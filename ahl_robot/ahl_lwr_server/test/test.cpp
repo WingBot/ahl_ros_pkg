@@ -102,7 +102,12 @@ void control(const ros::TimerEvent&)
       else
       {
         Eigen::Vector3d xd;
-        xd << 0.35, 0.2, 0.8;
+        xd << 0.4, 0.3, 0.7;
+        for(unsigned int i = 0; i < 3; ++i)
+        {
+          xd.coeffRef(i) += 0.1 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
+        }
+
         position_control->setGoal(xd);
         orientation_control->setGoal(Eigen::Matrix3d::Identity());
       }
