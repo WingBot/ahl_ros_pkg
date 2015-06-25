@@ -11,8 +11,17 @@ Eigen::MatrixXd T0, T1, T2;
 
 void calc()
 {
-  std::cout << "M : " << std::endl << M << std::endl
-            << "J : " << std::endl << J << std::endl << std::endl;
+  //std::cout << "M : " << std::endl << M.inverse() << std::endl;
+  //          << "J : " << std::endl << J << std::endl << std::endl;
+  Eigen::MatrixXd M_inv = M.inverse();
+  Eigen::MatrixXd Jv = J.block(0, 0, 3, J.cols());
+  Eigen::MatrixXd Lambda_inv = Jv * M_inv * Jv.transpose();
+  Eigen::MatrixXd Lambda = Lambda_inv.inverse();
+  Eigen::MatrixXd J_dyn_inv = M_inv * Jv.transpose() * Lambda;
+  Eigen::MatrixXd I = Eigen::MatrixXd::Identity(7, 7);
+  Eigen::MatrixXd N = I - J_dyn_inv * Jv;
+
+  std::cout << N.transpose() << std::endl << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -48,9 +57,11 @@ int main(int argc, char** argv)
       {
         q.coeffRef(i) = M_PI / 4.0 * goal;
       }
-      q = Eigen::VectorXd::Constant(q.rows(), 0.0 * M_PI / 4.0);
+      q = Eigen::VectorXd::Constant(q.rows(), M_PI / 4.0);
 
       robot->update(mnp_name, q);
+      robot->computeBasicJacobian(mnp_name);
+      robot->computeMassMatrix(mnp_name);
       M = robot->getMassMatrix(mnp_name);
       J = robot->getBasicJacobian(mnp_name, "gripper");
 

@@ -9,10 +9,11 @@ namespace ahl_ctrl
   class GravityCompensation : public Task
   {
   public:
-    GravityCompensation(const ahl_robot::ManipulatorPtr& mnp, int priority);
-    void computeGeneralizedForce(Eigen::VectorXd& tau);
+    GravityCompensation(const ahl_robot::ManipulatorPtr& mnp);
+    GravityCompensation(const ahl_robot::ManipulatorPtr& mnp, const Eigen::Vector3d& g);
+    virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
   private:
-
+    Eigen::Vector3d g_;
   };
 
 }

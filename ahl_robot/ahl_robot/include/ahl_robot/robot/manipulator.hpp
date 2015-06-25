@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <Eigen/StdVector>
+#include <ahl_digital_filter/differentiator.hpp>
 #include "ahl_robot/robot/link.hpp"
 
 namespace ahl_robot
@@ -21,6 +22,9 @@ namespace ahl_robot
     Manipulator();
     void init(unsigned int dof, const Eigen::VectorXd& init_q);
     void update(const Eigen::VectorXd& q_msr);
+    void computeBasicJacobian();
+    void computeMassMatrix();
+    bool reached(const Eigen::VectorXd& qd, double threshold);
     void print();
 
     //void computeBasicJacobian(const std::string& name);
@@ -34,6 +38,7 @@ namespace ahl_robot
     //Eigen::MatrixXd J0; // Basic jacobian associated with end effector
     VectorMatrixXd J0; // Basic jacobian associated with link jacobian
     Eigen::MatrixXd M; // Mass matrix
+    Eigen::MatrixXd M_inv;
 
     Eigen::VectorXd q; // Generalized coordinates
     Eigen::VectorXd pre_q; // Generalized coordinates
@@ -43,21 +48,23 @@ namespace ahl_robot
     Eigen::Quaternion<double> xr;  // Quaternion
 
     VectorMatrix4d T; // Relative transformation matrix associated with each link frame
+    VectorMatrix4d T_abs; // Transformation matrix of i-th link w.r.t base
 
   private:
     void computeForwardKinematics();
     void computeTabs(); // Should be called after updating xp
     void computeCabs(); // Should be called after updating xp
-    void computeBasicJacobian();
+
     void computeBasicJacobian(int idx, Eigen::MatrixXd& J);
-    void computeMassMatrix();
     void computeVelocity();
 
     double time_;
     double pre_time_;
-    VectorMatrix4d T_abs_; // Transformation matrix of i-th link w.r.t base
     VectorMatrix4d C_abs_; // Transformation matrix of i-th center of mass w.r.t base
     VectorVector3d Pin_; // End-effector position w.r.t i-th link w.r.t link
+
+    ahl_filter::DifferentiatorPtr differentiator_;
+    bool updated_joint_;
   };
 
   typedef boost::shared_ptr<Manipulator> ManipulatorPtr;

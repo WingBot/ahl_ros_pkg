@@ -10,11 +10,8 @@ namespace ahl_ctrl
   class JointControl : public Task
   {
   public:
-    JointControl(const ahl_robot::ManipulatorPtr& mnp, int priority);
-    void setGoal(const Eigen::VectorXd& qd)
-    {
-      qd_ = qd;
-    }
+    JointControl(const ahl_robot::ManipulatorPtr& mnp);
+    void setGoal(const Eigen::MatrixXd& qd);
     void computeGeneralizedForce(Eigen::VectorXd& tau);
 
   private:

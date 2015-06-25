@@ -30,26 +30,24 @@ int main(int argc, char** argv)
     while(ros::ok())
     {
       Eigen::VectorXd q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), 1.0);
-      double coeff = 0.5 * sin(2.0 * M_PI * 0.1 * cnt * 0.1);
+      double coeff = 1.0 * sin(2.0 * M_PI * 0.1 * cnt * 0.1);
       ++cnt;
 
       q = coeff * q;
-      q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), M_PI / 2.0);
+      //q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), M_PI / 2.0);
       q.coeffRef(0) = 0.0;
       q.coeffRef(1) = 0.0;
       q.coeffRef(2) = 0.0;
 
       robot->update(mnp_name, q);
+      robot->computeBasicJacobian(mnp_name);
+      robot->computeMassMatrix(mnp_name);
+
       Eigen::VectorXd dq = robot->getJointVelocity(mnp_name);
       Eigen::MatrixXd J0 = robot->getBasicJacobian(mnp_name);
 
-      std::cout << robot->getMassMatrix(mnp_name) << std::endl << std::endl;
-      ManipulatorPtr mnp = robot->getManipulator(mnp_name);
-      for(unsigned int i = 0; i < mnp->J0.size(); ++i)
-      {
-        //  std::cout << "J0[" << i << "] : " << std::endl
-        //          << mnp->J0[i] << std::endl;
-      }
+      std::cout << dq << std::endl << std::endl;
+      std::cout << cos(2.0 * M_PI * 0.1 * cnt * 0.1) << std::endl;
 
       tf_publisher->publish(robot, false);
       r.sleep();

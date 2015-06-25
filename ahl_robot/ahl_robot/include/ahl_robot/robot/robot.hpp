@@ -18,6 +18,9 @@ namespace ahl_robot
     }
 
     void update(const std::string& mnp_name, const Eigen::VectorXd& q);
+    void computeBasicJacobian(const std::string& mnp_name);
+    void computeMassMatrix(const std::string& mnp_name);
+    bool reached(const std::string& mnp_name, const Eigen::VectorXd& qd, double threshold);
 
     void setPosition(const Eigen::Vector3d& p)
     {
@@ -72,6 +75,7 @@ namespace ahl_robot
     const Eigen::VectorXd& getJointPosition(const std::string& mnp_name);
     const Eigen::VectorXd& getJointVelocity(const std::string& mnp_name);
     const Eigen::MatrixXd& getMassMatrix(const std::string& mnp_name);
+    const Eigen::MatrixXd& getMassMatrixInv(const std::string& mnp_name);
     unsigned int getDOF(const std::string& mnp_name);
 
   private:

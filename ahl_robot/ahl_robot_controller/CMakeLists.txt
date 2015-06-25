@@ -18,33 +18,6 @@ find_package(
   Eigen REQUIRED
 )
 
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
-
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
-
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
-
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   gazebo_msgs
-# )
-
 catkin_package(
   INCLUDE_DIRS
     include
@@ -77,8 +50,14 @@ add_definitions(
 
 add_library(ahl_robot_controller
   src/robot_controller.cpp
+  src/common/effective_mass_matrix3d.cpp
+  src/task/multi_task.cpp
+  src/task/damping.cpp
+  src/task/joint_limit.cpp
   src/task/joint_control.cpp
   src/task/gravity_compensation.cpp
+  src/task/position_control.cpp
+  src/task/orientation_control.cpp
 )
 
 target_link_libraries(

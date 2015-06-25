@@ -3,6 +3,7 @@ project(ahl_robot)
 
 find_package(
   catkin REQUIRED COMPONENTS
+    ahl_digital_filter
     roscpp
     std_utils
     tf2
@@ -41,6 +42,7 @@ catkin_package(
   LIBRARIES
     ahl_robot
   CATKIN_DEPENDS
+    ahl_digital_filter
     roscpp
     std_utils
     tf2

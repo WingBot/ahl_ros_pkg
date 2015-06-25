@@ -3,7 +3,9 @@
 using namespace ahl_ctrl;
 
 Param::Param()
-  : kp_joint_(0.0), kv_joint_(0.0), kp_task_(0.0), kv_task_(0.0)
+  : kp_joint(0.0), kv_joint(0.0),
+    kp_task(0.0), kv_task(0.0),
+    kp_limit(0.0), kv_limit(0.0)
 {
-  g_ << 0.0, 0.0, -9.80665;
+  g << 0.0, 0.0, -9.80665;
 }

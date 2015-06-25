@@ -11,33 +11,13 @@ namespace ahl_ctrl
   {
   public:
     Param();
-    double getKpJoint()
-    {
-      return kp_joint_;
-    }
-    double getKvJoint()
-    {
-      return kv_joint_;
-    }
-    double getKpTask()
-    {
-      return kp_task_;
-    }
-    double getKvTask()
-    {
-      return kv_task_;
-    }
-    const Eigen::VectorXd& getG() const
-    {
-      return g_;
-    }
-
-  private:
-    double kp_joint_;
-    double kv_joint_;
-    double kp_task_;
-    double kv_task_;
-    Eigen::VectorXd g_;
+    double kp_joint;
+    double kv_joint;
+    double kp_task;
+    double kv_task;
+    double kp_limit;
+    double kv_limit;
+    Eigen::Vector3d g;
   };
 
   typedef boost::shared_ptr<Param> ParamPtr;

@@ -1,6 +1,7 @@
 #ifndef __AHL_ROBOT_LINK_HPP
 #define __AHL_ROBOT_LINK_HPP
 
+#include <iostream>
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
 #include "ahl_robot/robot/transformation.hpp"

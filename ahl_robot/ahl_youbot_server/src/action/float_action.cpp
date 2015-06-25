@@ -13,8 +13,8 @@ FloatAction::FloatAction(const std::string& action_name, const ahl_robot::RobotP
   req_ = FloatRequestPtr(new FloatRequest());
   controller_ = controller;
   //task_ = ahl_ctrl::TaskPtr(new ahl_ctrl::GravityCompensation(robot->getManipulator("mnp"), 0));
-  task_ = ahl_ctrl::TaskPtr(new ahl_ctrl::JointControl(robot->getManipulator("mnp"), 0));
-  controller_->addTask(task_);
+  task_ = ahl_ctrl::TaskPtr(new ahl_ctrl::JointControl(robot->getManipulator("mnp")));
+  controller_->addTask(task_, 0);
   interface_ = interface;
 }
 

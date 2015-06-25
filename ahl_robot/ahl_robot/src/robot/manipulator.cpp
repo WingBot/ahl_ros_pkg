@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <ahl_digital_filter/pseudo_differentiator.hpp>
 #include "ahl_robot/definition.hpp"
 #include "ahl_robot/exception.hpp"
 #include "ahl_robot/robot/manipulator.hpp"
@@ -7,7 +8,7 @@
 using namespace ahl_robot;
 
 Manipulator::Manipulator()
-  : name(""), dof(0)
+  : name(""), dof(0), updated_joint_(false)
 {
   xp  = Eigen::Vector3d::Zero();
   xr.w() = 1.0;
@@ -36,10 +37,10 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   pre_q = Eigen::VectorXd::Zero(dof);
   dq    = Eigen::VectorXd::Zero(dof);
 
-  T_abs_.resize(dof + 1);
-  for(unsigned int i = 0; i < T_abs_.size(); ++i)
+  T_abs.resize(dof + 1);
+  for(unsigned int i = 0; i < T_abs.size(); ++i)
   {
-    T_abs_[i] = Eigen::Matrix4d::Identity();
+    T_abs[i] = Eigen::Matrix4d::Identity();
   }
   C_abs_.resize(dof + 1);
   for(unsigned int i = 0; i < C_abs_.size(); ++i)
@@ -53,11 +54,16 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   }
 
   q = init_q;
+
+  differentiator_ = ahl_filter::DifferentiatorPtr(
+    new ahl_filter::PseudoDifferentiator(this->q, this->dq, 0.001, 30.0));
   this->computeForwardKinematics();
+
   pre_q  = q;
 
   J0.resize(link.size());
   M.resize(dof, dof);
+  M_inv.resize(dof, dof);
 
   for(unsigned int i = 0; i < link.size(); ++i)
   {
@@ -80,8 +86,61 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
 
   q = q_msr;
   this->computeForwardKinematics();
-  this->computeBasicJacobian();
-  this->computeMassMatrix();
+  //this->computeBasicJacobian();
+  //this->computeMassMatrix();
+
+  updated_joint_ = true;
+}
+
+void Manipulator::computeBasicJacobian()
+{
+  if(J0.size() != link.size())
+  {
+    std::stringstream msg;
+    msg << "J0.size() != link.size()" << std::endl
+        << "  J0.size   : " << J0.size() << std::endl
+        << "  link.size : " << link.size();
+    throw ahl_robot::Exception("ahl_robot::Manipulator::computeBasicJacobian", msg.str());
+  }
+
+  for(unsigned int i = 0; i < link.size(); ++i)
+  {
+    this->computeBasicJacobian(i, J0[i]);
+  }
+}
+
+void Manipulator::computeMassMatrix()
+{
+  M = Eigen::MatrixXd::Zero(M.rows(), M.cols());
+
+  for(unsigned int i = 0; i < link.size(); ++i)
+  {
+    Eigen::MatrixXd Jv = J0[i].block(0, 0, 3, J0[i].cols());
+    Eigen::MatrixXd Jw = J0[i].block(3, 0, 3, J0[i].cols());
+
+    M += link[i]->m * Jv.transpose() * Jv + Jw.transpose() * link[i]->I * Jw;
+  }
+
+  M_inv = M.inverse();
+}
+
+bool Manipulator::reached(const Eigen::VectorXd& qd, double threshold)
+{
+  if(qd.rows() != q.rows())
+  {
+    std::stringstream msg;
+    msg << "qd.rows() != q.rows()" << std::endl
+        << "  qd.rows() : " << qd.rows() << std::endl
+        << "  q.rows()  : " << q.rows();
+    throw ahl_robot::Exception("Manipulator::reached", msg.str());
+  }
+
+  if((q - qd).norm() < threshold)
+  {
+    return true;
+  }
+
+  return false;
 }
 
 void Manipulator::print()
@@ -128,19 +187,19 @@ void Manipulator::computeForwardKinematics()
   this->computeCabs();
 
   // Compute distance between i-th link and end-effector w.r.t base
-  if(T_abs_.size() != C_abs_.size())
+  if(T_abs.size() != C_abs_.size())
   {
     std::stringstream msg;
-    msg << "T_abs_.size() != C_abs_.size()" << std::endl
-        << "  T_abs_.size    : " << T_abs_.size() << std::endl
+    msg << "T_abs.size() != C_abs_.size()" << std::endl
+        << "  T_abs.size    : " << T_abs.size() << std::endl
         << "  C_abs_.size : " << C_abs_.size();
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeForwardKinematics", msg.str());
   }
-  else if(T_abs_.size() != Pin_.size())
+  else if(T_abs.size() != Pin_.size())
   {
     std::stringstream msg;
-    msg << "T_abs_.size() != Pin_.size()" << std::endl
-        << "  T_abs_.size    : " << T_abs_.size() << std::endl
+    msg << "T_abs.size() != Pin_.size()" << std::endl
+        << "  T_abs.size    : " << T_abs.size() << std::endl
         << "  Pin_.size : " << Pin_.size();
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeForwardKinematics", msg.str());
   }
@@ -157,14 +216,14 @@ void Manipulator::computeForwardKinematics()
   for(unsigned int i = 0; i < Pin_.size(); ++i)
   {
     Eigen::Matrix4d Tib;
-    math::calculateInverseTransformationMatrix(T_abs_[i], Tib);
+    math::calculateInverseTransformationMatrix(T_abs[i], Tib);
     Eigen::MatrixXd Pin = Tib * Pbn;
     Pin_[i] = Pin.block(0, 0, 3, 1);
   }
 
   // Compute end-effector position and orientation
-  xp = T_abs_[T_abs_.size() - 1].block(0, 3, 3, 1);
-  Eigen::Matrix3d R = T_abs_[T_abs_.size() - 1].block(0, 0, 3, 3);
+  xp = T_abs[T_abs.size() - 1].block(0, 3, 3, 1);
+  Eigen::Matrix3d R = T_abs[T_abs.size() - 1].block(0, 0, 3, 3);
   xr = R;
 
   // Compute velocity of generalized coordinates
@@ -173,38 +232,38 @@ void Manipulator::computeForwardKinematics()
 
 void Manipulator::computeTabs()
 {
-  if(T_abs_.size() != T.size())
+  if(T_abs.size() != T.size())
   {
     std::stringstream msg;
-    msg << "T_abs_.size() != T.size()" << std::endl
-        << "  T_abs_.size : " << T_abs_.size() << std::endl
+    msg << "T_abs.size() != T.size()" << std::endl
+        << "  T_abs.size : " << T_abs.size() << std::endl
         << "  T.size      : " << T.size();
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeTabs", msg.str());
   }
-  else if(T_abs_.size() == 0 || T.size() == 0)
+  else if(T_abs.size() == 0 || T.size() == 0)
   {
     std::stringstream msg;
-    msg << "T_abs_.size() == 0 || T.size() == 0" << std::endl
-        << "  T_abs_.size    : " << T_abs_.size() << std::endl
+    msg << "T_abs.size() == 0 || T.size() == 0" << std::endl
+        << "  T_abs.size    : " << T_abs.size() << std::endl
         << "  T.size : " << T.size();
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeTabs", msg.str());
   }
 
-  T_abs_.front() = T.front();
-  for(unsigned int i = 1; i < T_abs_.size(); ++i)
+  T_abs.front() = T.front();
+  for(unsigned int i = 1; i < T_abs.size(); ++i)
   {
-    T_abs_[i] = T_abs_[i - 1] * T[i];
+    T_abs[i] = T_abs[i - 1] * T[i];
   }
 }
 
 void Manipulator::computeCabs()
 {
-  if(C_abs_.size() != T_abs_.size())
+  if(C_abs_.size() != T_abs.size())
   {
     std::stringstream msg;
-    msg << "C_abs_.size() != T_abs_.size()" << std::endl
+    msg << "C_abs_.size() != T_abs.size()" << std::endl
         << "  C_abs_.size : " << C_abs_.size() << std::endl
-        << "  T_abs_.size : " << T_abs_.size();
+        << "  T_abs.size : " << T_abs.size();
     throw ahl_robot::Exception("ahl_robot::Manipulator::computeCabs", msg.str());
   }
   else if(C_abs_.size() != link.size())
@@ -227,11 +286,11 @@ void Manipulator::computeCabs()
   {
     Eigen::Matrix4d Tlc = Eigen::Matrix4d::Identity();
     Tlc.block(0, 3, 3, 1) = link[i]->C;
-    C_abs_[i] = T_abs_[i] * Tlc;
+    C_abs_[i] = T_abs[i] * Tlc;
   }
 }
 
-
+/*
 void Manipulator::computeBasicJacobian()
 {
   if(J0.size() != link.size())
@@ -248,6 +307,7 @@ void Manipulator::computeBasicJacobian()
     this->computeBasicJacobian(i, J0[i]);
   }
 }
+*/
 
 void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
 {
@@ -259,18 +319,18 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
     {
       if(link[i]->ep) // joint_type is prismatic
       {
-        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
-        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+        J.block(0, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+        J.block(3, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
       }
       else // joint_type is revolute
       {
         Eigen::Matrix4d Tib;
-        math::calculateInverseTransformationMatrix(T_abs_[i], Tib);
+        math::calculateInverseTransformationMatrix(T_abs[i], Tib);
         Eigen::Matrix4d Cin = Tib * C_abs_[idx];
         Eigen::Vector3d P = Cin.block(0, 3, 3, 1);
 
-        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
-        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+        J.block(0, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
+        J.block(3, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * link[i]->tf->axis();
       }
     }
   }
@@ -281,18 +341,18 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
     {
       if(link[i]->ep) // joint_type is prismatic
       {
-        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
-        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
+        J.block(0, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+        J.block(3, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * Eigen::Vector3d::Zero();
       }
       else // joint_type is revolute
       {
         Eigen::Matrix4d Tib;
-        math::calculateInverseTransformationMatrix(T_abs_[i], Tib);
+        math::calculateInverseTransformationMatrix(T_abs[i], Tib);
         Eigen::Matrix4d Cin = Tib * C_abs_[idx];
         Eigen::Vector3d P = Cin.block(0, 3, 3, 1);
 
-        J.block(0, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
-        J.block(3, i, 3, 1) = T_abs_[i].block(0, 0, 3, 3) * link[i]->tf->axis();
+        J.block(0, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * link[i]->tf->axis().cross(P);
+        J.block(3, i, 3, 1) = T_abs[i].block(0, 0, 3, 3) * link[i]->tf->axis();
       }
     }
 
@@ -319,6 +379,7 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
   }
 }
 
+/*
 void Manipulator::computeMassMatrix()
 {
   M = Eigen::MatrixXd::Zero(M.rows(), M.cols());
@@ -330,22 +391,34 @@ void Manipulator::computeMassMatrix()
 
     M += link[i]->m * Jv.transpose() * Jv + Jw.transpose() * link[i]->I * Jw;
   }
+
+  M_inv = M.inverse();
 }
+*/
 
 void Manipulator::computeVelocity()
 {
+  if(updated_joint_)
+    differentiator_->apply(this->q);
+/*
+  Eigen::VectorXd dq2;
+
   double dt = (time_ - pre_time_) * 0.001;
-  dt = 0.01;
+  dt = 0.001;
 
   if(dt > 0.0)
   {
-    dq  = (q - pre_q) / dt;
+    dq2  = (q - pre_q) / dt;
   }
   else
   {
-    dq = Eigen::VectorXd::Zero(dq.rows());
+    dq2 = Eigen::VectorXd::Zero(dq.rows());
   }
 
   pre_q  = q;
   pre_time_ = time_;
+
+  std::cout << "dq : " << dq << std::endl << std::endl;
+  std::cout << "dq2 : " << dq2 << std::endl << std::endl;
+*/
 }

@@ -4,7 +4,7 @@ using namespace ahl_ctrl;
 
 RobotController::RobotController()
 {
-  
+  multi_task_ = MultiTaskPtr(new MultiTask());  
 }
 
 void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name)
@@ -12,29 +12,22 @@ void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& 
   mnp_ = robot->getManipulator(mnp_name);
 }
 
-void RobotController::addTask(const TaskPtr& task)
+void RobotController::addTask(const TaskPtr& task, int priority)
 {
-  std::list<TaskPtr>::iterator it;
-  for(it = task_.begin(); it != task_.end(); ++it)
-  {
-    if(task->getPriority() > (*it)->getPriority())
-    {
-      task_.insert(it, task);
-      return;
-    }
-  }
-  task_.push_back(task);
+  multi_task_->addTask(task, priority);
+}
+
+void RobotController::clearTask()
+{
+  multi_task_->clear();
+}
+
+void RobotController::updateModel()
+{
+  multi_task_->updateModel();
 }
 
 void RobotController::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  tau = Eigen::VectorXd::Zero(mnp_->dof);
-
-  std::list<TaskPtr>::iterator it;
-  for(it = task_.begin(); it != task_.end(); ++it)
-  {
-    Eigen::VectorXd tau_task;
-    (*it)->computeGeneralizedForce(tau_task);
-    tau += tau_task;
-  }
+  multi_task_->computeGeneralizedForce(mnp_->dof, tau);
 }

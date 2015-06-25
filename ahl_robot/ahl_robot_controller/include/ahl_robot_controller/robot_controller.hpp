@@ -6,6 +6,7 @@
 #include <boost/shared_ptr.hpp>
 #include <ahl_robot/ahl_robot.hpp>
 #include "ahl_robot_controller/task/task.hpp"
+#include "ahl_robot_controller/task/multi_task.hpp"
 
 namespace ahl_ctrl
 {
@@ -15,11 +16,14 @@ namespace ahl_ctrl
   public:
     RobotController();
     void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name);
-    void addTask(const TaskPtr& task);
+    void addTask(const TaskPtr& task, int priority);
+    void clearTask();
+    void updateModel();
     void computeGeneralizedForce(Eigen::VectorXd& tau);
 
   private:
-    std::list<TaskPtr> task_;
+    MultiTaskPtr multi_task_;
+    std::vector<TaskPtr> task_;
     ahl_robot::ManipulatorPtr mnp_;
     Eigen::VectorXd tau_;
   };

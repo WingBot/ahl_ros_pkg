@@ -15,6 +15,42 @@ void Robot::update(const std::string& mnp_name, const Eigen::VectorXd& q)
   mnp_[mnp_name]->update(q);
 }
 
+void Robot::computeBasicJacobian(const std::string& mnp_name)
+{
+  if(mnp_.find(mnp_name) == mnp_.end())
+  {
+    std::stringstream msg;
+    msg << "Could not find manipulator : " << mnp_name;
+    throw ahl_robot::Exception("ahl_robot::Robot::BasicJacobian", msg.str());
+  }
+
+  mnp_[mnp_name]->computeBasicJacobian();
+}
+
+void Robot::computeMassMatrix(const std::string& mnp_name)
+{
+  if(mnp_.find(mnp_name) == mnp_.end())
+  {
+    std::stringstream msg;
+    msg << "Could not find manipulator : " << mnp_name;
+    throw ahl_robot::Exception("ahl_robot::Robot::computeMassMatrix", msg.str());
+  }
+
+  mnp_[mnp_name]->computeMassMatrix();
+}
+
+bool Robot::reached(const std::string& mnp_name, const Eigen::VectorXd& qd, double threshold)
+{
+  if(mnp_.find(mnp_name) == mnp_.end())
+  {
+    std::stringstream msg;
+    msg << "Could not find manipulator : " << mnp_name;
+    throw ahl_robot::Exception("ahl_robot::Robot::reached", msg.str());
+  }
+
+  return mnp_[mnp_name]->reached(qd, threshold);
+}
+
 void Robot::add(const ManipulatorPtr& mnp)
 {
   mnp_[mnp->name] = mnp;
@@ -66,6 +102,18 @@ const Eigen::MatrixXd& Robot::getMassMatrix(const std::string& mnp_name)
   }
 
   return mnp_[mnp_name]->M;
+}
+
+const Eigen::MatrixXd& Robot::getMassMatrixInv(const std::string& mnp_name)
+{
+  if(mnp_.find(mnp_name) == mnp_.end())
+  {
+    std::stringstream msg;
+    msg << "Could not find manipulator : " << mnp_name;
+    throw ahl_robot::Exception("ahl_robot::Robot::getMassMatrixInv", msg.str());
+  }
+
+  return mnp_[mnp_name]->M_inv;
 }
 
 const Eigen::VectorXd& Robot::getJointPosition(const std::string& mnp_name)

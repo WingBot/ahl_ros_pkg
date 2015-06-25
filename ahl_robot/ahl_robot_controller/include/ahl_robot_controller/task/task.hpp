@@ -11,16 +11,15 @@ namespace ahl_ctrl
   {
   public:
     virtual ~Task() {}
-    virtual void setGoal(const Eigen::VectorXd& dst) {}
+    virtual void setGoal(const Eigen::MatrixXd& dst) {}
+    virtual void updateModel() {}
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau) {}
-    virtual int getPriority()
-    {
-      return priority_;
-    }
+    virtual bool haveNullSpace() { return false; }
+    const Eigen::MatrixXd getNullSpace() const { return N_; }
 
   protected:
     ahl_robot::ManipulatorPtr mnp_;
-    int priority_;
+    Eigen::MatrixXd N_;
   };
 
   typedef boost::shared_ptr<Task> TaskPtr;
