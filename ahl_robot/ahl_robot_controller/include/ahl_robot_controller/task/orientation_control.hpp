@@ -20,9 +20,7 @@ namespace ahl_ctrl
     bool updated_;
 
     std::string target_link_;
-    Eigen::Vector3d r_[3];
-    Eigen::Vector3d rd_[3];
-    Eigen::Vector3d del_phi_[3];
+    Eigen::Matrix3d Rd_;
 
     int idx_;
     Eigen::MatrixXd Jw_;

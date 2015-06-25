@@ -79,7 +79,7 @@ void control(const ros::TimerEvent&)
         {
           ++reached;
 
-          if(reached > 2000)
+          if(reached > 500)
           {
             initialized = true;
             controller->clearTask();
@@ -89,9 +89,15 @@ void control(const ros::TimerEvent&)
             controller->addTask(orientation_control, 5);
             controller->addTask(joint_limit, 100);
             Eigen::Vector3d xd;
-            xd << 0.35, 0.2, 0.8;
+            xd << 0.35, 0.4, 0.75;
             position_control->setGoal(xd);
-            orientation_control->setGoal(Eigen::Matrix3d::Identity());
+
+            Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
+            double rad = 0.0;
+            R << cos(rad), 0, sin(rad),
+              0, 1, 0,
+              -sin(rad), 0, cos(rad);
+            orientation_control->setGoal(R);
           }
         }
         else
@@ -102,14 +108,18 @@ void control(const ros::TimerEvent&)
       else
       {
         Eigen::Vector3d xd;
-        xd << 0.4, 0.3, 0.7;
-        for(unsigned int i = 0; i < 3; ++i)
-        {
-          xd.coeffRef(i) += 0.1 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
-        }
+        xd << 0.35, 0.4, 0.75;
+        //xd.coeffRef(0) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        //xd.coeffRef(1) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        //xd.coeffRef(2) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
 
         position_control->setGoal(xd);
-        orientation_control->setGoal(Eigen::Matrix3d::Identity());
+        Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
+        double rad = M_PI / 3.0 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        R << cos(rad), 0, sin(rad),
+          0, 1, 0,
+          -sin(rad), 0, cos(rad);
+        orientation_control->setGoal(R);
       }
 
       ++cnt;

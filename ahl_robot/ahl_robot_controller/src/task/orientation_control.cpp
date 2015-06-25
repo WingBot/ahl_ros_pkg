@@ -38,10 +38,7 @@ void OrientationControl::setGoal(const Eigen::MatrixXd& Rd)
     throw ahl_ctrl::Exception("OrientationControl::setGoal", msg.str());
   }
 
-  for(unsigned int i = 0; i < Rd.cols(); ++i)
-  {
-    rd_[i] = Rd.block(0, i, 3, 1);
-  }
+  Rd_ = Rd;
 }
 
 void OrientationControl::updateModel()
@@ -64,21 +61,22 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   }
 
   double kp = 20.0;
-  double kv = 1.0;
+  double kv = 2.0;
 
   Eigen::Matrix3d R = mnp_->T_abs[idx_].block(0, 0, 3, 3);
-  Eigen::Vector3d del_phi = Eigen::Vector3d::Zero();
-  for(unsigned int i = 0; i < R.cols(); ++i)
+  Eigen::Quaternion<double> q;
+  q = R * Rd_.inverse();
+  double norm = sqrt(q.x() * q.x() + q.y() * q.y() + q.z() * q.z());
+  Eigen::Vector3d del_phi;
+  double c = 0.0;
+  if(norm != 0.0)
   {
-    r_[i] = R.block(0, i, 3, 1);
-    del_phi += r_[i].cross(rd_[i]);
+    c = 1.0 / norm * 2.0 * acos(q.w());
   }
-  del_phi = -0.5 * del_phi;
+  del_phi << q.x() * c, q.y() * c, q.z() * c;
 
-  Eigen::VectorXd M_unit = -kp * del_phi - kv * Jw_ * mnp_->dq;
+  Eigen::VectorXd M_unit = -kp * del_phi -kv * Jw_ * mnp_->dq;
   Eigen::VectorXd M = lambda_ * M_unit;
   tau = Jw_.transpose() * M;
-
-  std::cout << "R" << std::endl << R << std::endl;
 }
 
