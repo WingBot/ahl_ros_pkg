@@ -4,6 +4,7 @@
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
 #include <ahl_robot/ahl_robot.hpp>
+#include "ahl_robot_controller/param.hpp"
 
 namespace ahl_ctrl
 {
@@ -11,6 +12,7 @@ namespace ahl_ctrl
   {
   public:
     virtual ~Task() {}
+    virtual void setParam(const ParamPtr& param) { param_ = param; }
     virtual void setGoal(const Eigen::MatrixXd& dst) {}
     virtual void updateModel() {}
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau) {}
@@ -20,6 +22,7 @@ namespace ahl_ctrl
   protected:
     ahl_robot::ManipulatorPtr mnp_;
     Eigen::MatrixXd N_;
+    ParamPtr param_;
   };
 
   typedef boost::shared_ptr<Task> TaskPtr;

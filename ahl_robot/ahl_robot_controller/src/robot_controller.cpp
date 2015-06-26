@@ -4,7 +4,8 @@ using namespace ahl_ctrl;
 
 RobotController::RobotController()
 {
-  multi_task_ = MultiTaskPtr(new MultiTask());  
+  param_ = ParamPtr(new Param());
+  multi_task_ = MultiTaskPtr(new MultiTask());
 }
 
 void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name)
@@ -14,6 +15,7 @@ void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& 
 
 void RobotController::addTask(const TaskPtr& task, int priority)
 {
+  task->setParam(param_);
   multi_task_->addTask(task, priority);
 }
 

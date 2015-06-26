@@ -20,6 +20,6 @@ void GravityCompensation::computeGeneralizedForce(Eigen::VectorXd& tau)
   tau = Eigen::VectorXd::Zero(mnp_->dof);
   for(unsigned int i = 0; i < mnp_->link.size(); ++i)
   {
-    tau -= mnp_->link[i]->m * mnp_->J0[i].block(0, 0, 3, mnp_->J0[i].cols()).transpose() * g_;
+    tau -= mnp_->link[i]->m * mnp_->J0[i].block(0, 0, 3, mnp_->J0[i].cols()).transpose() * param_->getG();
   }
 }

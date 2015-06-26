@@ -52,11 +52,11 @@ void PositionControl::computeGeneralizedForce(Eigen::VectorXd& tau)
     return;
   }
 
-  double kp = 20.0;
-  double kv = 2.0;
+  //double kp = 100.0;
+  //double kv = 5.0;
 
   Eigen::Vector3d x = mnp_->T_abs[idx_].block(0, 3, 3, 1);
-  Eigen::VectorXd F_unit = -kp * (x - xd_) - kv * Jv_ * mnp_->dq;
+  Eigen::VectorXd F_unit = -param_->getKp() * (x - xd_) - param_->getKv() * Jv_ * mnp_->dq;
   Eigen::VectorXd F = lambda_ * F_unit;
 
   tau = Jv_.transpose() * F;

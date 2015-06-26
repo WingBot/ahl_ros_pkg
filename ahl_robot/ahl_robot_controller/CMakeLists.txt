@@ -18,6 +18,10 @@ find_package(
   Eigen REQUIRED
 )
 
+generate_dynamic_reconfigure_options(
+  cfg/Param.cfg
+)
+
 catkin_package(
   INCLUDE_DIRS
     include
@@ -48,16 +52,23 @@ add_definitions(
   ${EIGEN_DEFINITIONS}
 )
 
-add_library(ahl_robot_controller
-  src/robot_controller.cpp
-  src/common/effective_mass_matrix3d.cpp
-  src/task/multi_task.cpp
-  src/task/damping.cpp
-  src/task/joint_limit.cpp
-  src/task/joint_control.cpp
-  src/task/gravity_compensation.cpp
-  src/task/position_control.cpp
-  src/task/orientation_control.cpp
+add_library(
+  ahl_robot_controller
+    src/robot_controller.cpp
+    src/param.cpp
+    src/common/effective_mass_matrix3d.cpp
+    src/task/multi_task.cpp
+    src/task/damping.cpp
+    src/task/joint_limit.cpp
+    src/task/joint_control.cpp
+    src/task/gravity_compensation.cpp
+    src/task/position_control.cpp
+    src/task/orientation_control.cpp
+)
+
+add_dependencies(
+  ahl_robot_controller
+    ahl_robot_controller_gencfg
 )
 
 target_link_libraries(

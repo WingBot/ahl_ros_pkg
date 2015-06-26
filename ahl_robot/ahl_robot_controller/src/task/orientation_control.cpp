@@ -60,8 +60,8 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
     return;
   }
 
-  double kp = 20.0;
-  double kv = 2.0;
+  //double kp = 100.0;
+  //double kv = 5.0;
 
   Eigen::Matrix3d R = mnp_->T_abs[idx_].block(0, 0, 3, 3);
   Eigen::Quaternion<double> q;
@@ -75,7 +75,7 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   }
   del_phi << q.x() * c, q.y() * c, q.z() * c;
 
-  Eigen::VectorXd M_unit = -kp * del_phi -kv * Jw_ * mnp_->dq;
+  Eigen::VectorXd M_unit = -param_->getKp() * del_phi -param_->getKv() * Jw_ * mnp_->dq;
   Eigen::VectorXd M = lambda_ * M_unit;
   tau = Jw_.transpose() * M;
 }

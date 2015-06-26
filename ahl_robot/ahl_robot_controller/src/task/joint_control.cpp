@@ -25,9 +25,11 @@ void JointControl::setGoal(const Eigen::MatrixXd& qd)
 
 void JointControl::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  double kp = 1.0;
-  double kv = 0.12;
-
-  Eigen::VectorXd tau_unit = -kp * (mnp_->q - qd_) - kv * mnp_->dq;
+  Eigen::VectorXd tau_unit = -param_->getKp() * (mnp_->q - qd_) - param_->getKv() * mnp_->dq;
   tau = mnp_->M * tau_unit;
+  Eigen::FullPivLU<Eigen::MatrixXd> lu(mnp_->M);
+
+  std::cout << "q" << std::endl << mnp_->q << std::endl << std::endl;
+  std::cout << "qd" << std::endl << qd_ << std::endl << std::endl;
+  std::cout << "rank" << std::endl << lu.rank() << std::endl << std::endl;
 }

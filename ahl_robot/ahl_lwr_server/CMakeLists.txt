@@ -38,3 +38,13 @@ target_link_libraries(
     ${catkin_LIBRARIES}
 )
 
+add_executable(
+  red_arm_server_test
+    test/test2.cpp
+)
+
+target_link_libraries(
+  red_arm_server_test
+    ${catkin_LIBRARIES}
+)
+

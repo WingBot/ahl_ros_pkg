@@ -23,8 +23,8 @@ void JointLimit::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
   tau = Eigen::VectorXd::Zero(mnp_->dof);
 
-  kp_ = 20.0;
-  kv_ = 2.0;
+  //kp_ = 20.0;
+  //kv_ = 2.0;
 
   N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
   for(unsigned int i = 0; i < mnp_->q.rows(); ++i)
@@ -35,13 +35,13 @@ void JointLimit::computeGeneralizedForce(Eigen::VectorXd& tau)
     if(q_max_diff < threshold_)
     {
       std::cout << i << " : max : " << mnp_->q.coeff(i) << std::endl;
-      tau.coeffRef(i) += -kp_ * q_max_diff - kv_ * mnp_->dq.coeff(i);
+      tau.coeffRef(i) += -param_->getKpLimit() * q_max_diff - param_->getKvLimit() * mnp_->dq.coeff(i);
       N_.coeffRef(i, i) = 0;
     }
     if(-q_min_diff < threshold_)
     {
       std::cout << i << " : min : " << mnp_->q.coeff(i) << std::endl;
-      tau.coeffRef(i) += -kp_ * q_min_diff - kv_ * mnp_->dq.coeff(i);
+      tau.coeffRef(i) += -param_->getKpLimit() * q_min_diff - param_->getKvLimit() * mnp_->dq.coeff(i);
       N_.coeffRef(i, i) = 0;
     }
   }
