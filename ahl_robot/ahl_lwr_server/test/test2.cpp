@@ -222,9 +222,9 @@ int main(int argc, char** argv)
   orientation_control = TaskPtr(new OrientationControl(mnp, "gripper", 0.001));
 
   controller->addTask(gravity_compensation, 0);
-  //controller->addTask(damping, 0);
+  controller->addTask(damping, 0);
   controller->addTask(joint_control, 0);
-  //controller->addTask(joint_limit, 100);
+  controller->addTask(joint_limit, 100);
 
   ros::MultiThreadedSpinner spinner;
   spinner.spin();

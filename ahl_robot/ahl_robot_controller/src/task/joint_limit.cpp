@@ -41,7 +41,7 @@
 using namespace ahl_ctrl;
 
 JointLimit::JointLimit(const ahl_robot::ManipulatorPtr& mnp, double threshold)
-  : kp_(0.0), kv_(0.0), threshold_(threshold)
+  : threshold_(threshold)
 {
   mnp_ = mnp;
 
@@ -60,9 +60,6 @@ JointLimit::JointLimit(const ahl_robot::ManipulatorPtr& mnp, double threshold)
 void JointLimit::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
   tau = Eigen::VectorXd::Zero(mnp_->dof);
-
-  //kp_ = 20.0;
-  //kv_ = 2.0;
 
   N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
   for(unsigned int i = 0; i < mnp_->q.rows(); ++i)

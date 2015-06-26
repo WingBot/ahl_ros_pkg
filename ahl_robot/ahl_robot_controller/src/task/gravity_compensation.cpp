@@ -44,13 +44,6 @@ GravityCompensation::GravityCompensation(const ahl_robot::ManipulatorPtr& mnp)
 {
   mnp_ = mnp;
   N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
-  g_ << 0.0, 0.0, -0.980;
-}
-
-GravityCompensation::GravityCompensation(const ahl_robot::ManipulatorPtr& mnp, const Eigen::Vector3d& g)
-{
-  mnp_ = mnp;
-  g_ = g;
 }
 
 void GravityCompensation::computeGeneralizedForce(Eigen::VectorXd& tau)

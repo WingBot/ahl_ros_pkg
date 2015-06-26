@@ -48,10 +48,7 @@ namespace ahl_ctrl
   {
   public:
     GravityCompensation(const ahl_robot::ManipulatorPtr& mnp);
-    GravityCompensation(const ahl_robot::ManipulatorPtr& mnp, const Eigen::Vector3d& g);
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
-  private:
-    Eigen::Vector3d g_;
   };
 
 }

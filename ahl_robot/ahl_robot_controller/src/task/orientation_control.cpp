@@ -98,9 +98,6 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
     return;
   }
 
-  //double kp = 100.0;
-  //double kv = 5.0;
-
   Eigen::Matrix3d R = mnp_->T_abs[idx_].block(0, 0, 3, 3);
   Eigen::Quaternion<double> q;
   q = R * Rd_.inverse();

@@ -63,9 +63,7 @@ namespace ahl_ctrl
   private:
     ParamPtr param_;
     MultiTaskPtr multi_task_;
-    std::vector<TaskPtr> task_;
     ahl_robot::ManipulatorPtr mnp_;
-    Eigen::VectorXd tau_;
   };
 
   typedef boost::shared_ptr<RobotController> RobotControllerPtr;

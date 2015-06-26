@@ -55,8 +55,6 @@ namespace ahl_ctrl
     Eigen::VectorXd q_max_;
     Eigen::VectorXd q_min_;
 
-    double kp_;
-    double kv_;
     double threshold_;
   };
 
