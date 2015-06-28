@@ -65,11 +65,6 @@ add_executable(
     src/action/joint_space_control_action.cpp
     src/action/task_space_control_action.cpp
     src/action/task_space_hybrid_control_action.cpp
-    src/youbot/youbot.cpp
-    src/youbot/real_youbot_base.cpp
-    src/youbot/gazebo_youbot_base.cpp
-    src/youbot/real_youbot_manipulator.cpp
-    src/youbot/gazebo_youbot_manipulator.cpp
     src/interface/youbot_interface.cpp
     src/interface/gazebo_interface.cpp
 )
