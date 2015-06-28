@@ -1,9 +1,0 @@
-# goal
-float64[] qd
----
-# result
-float64[] q
----
-# feedback
-float64[] q
-float64[] tau # generalized force

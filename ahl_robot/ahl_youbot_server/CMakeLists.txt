@@ -4,7 +4,6 @@ project(ahl_youbot_server)
 find_package(
   catkin REQUIRED COMPONENTS
     ahl_robot
-    ahl_robot_actions
     ahl_robot_controller
     ahl_robot_srvs
     gazebo_msgs
@@ -39,7 +38,6 @@ include_directories(
 catkin_package(
   CATKIN_DEPENDS
     ahl_robot
-    ahl_robot_actions
     ahl_robot_controller
     ahl_robot_srvs
     gazebo_msgs
@@ -72,7 +70,6 @@ add_executable(
 add_dependencies(
   ahl_youbot_server
     ahl_robot_srvs_gencpp
-    ahl_robot_actions_gencpp
 )
 
 target_link_libraries(

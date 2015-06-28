@@ -1,7 +1,0 @@
-# goal
----
-# result
----
-# feedback
-float64[] q # generalized coordinate
-float64[] tau # generalized force
