@@ -58,13 +58,10 @@ add_executable(
     src/state/state.cpp
     src/state/disabled.cpp
     src/state/ready.cpp
-    src/state/float.cpp
     src/state/move.cpp
-    src/state/lock.cpp
     src/state/alarm.cpp
     src/action/action_server.cpp
     src/action/float_action.cpp
-    src/action/set_joint_action.cpp
     src/action/joint_space_control_action.cpp
     src/action/task_space_control_action.cpp
     src/action/task_space_hybrid_control_action.cpp

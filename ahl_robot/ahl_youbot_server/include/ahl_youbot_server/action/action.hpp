@@ -52,7 +52,6 @@ namespace ahl_youbot
     enum Type
     {
       FLOAT,
-      SET_JOINT,
       JOINT_SPACE_CONTROL,
       TASK_SPACE_CONTROL,
       TASK_SPACE_HYBRID_CONTROL,

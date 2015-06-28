@@ -63,9 +63,6 @@ namespace ahl_youbot
     bool floatCB(
       ahl_robot_srvs::Float::Request& req,
       ahl_robot_srvs::Float::Response& res);
-    bool setJointCB(
-      ahl_robot_srvs::SetJoint::Request& req,
-      ahl_robot_srvs::SetJoint::Response& res);
     bool jointSpaceControlCB(
       ahl_robot_srvs::JointSpaceControl::Request& req,
       ahl_robot_srvs::JointSpaceControl::Response& res);
@@ -82,7 +79,6 @@ namespace ahl_youbot
     ros::ServiceServer ros_server_change_state_;
     ros::ServiceServer ros_server_cancel_;
     ros::ServiceServer ros_server_float_;
-    ros::ServiceServer ros_server_set_joint_;
     ros::ServiceServer ros_server_joint_space_control_;
     ros::ServiceServer ros_server_task_space_control_;
     ros::ServiceServer ros_server_task_space_hybrid_control_;

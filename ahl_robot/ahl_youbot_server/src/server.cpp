@@ -39,8 +39,6 @@
 #include "ahl_youbot_server/server.hpp"
 #include "ahl_youbot_server/state/alarm.hpp"
 #include "ahl_youbot_server/state/disabled.hpp"
-#include "ahl_youbot_server/state/float.hpp"
-#include "ahl_youbot_server/state/lock.hpp"
 #include "ahl_youbot_server/state/move.hpp"
 #include "ahl_youbot_server/state/ready.hpp"
 
@@ -70,10 +68,6 @@ Server::Server()
     new Alarm(state_type_, action_server_));
   state_[State::DISABLED] = StatePtr(
     new Disabled(state_type_, action_server_));
-  state_[State::FLOAT]    = StatePtr(
-    new Float(state_type_, action_server_));
-  state_[State::LOCK]     = StatePtr(
-    new Lock(state_type_, action_server_));
   state_[State::MOVE]     = StatePtr(
     new Move(state_type_, action_server_));
   state_[State::READY]    = StatePtr(
@@ -85,8 +79,6 @@ Server::Server()
     "command/cancel", &Server::cancelCB, this);
   ros_server_float_ = local_nh.advertiseService(
     "command/float", &Server::floatCB, this);
-  ros_server_set_joint_ = local_nh.advertiseService(
-    "command/set_joint", &Server::setJointCB, this);
   ros_server_joint_space_control_ = local_nh.advertiseService(
     "command/joint_space_control", &Server::jointSpaceControlCB, this);
   ros_server_task_space_control_ = local_nh.advertiseService(
@@ -107,13 +99,6 @@ bool Server::floatCB(
   ahl_robot_srvs::Float::Response& res)
 {
   return state_[state_type_]->callFloat(req, res);
-}
-
-bool Server::setJointCB(
-  ahl_robot_srvs::SetJoint::Request& req,
-  ahl_robot_srvs::SetJoint::Response& res)
-{
-  return state_[state_type_]->callSetJoint(req, res);
 }
 
 bool Server::jointSpaceControlCB(

@@ -43,7 +43,6 @@
 #include <boost/shared_ptr.hpp>
 #include <std_srvs/Empty.h>
 #include "ahl_youbot_server/ahl_robot_srvs.hpp"
-#include "ahl_youbot_server/ahl_robot_actions.hpp"
 #include "ahl_youbot_server/action/action_server.hpp"
 
 namespace ahl_youbot
@@ -56,9 +55,7 @@ namespace ahl_youbot
     {
       DISABLED,
       READY,
-      FLOAT,
       MOVE,
-      LOCK,
       ALARM,
       STATE_NUM,
     };
@@ -104,23 +101,6 @@ namespace ahl_youbot
     {
       return server_;
     };
-
-  protected:
-    virtual void convertServiceToAction(
-      ahl_robot_srvs::Float::Request& req,
-      ahl_robot_actions::FloatGoal& goal);
-    virtual void convertServiceToAction(
-      ahl_robot_srvs::SetJoint::Request& req,
-      ahl_robot_actions::SetJointGoal& goal);
-    virtual void convertServiceToAction(
-      ahl_robot_srvs::JointSpaceControl::Request& req,
-      ahl_robot_actions::JointSpaceControlGoal& goal);
-    virtual void convertServiceToAction(
-      ahl_robot_srvs::TaskSpaceControl::Request& req,
-      ahl_robot_actions::TaskSpaceControlGoal& goal);
-    virtual void convertServiceToAction(
-      ahl_robot_srvs::TaskSpaceHybridControl::Request& req,
-      ahl_robot_actions::TaskSpaceHybridControlGoal& goal);
 
   private:
     State::Type& state_type_;
