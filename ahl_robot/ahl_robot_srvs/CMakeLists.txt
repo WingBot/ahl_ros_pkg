@@ -13,7 +13,6 @@ add_service_files(
     srv
   FILES
     Float.srv
-    SetJoint.srv
     JointSpaceControl.srv
     TaskSpaceControl.srv
     TaskSpaceHybridControl.srv
