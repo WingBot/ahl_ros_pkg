@@ -42,16 +42,21 @@
 #include <map>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
 #include <Eigen/Dense>
 #include <ros/ros.h>
 #include <gazebo_msgs/JointStates.h>
+#include <gazebo_msgs/ModelState.h>
+#include <gazebo_msgs/ModelStates.h>
 #include <gazebo_msgs/ApplyJointEfforts.h>
 
 namespace ahl_gazebo_if
 {
 
-  static const std::string TOPIC_PUB = "/gazebo/apply_joint_efforts";
-  static const std::string TOPIC_SUB = "/gazebo/joint_states";
+  static const std::string TOPIC_PUB_JOINT_EFFORT = "/gazebo/apply_joint_efforts";
+  static const std::string TOPIC_PUB_MODEL_STATE  = "/gazebo/set_model_state";
+  static const std::string TOPIC_SUB_JOINT_STATES = "/gazebo/joint_states";
+  static const std::string TOPIC_SUB_MODEL_STATES = "/gazebo/model_states";
 
   class GazeboInterface
   {
@@ -59,14 +64,12 @@ namespace ahl_gazebo_if
     GazeboInterface();
 
     void addJoint(const std::string& name);
+    void addMobility2D(const std::string& robot);
     void setDuration(double duration);
     void connect();
-    bool subscribed()
-    {
-      return subscribed_;
-    }
-
+    bool subscribed();
     void applyJointEfforts(const Eigen::VectorXd& tau);
+    void applyVelocityCommand2D(const Eigen::Vector3d& v);
 
     const Eigen::VectorXd& getJointStates() const
     {
@@ -74,7 +77,10 @@ namespace ahl_gazebo_if
     }
 
   private:
-    void subscribe(const gazebo_msgs::JointStates::ConstPtr& msg);
+    void subscribeJointStates(const gazebo_msgs::JointStates::ConstPtr& msg);
+    void subscribeModelStates(const gazebo_msgs::ModelStates::ConstPtr& msg);
+
+    boost::mutex mutex_;
 
     std::map<std::string, double> q_map_;
     std::map<std::string, int> name_to_idx_;
@@ -86,7 +92,15 @@ namespace ahl_gazebo_if
     ros::Duration duration_;
     ros::Publisher pub_effort_;
     ros::Subscriber sub_joint_states_;
-    bool subscribed_;
+    bool subscribed_joint_states_;
+
+    std::string robot_;
+    gazebo_msgs::ModelState model_state_;
+    int joint_idx_offset_;
+    bool use_mobility_2d_;
+    bool subscribed_model_states_;
+    ros::Publisher pub_model_state_;
+    ros::Subscriber sub_model_states_;
   };
 
   typedef boost::shared_ptr<GazeboInterface> GazeboInterfacePtr;
