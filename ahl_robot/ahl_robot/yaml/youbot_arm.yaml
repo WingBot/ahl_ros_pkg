@@ -2,90 +2,18 @@ name: youbot
 xyz: [0, 0, 0]
 rpy: [0, 0, 0]
 world_frame: map
-
-mobility:
-  type: mecanum_wheel
-  cutoff_frequency: 10.0
-  command: base_velocity
-  tread_width: 0.3
-  wheel_base: 0.471
-  wheel_radius: 0.05
-  joints:
-    - name: wheel_joint_fl
-    - name: wheel_joint_fr
-    - name: wheel_joint_bl
-    - name: wheel_joint_br
-
+cut_off_pseudo_differential:
+tau_pseudo_differential:
 manipulators:
 
   - name: mnp
     links:
 
-    - name: base_x
-      parent: map
-      joint_type: prismatic_x
-
-      xyz_in_parent: [0, 0, 0.0963]
-      rpy_in_parent: [0, 0, 0]
-
-      mass: 0
-      inertia_matrix_in_com:
-        [0, 0, 0,
-         0, 0, 0,
-         0, 0, 0]
-      com_in_link: [0, 0, 0]
-
-      q_min: -100000.0
-      q_max:  100000.0
-      dq_max: 0.8
-      tau_max: 100.0
-      init_q: 0
-
-    - name: base_y
-      parent: base_x
-      joint_type: prismatic_y
-
-      xyz_in_parent: [0, 0, 0]
-      rpy_in_parent: [0, 0, 0]
-
-      mass: 0
-      inertia_matrix_in_com:
-        [0, 0, 0,
-         0, 0, 0,
-         0, 0, 0]
-      com_in_link: [0, 0, 0]
-
-      q_min: -100000.0
-      q_max:  100000.0
-      dq_max: 0.8
-      tau_max: 100.0
-      init_q: 0
-
-    - name: base_yaw
-      parent: base_y
-      joint_type: revolute_z
-
-      xyz_in_parent: [0, 0, 0]
-      rpy_in_parent: [0, 0, 0]
-
-      mass: 28.761
-      inertia_matrix_in_com:
-        [ 0.13063, -0.43726, -0.42639,
-         -0.43726,  0.30975, -0.43696,
-         -0.42639, -0.43696,  0.37087]
-      com_in_link: [-0.009443, 0, -0.012768]
-
-      q_min: -100000.0
-      q_max:  100000.0
-      dq_max: 1.04719
-      tau_max: 100.0
-      init_q: 0
-
     - name: link1
-      parent: base_yaw
+      parent: map
       joint_type: revolute_z
 
-      xyz_in_parent: [0.167, 0, 0.0977]
+      xyz_in_parent: [0.167, 0, 0.194]
       rpy_in_parent: [0, 0, 0]
 
       mass: 1.390

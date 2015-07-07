@@ -4,38 +4,27 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:macro name="gripper_gazebo" params="name">
-    <gazebo reference="${name}_palm_link">
-      <gravity>true</gravity>
-      <maxVel>-1</maxVel>
-      <minDepth>0</minDepth>
-      <mu1>0</mu1>
-      <mu2>0</mu2>
-      <kp>10000000000.0</kp>
-      <kd>100000000.0</kd>
-      <selfCollide>false</selfCollide>
-    </gazebo>
-
-    <gazebo reference="${name}_finger_l_link">
-      <gravity>true</gravity>
+  <xacro:macro name="youbot_gripper_gazebo" params="name">
+    <gazebo reference="finger_link_l">
+      <gravity>1</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
       <mu1>0.5</mu1>
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>true</selfCollide>
+      <selfCollide>1</selfCollide>
     </gazebo>
 
-    <gazebo reference="${name}_finger_r_link">
-      <gravity>true</gravity>
+    <gazebo reference="finger_link_r">
+      <gravity>1</gravity>
       <maxVel>-1</maxVel>
       <minDepth>0</minDepth>
       <mu1>0.5</mu1>
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>true</selfCollide>
+      <selfCollide>1</selfCollide>
     </gazebo>
 
   </xacro:macro>

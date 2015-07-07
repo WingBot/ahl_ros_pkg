@@ -42,6 +42,7 @@
 #include <map>
 #include "ahl_robot/definition.hpp"
 #include "ahl_robot/robot/manipulator.hpp"
+#include "ahl_robot/robot/mobility.hpp"
 
 namespace ahl_robot
 {
@@ -56,6 +57,7 @@ namespace ahl_robot
     }
 
     void update(const std::string& mnp_name, const Eigen::VectorXd& q);
+    void update(const std::string& mnp_name, const Eigen::VectorXd& q, const Eigen::VectorXd& dq);
     void computeBasicJacobian(const std::string& mnp_name);
     void computeMassMatrix(const std::string& mnp_name);
     bool reached(const std::string& mnp_name, const Eigen::VectorXd& qd, double threshold);
@@ -76,6 +78,8 @@ namespace ahl_robot
     }
 
     void add(const ManipulatorPtr& mnp);
+
+    void addMobility(const MobilityPtr& mobility);
 
     const std::string& getName() const
     {
@@ -102,6 +106,11 @@ namespace ahl_robot
       return mnp_[name];
     }
 
+    const MobilityPtr& getMobility()
+    {
+      return mobility_;
+    }
+
     const std::vector<std::string>& getManipulatorName() const
     {
       return mnp_name_;
@@ -123,6 +132,7 @@ namespace ahl_robot
     MapManipulatorPtr mnp_;
     std::vector<std::string> mnp_name_;
     std::string world_;
+    MobilityPtr mobility_;
   };
 
   typedef boost::shared_ptr<Robot> RobotPtr;

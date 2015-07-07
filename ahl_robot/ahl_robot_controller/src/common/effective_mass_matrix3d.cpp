@@ -42,7 +42,7 @@ using namespace ahl_ctrl;
 
 void EffectiveMassMatrix3d::compute(const Eigen::Matrix3d& lambda_inv, Eigen::Matrix3d& lambda, double thresh)
 {
-  Eigen::JacobiSVD<Eigen::Matrix3d> svd(lambda_inv, Eigen::ComputeThinU | Eigen::ComputeThinV);
+  Eigen::JacobiSVD<Eigen::Matrix3d> svd(lambda_inv, Eigen::ComputeFullU | Eigen::ComputeFullV);
 
   Eigen::Matrix3d S = svd.singularValues().asDiagonal();
   for(unsigned int i = 0; i < 3; ++i)

@@ -47,13 +47,6 @@ bool Ready::callFloat(
   return true;
 }
 
-bool Ready::callSetJoint(
-  ahl_robot_srvs::SetJoint::Request& req,
-  ahl_robot_srvs::SetJoint::Response& res)
-{
-  return true;
-}
-
 bool Ready::callJointSpaceControl(
   ahl_robot_srvs::JointSpaceControl::Request& req,
   ahl_robot_srvs::JointSpaceControl::Response& res)

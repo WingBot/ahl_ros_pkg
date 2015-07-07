@@ -84,9 +84,6 @@ namespace ahl_youbot
     virtual bool callFloat(
       ahl_robot_srvs::Float::Request& req,
       ahl_robot_srvs::Float::Response& res);
-    virtual bool callSetJoint(
-      ahl_robot_srvs::SetJoint::Request& req,
-      ahl_robot_srvs::SetJoint::Response& res);
     virtual bool callJointSpaceControl(
       ahl_robot_srvs::JointSpaceControl::Request& req,
       ahl_robot_srvs::JointSpaceControl::Response& res);

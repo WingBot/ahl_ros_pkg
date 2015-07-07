@@ -45,6 +45,7 @@
 #include <ahl_robot_controller/exception.hpp>
 #include <ahl_robot_controller/robot_controller.hpp>
 #include <ahl_robot_controller/tasks.hpp>
+#include <ahl_robot_controller/mobility/mecanum_wheel.hpp>
 
 using namespace ahl_robot;
 using namespace ahl_ctrl;
@@ -61,6 +62,7 @@ TaskPtr joint_limit;
 TaskPtr position_control;
 TaskPtr orientation_control;
 ahl_gazebo_if::GazeboInterfacePtr gazebo_interface;
+ahl_ctrl::MecanumWheelPtr mecanum_;
 bool initialized = false;
 bool joint_updated = false;
 
@@ -75,7 +77,7 @@ void updateModel(const ros::TimerEvent&)
       robot->computeMassMatrix("mnp");
       controller->updateModel();
       updated = true;
-      tf_pub->publish(robot);
+      //tf_pub->publish(robot);
     }
   }
   catch(ahl_robot::Exception& e)
@@ -117,23 +119,21 @@ void control(const ros::TimerEvent&)
         joint_control->setGoal(qd);
 
         static int reached = 0;
-        if(robot->reached("mnp", qd, 0.03))
+        if(robot->reached("mnp", qd, 0.05))
         {
           ++reached;
 
           if(reached > 500)
           {
-            std::cout << "switch to task space control." << std::endl;
-
             initialized = true;
             controller->clearTask();
             controller->addTask(damping, 0);
             controller->addTask(gravity_compensation, 10);
             controller->addTask(position_control, 10);
             controller->addTask(orientation_control, 5);
-            controller->addTask(joint_limit, 100);
+            //controller->addTask(joint_limit, 100);
             Eigen::Vector3d xd;
-            xd << 0.25, 0.15, 0.75;
+            xd << 1.4, 0.15, 0.1;
             position_control->setGoal(xd);
 
             Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
@@ -142,6 +142,8 @@ void control(const ros::TimerEvent&)
               0, 1, 0,
               -sin(rad), 0, cos(rad);
             orientation_control->setGoal(R);
+
+            std::cout << "OK" << std::endl;
           }
         }
         else
@@ -152,14 +154,14 @@ void control(const ros::TimerEvent&)
       else
       {
         Eigen::Vector3d xd;
-        xd << 0.25, 0.15, 0.75;
-        //xd.coeffRef(0) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        xd << 1.4, 0.15, 0.1;
+        //xd.coeffRef(0) += 0.1 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
         //xd.coeffRef(1) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
-        //xd.coeffRef(2) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        xd.coeffRef(2) += 0.1 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
 
         position_control->setGoal(xd);
         Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
-        double rad = M_PI / 4.0 * sin(2.0 * M_PI * 0.2 * cnt * 0.001) + M_PI / 4;
+        double rad = M_PI;
         R << cos(rad), 0, sin(rad),
           0, 1, 0,
           -sin(rad), 0, cos(rad);
@@ -169,9 +171,9 @@ void control(const ros::TimerEvent&)
       ++cnt;
 
       Eigen::VectorXd tau(robot->getDOF("mnp"));
-      //controller->computeGeneralizedForce(tau);
-
-      //gazebo_interface->applyJointEfforts(tau);
+      Eigen::Vector3d cmd_vel;
+      controller->computeGeneralizedForce(tau);
+      gazebo_interface->applyJointEfforts(tau);
     }
 
   }
@@ -211,13 +213,18 @@ int main(int argc, char** argv)
     using namespace ahl_gazebo_if;
     gazebo_interface = GazeboInterfacePtr(new GazeboInterface());
     gazebo_interface->setDuration(0.010);
+    gazebo_interface->addJoint("youbot::base_x_joint");
+    gazebo_interface->addJoint("youbot::base_y_joint");
+    gazebo_interface->addJoint("youbot::base_yaw_joint");
     gazebo_interface->addJoint("youbot::joint1");
     gazebo_interface->addJoint("youbot::joint2");
     gazebo_interface->addJoint("youbot::joint3");
     gazebo_interface->addJoint("youbot::joint4");
     gazebo_interface->addJoint("youbot::joint5");
-    gazebo_interface->addMobility2D("youbot");
+    //gazebo_interface->addMobility2D("youbot");
     gazebo_interface->connect();
+
+    mecanum_ = ahl_ctrl::MecanumWheelPtr(new ahl_ctrl::MecanumWheel(0.3, 0.471, 0.05));
 
     tf_pub = TfPublisherPtr(new TfPublisher());
 
@@ -231,8 +238,7 @@ int main(int argc, char** argv)
     orientation_control = TaskPtr(new OrientationControl(mnp, "gripper", 0.001));
 
     controller->addTask(gravity_compensation, 0);
-    controller->addTask(damping, 0);
-    //controller->addTask(joint_control, 0);
+    controller->addTask(joint_control, 0);
     //controller->addTask(joint_limit, 100);
 
     ros::MultiThreadedSpinner spinner;

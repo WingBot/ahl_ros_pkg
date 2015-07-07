@@ -57,6 +57,8 @@ int main(int argc, char** argv)
     std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot/yaml/youbot.yaml";
     parser->load(path, robot);
 
+    robot->getMobility()->print();
+
     ros::MultiThreadedSpinner spinner;
 
     TfPublisherPtr tf_publisher = TfPublisherPtr(new TfPublisher());
@@ -84,8 +86,8 @@ int main(int argc, char** argv)
       Eigen::VectorXd dq = robot->getJointVelocity(mnp_name);
       Eigen::MatrixXd J0 = robot->getBasicJacobian(mnp_name);
 
-      std::cout << dq << std::endl << std::endl;
-      std::cout << cos(2.0 * M_PI * 0.1 * cnt * 0.1) << std::endl;
+      //std::cout << dq << std::endl << std::endl;
+      //std::cout << cos(2.0 * M_PI * 0.1 * cnt * 0.1) << std::endl;
 
       tf_publisher->publish(robot, false);
       r.sleep();

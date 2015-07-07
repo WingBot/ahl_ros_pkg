@@ -60,6 +60,7 @@ void Parser::load(const std::string& path, const RobotPtr& robot)
 
     this->loadRobotInfo(robot);
     this->loadManipulator(robot);
+    this->loadMobility(robot);
   }
   catch(YAML::Exception& e)
   {
@@ -96,8 +97,6 @@ void Parser::loadRobotInfo(const RobotPtr& robot)
   this->loadVector3d(node_, yaml_tag::ROBOT_RPY, rpy);
   math::rpyToQuaternion(rpy, q);
   robot->setOrientation(q);
-
-
 }
 
 void Parser::loadManipulator(const RobotPtr& robot)
@@ -289,6 +288,56 @@ void Parser::loadLinks(const YAML::Node& node, const ManipulatorPtr& mnp)
 
   std::reverse(mnp->link.begin(), mnp->link.end());
   this->setLinkToManipulator(init_q, mnp);
+}
+
+void Parser::loadMobility(const RobotPtr& robot)
+{
+  if(!node_[yaml_tag::MOBILITY])
+  {
+    std::cout << "Robot doesn't have mobility." << std::endl;
+    return;
+  }
+
+  std::string func = "Parser::loadMobility";
+
+  YAML::Node node_mob = node_[yaml_tag::MOBILITY];
+
+  this->checkTag(node_mob, yaml_tag::MOBILITY_TYPE, func);
+  this->checkTag(node_mob, yaml_tag::MOBILITY_CUTOFF_FREQUENCY, func);
+  this->checkTag(node_mob, yaml_tag::MOBILITY_COMMAND, func);
+  this->checkTag(node_mob, yaml_tag::MOBILITY_JOINTS, func);
+  this->checkTag(node_mob, yaml_tag::TREAD_WIDTH, func);
+  this->checkTag(node_mob, yaml_tag::WHEEL_BASE, func);
+  this->checkTag(node_mob, yaml_tag::WHEEL_RADIUS, func);
+
+  MobilityPtr mobility = MobilityPtr(new Mobility());
+  mobility->type             = node_mob[yaml_tag::MOBILITY_TYPE].as<std::string>();
+  mobility->cutoff_frequency = node_mob[yaml_tag::MOBILITY_CUTOFF_FREQUENCY].as<double>();
+  mobility->command          = node_mob[yaml_tag::MOBILITY_COMMAND].as<std::string>();
+  mobility->tread_width      = node_mob[yaml_tag::TREAD_WIDTH].as<double>();
+  mobility->wheel_base       = node_mob[yaml_tag::WHEEL_BASE].as<double>();
+  mobility->wheel_radius     = node_mob[yaml_tag::WHEEL_RADIUS].as<double>();
+
+  YAML::Node node_joints = node_mob[yaml_tag::MOBILITY_JOINTS];
+  for(unsigned int i = 0; i < node_joints.size(); ++i)
+  {
+    this->checkTag(node_joints[i], yaml_tag::MOBILITY_JOINT_NAME, func);
+    mobility->joint_name.push_back(node_joints[i][yaml_tag::MOBILITY_JOINT_NAME].as<std::string>());
+  }
+
+  if(mobility->type == ahl_robot::mobility::type::MECANUM_WHEEL)
+  {
+    mobility->q  = Eigen::Vector4d::Zero();
+    mobility->dq = Eigen::Vector4d::Zero();
+  }
+  else
+  {
+    std::stringstream msg;
+    msg << "Mobility type : " << mobility->type << " is not supported.";
+    throw ahl_robot::Exception(func, msg.str());
+  }
+
+  robot->addMobility(mobility);
 }
 
 void Parser::loadVector3d(const YAML::Node& node, const std::string& tag, Eigen::Vector3d& v)

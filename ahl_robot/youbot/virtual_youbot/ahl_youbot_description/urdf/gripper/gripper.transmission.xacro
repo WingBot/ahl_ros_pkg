@@ -6,24 +6,24 @@
 
   <xacro:macro name="youbot_gripper_transmission" params="name">
 
-    <transmission name="${name}_finger_l_trans">
+    <transmission name="finger_trans_l">
       <type>transmission_interface/SimpleTransmission</type>
-      <actuator name="${name}_finger_l_motor">
+      <actuator name="finger_motor_l">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_finger_joint_l">
+      <joint name="finger_joint_l">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>
   
-    <transmission name="${name}_finger_r_trans">
+    <transmission name="finger_trans_r">
       <type>transmission_interface/SimpleTransmission</type>
-      <actuator name="${name}_finger_r_motor">
+      <actuator name="finger_motor_r">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_finger_joint_r">
+      <joint name="finger_joint_r">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>

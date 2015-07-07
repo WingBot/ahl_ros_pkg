@@ -14,7 +14,7 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_joint_1">
+      <joint name="joint1">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>
@@ -25,7 +25,7 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_joint_2">
+      <joint name="joint2">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>
@@ -36,7 +36,7 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_joint_3">
+      <joint name="joint3">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>
@@ -47,7 +47,7 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_joint_4">
+      <joint name="joint4">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>
@@ -58,7 +58,7 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
-      <joint name="${name}_joint_5">
+      <joint name="joint5">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
     </transmission>

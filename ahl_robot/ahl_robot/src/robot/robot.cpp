@@ -53,6 +53,18 @@ void Robot::update(const std::string& mnp_name, const Eigen::VectorXd& q)
   mnp_[mnp_name]->update(q);
 }
 
+void Robot::update(const std::string& mnp_name, const Eigen::VectorXd& q, const Eigen::VectorXd& dq)
+{
+  if(mnp_.find(mnp_name) == mnp_.end())
+  {
+    std::stringstream msg;
+    msg << "Could not find manipulator : " << mnp_name;
+    throw ahl_robot::Exception("ahl_robot::Robot::update", msg.str());
+  }
+
+  mnp_[mnp_name]->update(q, dq);
+}
+
 void Robot::computeBasicJacobian(const std::string& mnp_name)
 {
   if(mnp_.find(mnp_name) == mnp_.end())
@@ -93,6 +105,12 @@ void Robot::add(const ManipulatorPtr& mnp)
 {
   mnp_[mnp->name] = mnp;
   mnp_name_.push_back(mnp->name);
+}
+
+void Robot::addMobility(const MobilityPtr& mobility)
+{
+  mobility_ = MobilityPtr(new Mobility());
+  mobility_ = mobility;
 }
 
 const Eigen::MatrixXd& Robot::getBasicJacobian(const std::string& mnp_name)

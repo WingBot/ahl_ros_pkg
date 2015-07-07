@@ -55,6 +55,7 @@ Manipulator::Manipulator()
   xr.z() = 0.0;
   time_  = ros::Time::now().toNSec() * 0.001 * 0.001;
   pre_time_ = time_;
+  mobility_type_ = mobility::FIXED;
 }
 
 void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
@@ -124,9 +125,36 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
 
   q = q_msr;
   this->computeForwardKinematics();
-  //this->computeBasicJacobian();
-  //this->computeMassMatrix();
+  updated_joint_ = true;
+}
 
+void Manipulator::update(const Eigen::VectorXd& q_msr, const Eigen::VectorXd& dq_msr)
+{
+  time_ = ros::Time::now().toNSec() * 0.001 * 0.001;
+
+  if(q_msr.rows() != dof)
+  {
+    std::stringstream msg;
+    msg << "q.rows() != dof" << std::endl
+        << "  q.rows   : " << q_msr.rows() << std::endl
+        << "  dof : " << dof;
+    throw ahl_robot::Exception("ahl_robot::Manipulator::update", msg.str());
+  }
+
+  if(dq_msr.rows() != dof)
+  {
+    std::stringstream msg;
+    msg << "dq.rows() != dof" << std::endl
+        << "  dq.rows   : " << dq_msr.rows() << std::endl
+        << "  dof       : " << dof;
+    throw ahl_robot::Exception("ahl_robot::Manipulator::update", msg.str());
+  }
+
+  q = q_msr;
+  dq = dq_msr;
+  this->computeForwardKinematics();
+  this->computeVelocity();
+  dq = dq_msr;
   updated_joint_ = true;
 }
 
@@ -159,6 +187,27 @@ void Manipulator::computeMassMatrix()
     M += link[i]->m * Jv.transpose() * Jv + Jw.transpose() * link[i]->I * Jw;
   }
 
+  if(mobility_type_ == mobility::MOBILITY_2D)
+  {
+    if(M.rows() > 3 && M.cols() > 3)
+    {
+      M.block(0, 3, 3, M.cols() - 3) = Eigen::MatrixXd::Zero(3, M.cols() - 3);
+      M.block(3, 0, M.rows() - 3, 3) = Eigen::MatrixXd::Zero(M.rows() - 3, 3);
+      M.coeffRef(0, 1) = M.coeffRef(0, 2) = 0.0;
+      M.coeffRef(1, 0) = M.coeffRef(1, 2) = 0.0;
+      M.coeffRef(2, 0) = M.coeffRef(2, 1) = 0.0;
+    }
+    else
+    {
+      std::stringstream msg;
+      msg << "Mass matrix size is not invalid." << std::endl
+          << "  mobility_type : " << mobility_type_ << std::endl
+          << "  M.rows    : " << M.rows() << std::endl
+          << "  M.cols    : " << M.cols();
+      throw ahl_robot::Exception("Manipulator::computeMassMatrix", msg.str());
+    }
+  }
+
   M_inv = M.inverse();
 }
 
@@ -179,6 +228,11 @@ bool Manipulator::reached(const Eigen::VectorXd& qd, double threshold)
   }
 
   return false;
+}
+
+void Manipulator::setMobilityType(mobility::Type type)
+{
+  mobility_type_ = type;
 }
 
 void Manipulator::print()
@@ -417,46 +471,11 @@ void Manipulator::computeBasicJacobian(int idx, Eigen::MatrixXd& J)
   }
 }
 
-/*
-void Manipulator::computeMassMatrix()
-{
-  M = Eigen::MatrixXd::Zero(M.rows(), M.cols());
-
-  for(unsigned int i = 0; i < link.size(); ++i)
-  {
-    Eigen::MatrixXd Jv = J0[i].block(0, 0, 3, J0[i].cols());
-    Eigen::MatrixXd Jw = J0[i].block(3, 0, 3, J0[i].cols());
-
-    M += link[i]->m * Jv.transpose() * Jv + Jw.transpose() * link[i]->I * Jw;
-  }
-
-  M_inv = M.inverse();
-}
-*/
-
 void Manipulator::computeVelocity()
 {
   if(updated_joint_)
+  {
     differentiator_->apply(this->q);
-/*
-  Eigen::VectorXd dq2;
-
-  double dt = (time_ - pre_time_) * 0.001;
-  dt = 0.001;
-
-  if(dt > 0.0)
-  {
-    dq2  = (q - pre_q) / dt;
+    differentiator_->copyDerivativeValueTo(this->dq);
   }
-  else
-  {
-    dq2 = Eigen::VectorXd::Zero(dq.rows());
-  }
-
-  pre_q  = q;
-  pre_time_ = time_;
-
-  std::cout << "dq : " << dq << std::endl << std::endl;
-  std::cout << "dq2 : " << dq2 << std::endl << std::endl;
-*/
 }

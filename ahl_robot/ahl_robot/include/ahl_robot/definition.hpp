@@ -45,18 +45,39 @@ namespace ahl_robot
 {
   namespace joint
   {
-    static const std::string REVOLUTE_X        = "revolute_x";
-    static const std::string REVOLUTE_Y        = "revolute_y";
-    static const std::string REVOLUTE_Z        = "revolute_z";
-    static const std::string PRISMATIC_X       = "prismatic_x";
-    static const std::string PRISMATIC_Y       = "prismatic_y";
-    static const std::string PRISMATIC_Z       = "prismatic_z";
-    static const std::string FIXED             = "fixed";
+    static const std::string REVOLUTE_X  = "revolute_x";
+    static const std::string REVOLUTE_Y  = "revolute_y";
+    static const std::string REVOLUTE_Z  = "revolute_z";
+    static const std::string PRISMATIC_X = "prismatic_x";
+    static const std::string PRISMATIC_Y = "prismatic_y";
+    static const std::string PRISMATIC_Z = "prismatic_z";
+    static const std::string FIXED       = "fixed";
   }
 
   namespace frame
   {
     static const std::string WORLD = "map";
+  }
+
+  namespace mobility
+  {
+    enum Type
+    {
+      SENTRY_LOWER,
+      FIXED,
+      MOBILITY_2D,
+      SENTRY_UPPER,
+    };
+
+    namespace type
+    {
+      static const std::string MECANUM_WHEEL = "mecanum_wheel";
+    }
+
+    namespace command
+    {
+      static const std::string BASE_VELOCITY = "base_velocity";
+    }
   }
 }
 

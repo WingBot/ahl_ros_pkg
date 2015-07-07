@@ -89,6 +89,18 @@ namespace ahl_ctrl
       return g_;
     }
 
+    double getKpWheel()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return kp_wheel_;
+    }
+
+    double getKvWheel()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return kv_wheel_;
+    }
+
   private:
     void update(ahl_robot_controller::ParamConfig& config, uint32_t level);
 
@@ -103,6 +115,8 @@ namespace ahl_ctrl
     double kp_limit_;
     double kv_limit_;
     Eigen::Vector3d g_;
+    double kp_wheel_;
+    double kv_wheel_;
   };
 
   typedef boost::shared_ptr<Param> ParamPtr;

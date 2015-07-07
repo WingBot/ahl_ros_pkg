@@ -72,6 +72,7 @@ add_executable(
 add_dependencies(
   ahl_youbot_server
     ahl_robot_srvs_gencpp
+    gazebo_msgs_gencpp
 )
 
 target_link_libraries(

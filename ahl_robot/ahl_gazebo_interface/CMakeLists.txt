@@ -43,6 +43,11 @@ add_library(
     src/gazebo_interface.cpp
 )
 
+add_dependencies(
+  ahl_gazebo_interface
+    gazebo_msgs_gencpp
+)
+
 target_link_libraries(
   ahl_gazebo_interface
     ${catkin_LIBRARIES}

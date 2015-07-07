@@ -43,6 +43,7 @@
 #include <vector>
 #include <Eigen/StdVector>
 #include <ahl_digital_filter/differentiator.hpp>
+#include "ahl_robot/definition.hpp"
 #include "ahl_robot/robot/link.hpp"
 
 namespace ahl_robot
@@ -60,9 +61,15 @@ namespace ahl_robot
     Manipulator();
     void init(unsigned int dof, const Eigen::VectorXd& init_q);
     void update(const Eigen::VectorXd& q_msr);
+    void update(const Eigen::VectorXd& q_msr, const Eigen::VectorXd& dq_msr);
     void computeBasicJacobian();
     void computeMassMatrix();
     bool reached(const Eigen::VectorXd& qd, double threshold);
+    void setMobilityType(mobility::Type type);
+    mobility::Type getMobilityType()
+    {
+      return mobility_type_;
+    }
     void print();
 
     //void computeBasicJacobian(const std::string& name);
@@ -103,6 +110,8 @@ namespace ahl_robot
 
     ahl_filter::DifferentiatorPtr differentiator_;
     bool updated_joint_;
+
+    mobility::Type mobility_type_;
   };
 
   typedef boost::shared_ptr<Manipulator> ManipulatorPtr;

@@ -57,6 +57,7 @@ add_library(
     src/robot_controller.cpp
     src/param.cpp
     src/common/effective_mass_matrix3d.cpp
+    src/mobility/mecanum_wheel.cpp
     src/task/multi_task.cpp
     src/task/damping.cpp
     src/task/joint_limit.cpp

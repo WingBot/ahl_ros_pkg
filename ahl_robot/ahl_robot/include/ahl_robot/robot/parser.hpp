@@ -77,6 +77,15 @@ namespace ahl_robot
     static const std::string DQ_MAX         = "dq_max";
     static const std::string TAU_MAX        = "tau_max";
     static const std::string INIT_Q         = "init_q";
+    static const std::string MOBILITY                  = "mobility";
+    static const std::string MOBILITY_TYPE             = "type";
+    static const std::string MOBILITY_CUTOFF_FREQUENCY = "cutoff_frequency";
+    static const std::string MOBILITY_COMMAND          = "command";
+    static const std::string MOBILITY_JOINTS           = "joints";
+    static const std::string MOBILITY_JOINT_NAME       = "name";
+    static const std::string TREAD_WIDTH               = "tread_width";
+    static const std::string WHEEL_BASE                = "wheel_base";
+    static const std::string WHEEL_RADIUS              = "wheel_radius";
   }
 
   class Parser
@@ -89,6 +98,7 @@ namespace ahl_robot
     void loadRobotInfo(const RobotPtr& robot);
     void loadManipulator(const RobotPtr& robot);
     void loadLinks(const YAML::Node& node, const ManipulatorPtr& mnp);
+    void loadMobility(const RobotPtr& robot);
 
     void loadVector3d(const YAML::Node& node, const std::string& tag, Eigen::Vector3d& v);
     void loadMatrix3d(const YAML::Node& node, const std::string& tag, Eigen::Matrix3d& m);
