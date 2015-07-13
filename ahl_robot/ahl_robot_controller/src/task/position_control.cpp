@@ -91,10 +91,8 @@ void PositionControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   }
 
   Eigen::Vector3d x = mnp_->T_abs[idx_].block(0, 3, 3, 1);
-  Eigen::VectorXd F_unit = -param_->getKp() * (x - xd_) - param_->getKv() * Jv_ * mnp_->dq;
+  Eigen::VectorXd F_unit = -param_->getKpTask().block(0, 0, 3, 3) * (x - xd_) - param_->getKvTask().block(0, 0, 3, 3) * Jv_ * mnp_->dq;
   Eigen::VectorXd F = lambda_ * F_unit;
 
   tau = Jv_.transpose() * F;
-
-  //std::cout << "xp" << std::endl << mnp_->T_abs[mnp_->T_abs.size() - 1].block(0, 3, 3, 1) << std::endl;
 }

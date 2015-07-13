@@ -36,10 +36,12 @@
  *
  *********************************************************************/
 
+#include <fstream>
 #include <ros/ros.h>
 #include "ahl_robot/exception.hpp"
 #include "ahl_robot/robot/parser.hpp"
 #include "ahl_robot/tf/tf_publisher.hpp"
+#include "ahl_digital_filter/pseudo_differentiator.hpp"
 
 using namespace ahl_robot;
 
@@ -65,16 +67,34 @@ int main(int argc, char** argv)
 
     const std::string mnp_name = "mnp";
     unsigned long cnt = 0;
-    ros::Rate r(10.0);
+    const double period = 0.001;
+    ros::Rate r(1 / period);
+
+    ahl_filter::DifferentiatorPtr differentiator = ahl_filter::DifferentiatorPtr(new ahl_filter::PseudoDifferentiator(period, 1.0));
+
+    Eigen::VectorXd q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), 0.0);
+    Eigen::VectorXd dq = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), 0.0);
+    differentiator->init(q, dq);
+
+    Eigen::VectorXd pre_q = q;
+
+    //std::ofstream ofs1;
+    //ofs1.open("result1.hpp");
+    //std::ofstream ofs2;
+    //ofs2.open("result2.hpp");
+    //std::ofstream ofs3;
+    //ofs3.open("result3.hpp");
 
     while(ros::ok())
     {
-      Eigen::VectorXd q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), 1.0);
-      double coeff = 1.0 * sin(2.0 * M_PI * 0.1 * cnt * 0.1);
+      q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), 1.0);
+      double coeff = 1.0 * sin(2.0 * M_PI * 0.1 * cnt * period);
       ++cnt;
 
       q = coeff * q;
+
       //q = Eigen::VectorXd::Constant(robot->getDOF(mnp_name), M_PI / 2.0);
+
       q.coeffRef(0) = 0.0;
       q.coeffRef(1) = 0.0;
       q.coeffRef(2) = 0.0;
@@ -83,13 +103,41 @@ int main(int argc, char** argv)
       robot->computeBasicJacobian(mnp_name);
       robot->computeMassMatrix(mnp_name);
 
-      Eigen::VectorXd dq = robot->getJointVelocity(mnp_name);
-      Eigen::MatrixXd J0 = robot->getBasicJacobian(mnp_name);
+      differentiator->apply(q);
 
+      Eigen::VectorXd dq1 = robot->getJointVelocity(mnp_name);
+
+      Eigen::VectorXd dq2;
+      differentiator->copyDerivativeValueTo(dq2);
+
+      std::cout << "p     : " << q.transpose() << std::endl;
+      std::cout << "pre_p : " << pre_q.transpose() << std::endl;
+
+      Eigen::VectorXd dq3 = (q - pre_q) / period;
+      pre_q = q;
+
+      //std::cout << "dq1 : " << dq1.block(3, 0, dq.rows() - 3, 1).transpose() << std::endl;
+      //std::cout << "dq2 : " << dq2.block(3, 0, dq.rows() - 3, 1).transpose() << std::endl;
+      //std::cout << "dq3 : " << dq3.block(3, 0, dq.rows() - 3, 1).transpose() << std::endl;
       //std::cout << dq << std::endl << std::endl;
       //std::cout << cos(2.0 * M_PI * 0.1 * cnt * 0.1) << std::endl;
 
       tf_publisher->publish(robot, false);
+
+/*
+      ofs1 << cnt * period << " ";
+      ofs2 << cnt * period << " ";
+      ofs3 << cnt * period << " ";
+      for(unsigned int i = 0; i < dq.rows() - 3; ++i)
+      {
+        ofs1 << dq1[i + 3] << " ";
+        ofs2 << dq2[i + 3] << " ";
+        ofs3 << dq3[i + 3] << " ";
+      }
+      ofs1 << std::endl;
+      ofs2 << std::endl;
+      ofs3 << std::endl;
+*/
       r.sleep();
     }
   }

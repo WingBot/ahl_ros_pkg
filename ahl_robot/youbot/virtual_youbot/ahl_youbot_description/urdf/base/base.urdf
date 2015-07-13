@@ -20,7 +20,7 @@
   <property name="wheel_radius" value="0.05"/>
   <property name="wheel_length" value="0.005"/>
 
-  <property name="wheel_joint_damping" value="0.2"/>
+  <property name="wheel_joint_damping" value="0.4"/>
   <property name="wheel_joint_friction" value="0"/>
   <property name="wheel_joint_effort" value="10000"/>
   <property name="wheel_joint_velocity" value="10000"/>
@@ -57,7 +57,7 @@
       <child link="base_y"/>
       <axis xyz="1 0 0"/>
       <limit effort="100" velocity="1" lower="-10000" upper="10000"/>
-      <dynamics damping="1" friction="0.2"/>
+      <dynamics damping="1" friction="0.1"/>
     </joint>
 
     <link name="base_y">
@@ -81,7 +81,7 @@
       <child link="base_yaw"/>
       <axis xyz="0 1 0"/>
       <limit effort="100" velocity="1" lower="-10000" upper="10000"/>
-      <dynamics damping="1" friction="0.2"/>
+      <dynamics damping="1" friction="0.1"/>
     </joint>
 
     <link name="base_yaw">
@@ -105,7 +105,7 @@
       <child link="base_link"/>
       <axis xyz="0 0 1"/>
       <limit effort="10000" velocity="10000" lower="-10000" upper="10000"/>
-      <dynamics damping="1" friction="0.2"/>
+      <dynamics damping="1" friction="0.1"/>
     </joint>
 
     <link name="base_link">

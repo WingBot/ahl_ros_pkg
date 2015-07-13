@@ -49,12 +49,12 @@ GazeboInterface::GazeboInterface()
 
 void GazeboInterface::addJoint(const std::string& name)
 {
-  q_map_[name] = 0.0;
-  if(name_to_idx_.find(name) == name_to_idx_.end())
+  joint_map_[name] = 0.0;
+  if(joint_to_idx_.find(name) == joint_to_idx_.end())
   {
-    unsigned int size = name_to_idx_.size();
-    name_to_idx_[name] = size;
-    name_list_.push_back(name);
+    unsigned int size = joint_to_idx_.size();
+    joint_to_idx_[name] = size;
+    joint_list_.push_back(name);
   }
 }
 
@@ -65,23 +65,24 @@ void GazeboInterface::setDuration(double duration)
 
 void GazeboInterface::connect()
 {
-  joint_num_ = q_map_.size();
+  joint_num_ = joint_map_.size();
   q_ = Eigen::VectorXd::Zero(joint_num_);
   effort_.start_time = ros::Time(0);
   effort_.duration = duration_;
-  effort_.effort.resize(q_map_.size());
-  effort_.name.resize(q_map_.size());
+  effort_.effort.resize(joint_map_.size());
+  effort_.name.resize(joint_map_.size());
   std::map<std::string, int>::iterator it;
-  for(it = name_to_idx_.begin(); it != name_to_idx_.end(); ++it)
+  for(it = joint_to_idx_.begin(); it != joint_to_idx_.end(); ++it)
   {
     effort_.name[it->second] = it->first;
   }
 
   ros::NodeHandle nh;
   pub_effort_ = nh.advertise<gazebo_msgs::ApplyJointEfforts>(
-    TOPIC_PUB_JOINT_EFFORT, 10);
+    TOPIC_PUB_JOINT_EFFORT, 1);
   sub_joint_states_ = nh.subscribe(
-    TOPIC_SUB_JOINT_STATES, 10, &GazeboInterface::subscribeJointStates, this);
+    TOPIC_SUB_JOINT_STATES, 1, &GazeboInterface::subscribeJointStates, this);
+  pub_link_states_ = nh.advertise<gazebo_msgs::LinkStates>("/gazebo/set_link_states", 1);
 }
 
 bool GazeboInterface::subscribed()
@@ -92,26 +93,26 @@ bool GazeboInterface::subscribed()
 
 void GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
 {
-  if(tau.rows() != name_list_.size())
+  if(tau.rows() != joint_list_.size())
   {
     std::stringstream msg;
-    msg << "tau.rows() != name_list_.size() + joint_idx_offset_" << std::endl
+    msg << "tau.rows() != joint_list_.size() + joint_idx_offset_" << std::endl
         << "  tau.rows()        : " << tau.rows() << std::endl
-        << "  name_list_.size() : " << name_list_.size();
+        << "  joint_list_.size() : " << joint_list_.size();
 
     throw ahl_gazebo_if::Exception("ahl_gazebo_if::GazeboInterface::applyJointEfforts", msg.str());
   }
 
-  for(unsigned int i = 0; i < name_list_.size(); ++i)
+  for(unsigned int i = 0; i < joint_list_.size(); ++i)
   {
-    if(name_to_idx_.find(name_list_[i]) == name_to_idx_.end())
+    if(joint_to_idx_.find(joint_list_[i]) == joint_to_idx_.end())
     {
       std::stringstream msg;
-      msg << name_list_[i] << " was not found in name_to_idx_.";
+      msg << joint_list_[i] << " was not found in joint_to_idx_.";
       throw ahl_gazebo_if::Exception("ahl_gazebo_if::GazeboInterface::applyJointEffots", msg.str());
     }
 
-    effort_.effort[name_to_idx_[name_list_[i]]] = tau.coeff(i);// + joint_idx_offset_);
+    effort_.effort[joint_to_idx_[joint_list_[i]]] = tau.coeff(i);// + joint_idx_offset_);
   }
 
   pub_effort_.publish(effort_);
@@ -123,16 +124,95 @@ void GazeboInterface::subscribeJointStates(const gazebo_msgs::JointStates::Const
 
   for(unsigned int i = 0; i < msg->name.size(); ++i)
   {
-    q_map_[msg->name[i]]  = msg->q[i];
+    joint_map_[msg->name[i]]  = msg->q[i];
   }
 
-  for(unsigned int i = 0; i < name_list_.size(); ++i)
+  for(unsigned int i = 0; i < joint_list_.size(); ++i)
   {
-    if(q_map_.find(name_list_[i]) != q_map_.end())
+    if(joint_map_.find(joint_list_[i]) != joint_map_.end())
     {
-      q_.coeffRef(i) = q_map_[name_list_[i]];
+      q_.coeffRef(i) = joint_map_[joint_list_[i]];
     }
   }
 
   subscribed_joint_states_ = true;
+}
+
+void GazeboInterface::addLink(const std::string& robot, const std::string& link)
+{
+  std::string name = robot + "::" + link;
+
+  geometry_msgs::Pose pose;
+  pose.position.x = 0.0;
+  pose.position.y = 0.0;
+  pose.position.z = 0.0;
+  pose.orientation.x = 0.0;
+  pose.orientation.y = 0.0;
+  pose.orientation.z = 0.0;
+  pose.orientation.z = 1.0;
+
+  geometry_msgs::Twist twist;
+  twist.linear.x = 0.0;
+  twist.linear.y = 0.0;
+  twist.linear.z = 0.0;
+  twist.angular.x = 0.0;
+  twist.angular.y = 0.0;
+  twist.angular.z = 0.0;
+
+  link_states_.name.push_back(name);
+  link_states_.pose.push_back(pose);
+  link_states_.twist.push_back(twist);
+  link_states_.reference_frame.push_back(link);
+}
+
+void GazeboInterface::translateLink(const std::vector<Eigen::Vector3d>& p)
+{
+  if(p.size() != link_states_.name.size())
+  {
+    std::stringstream msg;
+    msg << "p.size() != link_states_.name.size()" << std::endl
+        << "  p.size : " << p.size() << std::endl
+        << "  link_states_.name.size : " << link_states_.name.size();
+    throw ahl_gazebo_if::Exception("GazeboInterface::translateLink", msg.str());
+  }
+
+  for(unsigned int i = 0; i < p.size(); ++i)
+  {
+    link_states_.pose[i].position.x = p[i].coeff(0);
+    link_states_.pose[i].position.y = p[i].coeff(1);
+    link_states_.pose[i].position.z = p[i].coeff(2);
+
+    link_states_.pose[i].orientation.x = 0.0;
+    link_states_.pose[i].orientation.y = 0.0;
+    link_states_.pose[i].orientation.z = 0.0;
+    link_states_.pose[i].orientation.w = 1.0;
+  }
+
+  pub_link_states_.publish(link_states_);
+}
+
+void GazeboInterface::rotateLink(const std::vector<Eigen::Quaternion<double> >& q)
+{
+  if(q.size() != link_states_.name.size())
+  {
+    std::stringstream msg;
+    msg << "q.size() != link_states_.name.size()" << std::endl
+        << "  q.size : " << q.size() << std::endl
+        << "  link_states_.name.size : " << link_states_.name.size();
+    throw ahl_gazebo_if::Exception("GazeboInterface::rotateLink", msg.str());
+  }
+
+  for(unsigned int i = 0; i < q.size(); ++i)
+  {
+    link_states_.pose[i].position.x = 0.0;
+    link_states_.pose[i].position.y = 0.0;
+    link_states_.pose[i].position.z = 0.0;
+
+    link_states_.pose[i].orientation.x = q[i].x();
+    link_states_.pose[i].orientation.y = q[i].y();
+    link_states_.pose[i].orientation.z = q[i].z();
+    link_states_.pose[i].orientation.w = q[i].w();
+  }
+
+  pub_link_states_.publish(link_states_);
 }

@@ -4,6 +4,7 @@
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
 #include "ahl_robot_controller/param.hpp"
+#include "ahl_robot_controller/mobility/mobility_controller.hpp"
 
 namespace ahl_ctrl
 {
@@ -12,19 +13,21 @@ namespace ahl_ctrl
   // frames attached to each wheel are the same
   // and that the rollers angle w.r.t wheel axis is 45 deg.
 
-  class MecanumWheel
+  class MecanumWheel : public MobilityController
   {
   public:
-    MecanumWheel(double tread_width, double wheel_base, double wheel_radius);
+    MecanumWheel(const ahl_robot::MobilityPtr& mobility, const ParamPtr& param);
 
-    // v.coeff(0) : vx, v.coeff(1) : vy, v.coeff(2) : vyaw
-    void computeWheelVelocity(const Eigen::Vector3d& v_base, Eigen::VectorXd& v_wheel);
+    void computeBaseVelocityFromTorque(
+      const Eigen::MatrixXd& M, const Eigen::VectorXd& tau, Eigen::VectorXd& v_base);
+    void computeWheelVelocityFromBaseVelocity(
+      const Eigen::VectorXd& v_base, Eigen::VectorXd& v_wheel);
+    void computeWheelTorqueFromBaseVelocity(
+      const Eigen::VectorXd& v_base, Eigen::VectorXd& tau_wheel);
 
   private:
-    double tread_width_; // [m]
-    double wheel_base_; // [m]
-    double wheel_radius_; // [m]
-
+    ahl_robot::MobilityPtr mobility_;
+    ParamPtr param_;
     Eigen::MatrixXd decomposer_;
   };
 

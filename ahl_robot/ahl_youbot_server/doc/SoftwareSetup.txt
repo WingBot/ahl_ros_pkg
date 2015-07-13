@@ -17,11 +17,11 @@
    Change the branch from "master" to "hydro" and download zip.
    "Download ZIP" button is at the right side of the page.
 
-6. Download youbot_applications
+6. Download youbot_applications.
    See https://github.com/wnowak/youbot_applications
    Download zip.
 
-7. Make directory "youbot" under catkin_ws/src.
+7. Make directory "youbot" under "catkin_ws/src".
    cd catkin_ws/src
    mkdir youbot
 
@@ -34,11 +34,11 @@
 
 9. Change directory to "catkin_ws" and execute "catkin_make"
 
-10. Set youbot in an open place.
+10. Set youbot in an open space.
 
 11. sudo su
 
-12. Move to catkin_ws/devel/hello_world_demo
+12. Move to catkin_ws/devel/lib/hello_world_demo
 
 13. ./youBot_HelloWorldDemo
     Youbot will move a little bit.
@@ -61,4 +61,3 @@ See http://askubuntu.com/questions/217635/how-to-rename-an-ethernet-interface
 
 Reference:
 https://github.com/youbot/youbot-ros-pkg/issues/21
-

@@ -44,6 +44,7 @@
 #include <boost/shared_ptr.hpp>
 #include <ahl_robot/ahl_robot.hpp>
 #include "ahl_robot_controller/param.hpp"
+#include "ahl_robot_controller/mobility/mobility_controller.hpp"
 #include "ahl_robot_controller/task/task.hpp"
 #include "ahl_robot_controller/task/multi_task.hpp"
 
@@ -55,15 +56,24 @@ namespace ahl_ctrl
   public:
     RobotController();
     void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name);
+    void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name, const ParamPtr& param);
     void addTask(const TaskPtr& task, int priority);
     void clearTask();
     void updateModel();
     void computeGeneralizedForce(Eigen::VectorXd& tau);
+    void computeBaseVelocityFromTorque(
+      const Eigen::VectorXd& tau, Eigen::VectorXd& v_base, int mobility_dof = 3);
+    void computeWheelVelocityFromBaseVelocity(
+      const Eigen::VectorXd& v_base, Eigen::VectorXd& v_wheel);
+    void computeWheelTorqueFromBaseVelocity(
+      const Eigen::VectorXd& v_base, Eigen::VectorXd& tau_wheel);
 
   private:
     ParamPtr param_;
     MultiTaskPtr multi_task_;
     ahl_robot::ManipulatorPtr mnp_;
+    MobilityControllerPtr mobility_controller_;
+    ahl_robot::MobilityPtr mobility_;
   };
 
   typedef boost::shared_ptr<RobotController> RobotControllerPtr;

@@ -59,8 +59,8 @@ void Parser::load(const std::string& path, const RobotPtr& robot)
     node_ = YAML::Load(ifs_);
 
     this->loadRobotInfo(robot);
-    this->loadManipulator(robot);
     this->loadMobility(robot);
+    this->loadManipulator(robot);
   }
   catch(YAML::Exception& e)
   {
@@ -102,11 +102,23 @@ void Parser::loadRobotInfo(const RobotPtr& robot)
 void Parser::loadManipulator(const RobotPtr& robot)
 {
   std::string func = "ahl_robot::Parser::loadManipulator";
+
+  this->checkTag(node_, yaml_tag::DIFFERENTIATOR, func);
+  YAML::Node node_dif = node_[yaml_tag::DIFFERENTIATOR];
+  this->checkTag(node_dif, yaml_tag::DIFFERENTIATOR_UPDATE_RATE, func);
+  this->checkTag(node_dif, yaml_tag::DIFFERENTIATOR_CUTOFF_FREQUENCY, func);
+
+  double update_rate = node_dif[yaml_tag::DIFFERENTIATOR_UPDATE_RATE].as<double>();
+  double cutoff_frequency = node_dif[yaml_tag::DIFFERENTIATOR_CUTOFF_FREQUENCY].as<double>();
+
   this->checkTag(node_, yaml_tag::MANIPULATORS, func);
 
   for(unsigned int i = 0; i < node_[yaml_tag::MANIPULATORS].size(); ++i)
   {
     ManipulatorPtr mnp = ManipulatorPtr(new Manipulator());
+
+    mnp->setDifferentiatorUpdateRate(update_rate);
+    mnp->setDifferentiatorCutoffFrequency(cutoff_frequency);
 
     this->checkTag(node_[yaml_tag::MANIPULATORS][i], yaml_tag::MNP_NAME, func);
     this->checkTag(node_[yaml_tag::MANIPULATORS][i], yaml_tag::LINKS, func);
@@ -116,6 +128,20 @@ void Parser::loadManipulator(const RobotPtr& robot)
     YAML::Node node = node_[yaml_tag::MANIPULATORS][i][yaml_tag::LINKS];
 
     this->loadLinks(node, mnp);
+
+    if(robot->getMobility())
+    {
+      MobilityPtr mobility = robot->getMobility();
+      if(mobility->type == mobility::type::MECANUM_WHEEL)
+      {
+        mnp->setMobilityType(mobility::MOBILITY_2D);
+      }
+      else
+      {
+        mnp->setMobilityType(mobility::FIXED);
+      }
+    }
+
     robot->add(mnp);
   }
 }
@@ -302,8 +328,10 @@ void Parser::loadMobility(const RobotPtr& robot)
 
   YAML::Node node_mob = node_[yaml_tag::MOBILITY];
 
+  this->checkTag(node_mob, yaml_tag::MOBILITY_UPDATE_RATE, func);
   this->checkTag(node_mob, yaml_tag::MOBILITY_TYPE, func);
-  this->checkTag(node_mob, yaml_tag::MOBILITY_CUTOFF_FREQUENCY, func);
+  this->checkTag(node_mob, yaml_tag::MOBILITY_CUTOFF_FREQUENCY_BASE, func);
+  this->checkTag(node_mob, yaml_tag::MOBILITY_CUTOFF_FREQUENCY_WHEEL, func);
   this->checkTag(node_mob, yaml_tag::MOBILITY_COMMAND, func);
   this->checkTag(node_mob, yaml_tag::MOBILITY_JOINTS, func);
   this->checkTag(node_mob, yaml_tag::TREAD_WIDTH, func);
@@ -311,8 +339,10 @@ void Parser::loadMobility(const RobotPtr& robot)
   this->checkTag(node_mob, yaml_tag::WHEEL_RADIUS, func);
 
   MobilityPtr mobility = MobilityPtr(new Mobility());
+  mobility->update_rate      = node_mob[yaml_tag::MOBILITY_UPDATE_RATE].as<double>();
   mobility->type             = node_mob[yaml_tag::MOBILITY_TYPE].as<std::string>();
-  mobility->cutoff_frequency = node_mob[yaml_tag::MOBILITY_CUTOFF_FREQUENCY].as<double>();
+  mobility->cutoff_frequency_base = node_mob[yaml_tag::MOBILITY_CUTOFF_FREQUENCY_BASE].as<double>();
+  mobility->cutoff_frequency_wheel = node_mob[yaml_tag::MOBILITY_CUTOFF_FREQUENCY_WHEEL].as<double>();
   mobility->command          = node_mob[yaml_tag::MOBILITY_COMMAND].as<std::string>();
   mobility->tread_width      = node_mob[yaml_tag::TREAD_WIDTH].as<double>();
   mobility->wheel_base       = node_mob[yaml_tag::WHEEL_BASE].as<double>();
@@ -325,18 +355,7 @@ void Parser::loadMobility(const RobotPtr& robot)
     mobility->joint_name.push_back(node_joints[i][yaml_tag::MOBILITY_JOINT_NAME].as<std::string>());
   }
 
-  if(mobility->type == ahl_robot::mobility::type::MECANUM_WHEEL)
-  {
-    mobility->q  = Eigen::Vector4d::Zero();
-    mobility->dq = Eigen::Vector4d::Zero();
-  }
-  else
-  {
-    std::stringstream msg;
-    msg << "Mobility type : " << mobility->type << " is not supported.";
-    throw ahl_robot::Exception(func, msg.str());
-  }
-
+  mobility->init();
   robot->addMobility(mobility);
 }
 

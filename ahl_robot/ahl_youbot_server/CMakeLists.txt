@@ -36,6 +36,10 @@ include_directories(
   ${TinyXML_INCLUDE_DIRS}
 )
 
+generate_dynamic_reconfigure_options(
+  cfg/Param.cfg
+)
+
 catkin_package(
   CATKIN_DEPENDS
     ahl_gazebo_interface
@@ -55,6 +59,7 @@ add_executable(
   ahl_youbot_server
     src/main.cpp
     src/server.cpp
+    src/param.cpp
     src/state/state.cpp
     src/state/disabled.cpp
     src/state/ready.cpp
@@ -71,6 +76,7 @@ add_executable(
 
 add_dependencies(
   ahl_youbot_server
+    ahl_youbot_server_gencpp
     ahl_robot_srvs_gencpp
     gazebo_msgs_gencpp
 )
@@ -83,6 +89,7 @@ target_link_libraries(
 add_executable(
   youbot_test
     test/test.cpp
+    src/param.cpp
 )
 
 target_link_libraries(

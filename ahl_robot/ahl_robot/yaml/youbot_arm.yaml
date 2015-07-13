@@ -2,8 +2,11 @@ name: youbot
 xyz: [0, 0, 0]
 rpy: [0, 0, 0]
 world_frame: map
-cut_off_pseudo_differential:
-tau_pseudo_differential:
+
+differentiator:
+  update_rate: 0.001
+  cutoff_frequency: 20.0
+
 manipulators:
 
   - name: mnp

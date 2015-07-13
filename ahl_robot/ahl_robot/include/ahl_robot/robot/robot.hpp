@@ -58,6 +58,9 @@ namespace ahl_robot
 
     void update(const std::string& mnp_name, const Eigen::VectorXd& q);
     void update(const std::string& mnp_name, const Eigen::VectorXd& q, const Eigen::VectorXd& dq);
+    void updateBase(const Eigen::VectorXd& p, const Eigen::Quaternion<double>& r);
+    void updateWheel(const Eigen::VectorXd& q);
+
     void computeBasicJacobian(const std::string& mnp_name);
     void computeMassMatrix(const std::string& mnp_name);
     bool reached(const std::string& mnp_name, const Eigen::VectorXd& qd, double threshold);

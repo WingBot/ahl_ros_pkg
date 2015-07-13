@@ -411,6 +411,13 @@ void GazeboRosApiPlugin::advertiseServices()
                                                           ros::VoidPtr(), &gazebo_queue_);
   set_link_state_topic_ = nh_->subscribe(link_state_so);
 
+  ros::SubscribeOptions link_states_so =
+    ros::SubscribeOptions::create<gazebo_msgs::LinkStates>(
+                                                           "set_link_states",10,
+                                                           boost::bind( &GazeboRosApiPlugin::updateLinkStates,this,_1),
+                                                           ros::VoidPtr(), &gazebo_queue_);
+  set_link_states_topic_ = nh_->subscribe(link_states_so);
+
   // topic callback version for set_model_state
   ros::SubscribeOptions model_state_so =
     ros::SubscribeOptions::create<gazebo_msgs::ModelState>(
@@ -1688,6 +1695,89 @@ void GazeboRosApiPlugin::updateLinkState(const gazebo_msgs::LinkState::ConstPtr&
   /*bool success = */ setLinkState(req,res);
 }
 
+void GazeboRosApiPlugin::updateLinkStates(const gazebo_msgs::LinkStates::ConstPtr& link_states)
+{
+  std::vector<gazebo::math::Pose> target_pose(link_states->name.size());
+
+  gazebo::physics::LinkPtr body;
+  gazebo::physics::LinkPtr frame;
+
+  for(unsigned int i = 0; i < link_states->name.size(); ++i)
+  {
+    body = boost::dynamic_pointer_cast<gazebo::physics::Link>(world_->GetEntity(link_states->name[i]));
+    frame = boost::dynamic_pointer_cast<gazebo::physics::Link>(world_->GetEntity(link_states->reference_frame[i]));
+
+    if (!body)
+    {
+      ROS_ERROR("Updating LinkState: link [%s] does not exist",link_states->name[i].c_str());
+      return;
+    }
+
+    gazebo::math::Vector3 target_pos(link_states->pose[i].position.x, link_states->pose[i].position.y, link_states->pose[i].position.z);
+    gazebo::math::Quaternion target_rot(link_states->pose[i].orientation.w, link_states->pose[i].orientation.x,
+                                        link_states->pose[i].orientation.y, link_states->pose[i].orientation.z);
+    target_pose[i] = gazebo::math::Pose(target_pos, target_rot);
+
+    if (frame)
+    {
+      gazebo::math::Pose    frame_pose   = frame->GetWorldPose(); // - myBody->GetCoMPose();
+      gazebo::math::Vector3 frame_pos    = frame_pose.pos;
+      gazebo::math::Quaternion frame_rot = frame_pose.rot;
+
+      target_pose[i].pos = frame_pos + frame_rot.RotateVector(target_pos);
+      //target_pose[i].rot = frame_rot * target_pose[i].rot;
+
+      gazebo::math::Quaternion rot_trans;
+      rot_trans.x = -target_rot.x;
+      rot_trans.y = -target_rot.y;
+      rot_trans.z = -target_rot.z;
+      rot_trans.w =  target_rot.w;
+
+      target_pose[i].rot = frame_rot * target_rot;
+
+      double rad = 2.0 * acos(target_pose[i].rot.w);
+      std::cout << rad << " : " << target_pose[i].rot.y << std::endl;
+
+/*
+      if(target_pose[i].rot.y < 0.0)
+      {
+        target_pose[i].rot.x *= -1.0;
+        target_pose[i].rot.y *= -1.0;
+        target_pose[i].rot.z *= -1.0;
+        rad = rad - 2.0 * M_PI;
+        target_pose[i].rot.w = cos(0.5 * rad);
+
+        // std::cout << "y : " << target_pose[i].rot.y << std::endl;
+        //std::cout << 2.0 * acos(target_pose[i].rot.w) / M_PI * 180.0 << std::endl;
+      }
+*/
+
+
+    }
+    else if (link_states->reference_frame[i] == "" || link_states->reference_frame[i] == "world" ||
+             link_states->reference_frame[i] == "map" || link_states->reference_frame[i] == "/map")
+    {
+      ROS_INFO("Updating LinkState: reference_frame is empty/world/map, using inertial frame");
+    }
+    else
+    {
+      ROS_ERROR("Updating LinkState: reference_frame is not a valid link name");
+      return;
+    }
+
+  }
+
+  bool is_paused = world_->IsPaused();
+  if (!is_paused) world_->SetPaused(true);
+
+  for(unsigned int i = 0; i < target_pose.size(); ++i)
+  {
+    body->SetWorldPose(target_pose[i]);
+  }
+
+  world_->SetPaused(is_paused);
+}
+
 void GazeboRosApiPlugin::transformWrench( gazebo::math::Vector3 &target_force, gazebo::math::Vector3 &target_torque,
                                           gazebo::math::Vector3 reference_force, gazebo::math::Vector3 reference_torque,
                                           gazebo::math::Pose target_to_reference )
@@ -2411,8 +2501,8 @@ bool GazeboRosApiPlugin::spawnAndConform(TiXmlDocument &gazebo_model_xml, std::s
   /// FIXME: should change publish to direct invocation World::LoadModel() and/or
   ///        change the poll for Model existence to common::Events based check.
 
-  /// \brief poll and wait, verify that the model is spawned within Hardcoded 10 seconds
-  ros::Duration model_spawn_timeout(10.0);
+  /// \brief poll and wait, verify that the model is spawned within Hardcoded 2 seconds
+  ros::Duration model_spawn_timeout(2.0);
   ros::Time timeout = ros::Time::now() + model_spawn_timeout;
 
   while (ros::ok())

@@ -6,6 +6,7 @@
   <property name="threshold" value="0.01"/>
 
   <!-- arm limits positions (deg) -->
+
   <property name="joint1_lower_limit" value="-${M_PI * 169 / 180}"/>
   <property name="joint1_upper_limit" value= "${M_PI * 169 / 180}"/>
   <property name="joint2_lower_limit" value="-${M_PI *  65 / 180}"/>
@@ -16,18 +17,6 @@
   <property name="joint4_upper_limit" value= "${M_PI * 102.5 / 180}"/>
   <property name="joint5_lower_limit" value="-${M_PI * 165 / 180}"/>
   <property name="joint5_upper_limit" value= "${M_PI * 165 / 180}"/>
-
-
-  <property name="joint1_lower_limit_soft" value="-${(M_PI * 169 / 180) + threshold}"/>
-  <property name="joint1_upper_limit_soft" value= "${(M_PI * 169 / 180) - threshold}"/>
-  <property name="joint2_lower_limit_soft" value="-${(M_PI *  65 / 180) + threshold}"/>
-  <property name="joint2_upper_limit_soft" value= "${(M_PI *  90 / 180) - threshold}"/>
-  <property name="joint3_lower_limit_soft" value="-${(M_PI * 151 / 180) + threshold}"/>
-  <property name="joint3_upper_limit_soft" value= "${(M_PI * 146 / 180) - threshold}"/>
-  <property name="joint4_lower_limit_soft" value="-${(M_PI * 102.5 / 180) + threshold}"/>
-  <property name="joint4_upper_limit_soft" value= "${(M_PI * 102.5 / 180) - threshold}"/>
-  <property name="joint5_lower_limit_soft" value="-${(M_PI * 165 / 180) + threshold}"/>
-  <property name="joint5_upper_limit_soft" value= "${(M_PI * 165 / 180) - threshold}"/>
 
   <!-- dynamic properties : mass (kg) Alu data sheet -->
   <property name="link1_mass" value="1.390"/>

@@ -77,9 +77,14 @@ namespace ahl_robot
     static const std::string DQ_MAX         = "dq_max";
     static const std::string TAU_MAX        = "tau_max";
     static const std::string INIT_Q         = "init_q";
-    static const std::string MOBILITY                  = "mobility";
-    static const std::string MOBILITY_TYPE             = "type";
-    static const std::string MOBILITY_CUTOFF_FREQUENCY = "cutoff_frequency";
+    static const std::string DIFFERENTIATOR                  = "differentiator";
+    static const std::string DIFFERENTIATOR_UPDATE_RATE      = "update_rate";
+    static const std::string DIFFERENTIATOR_CUTOFF_FREQUENCY = "cutoff_frequency";
+    static const std::string MOBILITY                        = "mobility";
+    static const std::string MOBILITY_UPDATE_RATE            = "update_rate";
+    static const std::string MOBILITY_TYPE                   = "type";
+    static const std::string MOBILITY_CUTOFF_FREQUENCY_BASE  = "cutoff_frequency_base";
+    static const std::string MOBILITY_CUTOFF_FREQUENCY_WHEEL = "cutoff_frequency_wheel";
     static const std::string MOBILITY_COMMAND          = "command";
     static const std::string MOBILITY_JOINTS           = "joints";
     static const std::string MOBILITY_JOINT_NAME       = "name";

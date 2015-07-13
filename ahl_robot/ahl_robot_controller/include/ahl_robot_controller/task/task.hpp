@@ -58,6 +58,21 @@ namespace ahl_ctrl
     const Eigen::MatrixXd getNullSpace() const { return N_; }
 
   protected:
+    void limitTorque(Eigen::VectorXd& tau)
+    {
+      for(unsigned int i = 0; i < tau.rows(); ++i)
+      {
+        if(tau[i] > mnp_->link[i]->tau_max)
+        {
+          tau[i] = mnp_->link[i]->tau_max;
+        }
+        else if(tau[i] < -mnp_->link[i]->tau_max)
+        {
+          tau[i] = -mnp_->link[i]->tau_max;
+        }
+      }
+    }
+
     ahl_robot::ManipulatorPtr mnp_;
     Eigen::MatrixXd N_;
     ParamPtr param_;

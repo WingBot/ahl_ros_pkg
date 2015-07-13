@@ -4,13 +4,26 @@
    Both of power supply and EtherCAT should be connected.
    Basically, port 2(which is closer to arm) is used.
 
-3. Connect base with laptop
+3. Connect arm with laptop
    Cross cable is used.
    It should be connected to the Ethernet port.
+   It's better to connect laptop to arm than laptop to base.
 
-4. Supply power
+4. Supply base power
    Press and hold button near the small display on robot.
    Now you can see the message "24.0V EXT" on in it.
 
-5. Turn off the power
-   Apparently, there is no way to turn of the power ...
+5. Supply arm power
+   Press the button at the arm base. The light will turn green from red.
+
+6. Turn off the power
+   Apparently, there is no official way to turn off the power ...
+
+
+
+
+Connector assignment
+24 V IN -> connected to AC Adapter
+24 V OUT at base -> connected to arm base
+EartheCAT 2 -> connected to arm base(right side port)
+EartheCAT at arm base -> connected to PC or laptop you'd like to use

@@ -235,6 +235,9 @@ public:
   void updateLinkState(const gazebo_msgs::LinkState::ConstPtr& link_state);
 
   /// \brief
+  void updateLinkStates(const gazebo_msgs::LinkStates::ConstPtr& link_states);
+
+  /// \brief
   bool applyBodyWrench(gazebo_msgs::ApplyBodyWrench::Request &req,gazebo_msgs::ApplyBodyWrench::Response &res);
 
 private:
@@ -364,6 +367,7 @@ private:
   ros::ServiceServer clear_joint_forces_service_;
   ros::ServiceServer clear_body_wrenches_service_;
   ros::Subscriber    set_link_state_topic_;
+  ros::Subscriber    set_link_states_topic_;
   ros::Subscriber    set_model_state_topic_;
   ros::Subscriber    apply_joint_efforts_topic_;
   ros::Publisher     pub_link_states_;

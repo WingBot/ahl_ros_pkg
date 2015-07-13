@@ -48,5 +48,5 @@ Damping::Damping(const ahl_robot::ManipulatorPtr& mnp)
 
 void Damping::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  tau = -param_->getKvDamp() * mnp_->dq;
+  tau = -mnp_->M * param_->getKvDamp() * mnp_->dq;
 }

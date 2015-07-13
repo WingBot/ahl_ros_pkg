@@ -95,7 +95,8 @@ void Manipulator::init(unsigned int init_dof, const Eigen::VectorXd& init_q)
   q = init_q;
 
   differentiator_ = ahl_filter::DifferentiatorPtr(
-    new ahl_filter::PseudoDifferentiator(this->q, this->dq, 0.001, 30.0));
+    new ahl_filter::PseudoDifferentiator(update_rate_, cutoff_frequency_));
+  differentiator_->init(this->q, this->dq);
   this->computeForwardKinematics();
 
   pre_q  = q;

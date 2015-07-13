@@ -66,6 +66,7 @@ namespace ahl_robot
       SENTRY_LOWER,
       FIXED,
       MOBILITY_2D,
+      MOBILITY_3D,
       SENTRY_UPPER,
     };
 

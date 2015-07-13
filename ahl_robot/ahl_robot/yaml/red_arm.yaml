@@ -2,6 +2,11 @@ name: red_arm
 xyz: [0, 0, 0]
 rpy: [0, 0, 0]
 world_frame: map
+
+differentiator:
+  update_rate: 0.001
+  cutoff_frequency: 20.0
+
 manipulators:
 
   - name: mnp

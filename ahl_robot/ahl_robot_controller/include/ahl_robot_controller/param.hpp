@@ -43,44 +43,57 @@
 #include <boost/thread.hpp>
 #include <Eigen/Dense>
 #include <dynamic_reconfigure/server.h>
+//#include "ahl_robot_controller/param_base.hpp"
 #include "ahl_robot_controller/ParamConfig.h"
 
 namespace ahl_ctrl
 {
 
-  class Param
+  class Param// : public ParamBase
   {
   public:
-    Param();
+    Param(unsigned int dof);
 
-    double getKp()
+    const Eigen::MatrixXd& getKpJoint()
     {
       boost::mutex::scoped_lock lock(mutex_);
-      return kp_;
+      return Kp_joint_;
     }
 
-    double getKv()
+    const Eigen::MatrixXd& getKvJoint()
     {
       boost::mutex::scoped_lock lock(mutex_);
-      return kv_;
+      return Kv_joint_;
     }
 
-    double getKvDamp()
+    const Eigen::MatrixXd& getKpTask()
     {
       boost::mutex::scoped_lock lock(mutex_);
-      return kv_damp_;
+      return Kp_task_;
     }
 
-    double getKpLimit()
+    const Eigen::MatrixXd& getKvTask()
     {
       boost::mutex::scoped_lock lock(mutex_);
-      return kp_limit_;
+      return Kv_task_;
     }
 
-    double getKvLimit()
+    const Eigen::MatrixXd& getKvDamp()
     {
       boost::mutex::scoped_lock lock(mutex_);
-      return kv_limit_;
+      return Kv_damp_;
+    }
+
+    const Eigen::MatrixXd& getKpLimit()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return Kp_limit_;
+    }
+
+    const Eigen::MatrixXd& getKvLimit()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return Kv_limit_;
     }
 
     const Eigen::Vector3d& getG()
@@ -103,20 +116,29 @@ namespace ahl_ctrl
 
   private:
     void update(ahl_robot_controller::ParamConfig& config, uint32_t level);
-
     boost::mutex mutex_;
 
     dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig> server_;
     dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig>::CallbackType f_;
+
+    unsigned int dof_;
 
     double kp_;
     double kv_;
     double kv_damp_;
     double kp_limit_;
     double kv_limit_;
-    Eigen::Vector3d g_;
+
+    Eigen::MatrixXd Kp_joint_;
+    Eigen::MatrixXd Kv_joint_;
+    Eigen::MatrixXd Kp_task_;
+    Eigen::MatrixXd Kv_task_;
+    Eigen::MatrixXd Kv_damp_;
+    Eigen::MatrixXd Kp_limit_;
+    Eigen::MatrixXd Kv_limit_;
     double kp_wheel_;
     double kv_wheel_;
+    Eigen::Vector3d g_;
   };
 
   typedef boost::shared_ptr<Param> ParamPtr;

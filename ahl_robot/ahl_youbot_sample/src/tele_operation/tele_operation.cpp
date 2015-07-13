@@ -202,7 +202,7 @@ void TeleOperation::controlBase(int ch)
     break;
   };
 
-  base_->setBaseVelocity(dvx_, dvy_, dvr_);
+  //base_->setBaseVelocity(dvx_, dvy_, dvr_);
 }
 
 void TeleOperation::controlGripper(int ch)

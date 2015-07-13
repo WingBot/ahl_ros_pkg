@@ -3,9 +3,15 @@ xyz: [0, 0, 0]
 rpy: [0, 0, 0]
 world_frame: map
 
+differentiator:
+  update_rate: 0.001
+  cutoff_frequency: 30.0
+
 mobility:
+  update_rate: 0.01
   type: mecanum_wheel
-  cutoff_frequency: 10.0
+  cutoff_frequency_base: 10.0
+  cutoff_frequency_wheel: 50.0
   command: base_velocity
   tread_width: 0.3
   wheel_base: 0.471

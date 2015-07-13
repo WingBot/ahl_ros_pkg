@@ -65,6 +65,15 @@ namespace ahl_robot
     void computeBasicJacobian();
     void computeMassMatrix();
     bool reached(const Eigen::VectorXd& qd, double threshold);
+    void setDifferentiatorUpdateRate(double update_rate)
+    {
+      update_rate_ = update_rate;
+    }
+    void setDifferentiatorCutoffFrequency(double cutoff_frequency)
+    {
+      cutoff_frequency_ = cutoff_frequency;
+    }
+
     void setMobilityType(mobility::Type type);
     mobility::Type getMobilityType()
     {
@@ -109,6 +118,8 @@ namespace ahl_robot
     VectorVector3d Pin_; // End-effector position w.r.t i-th link w.r.t link
 
     ahl_filter::DifferentiatorPtr differentiator_;
+    double update_rate_;
+    double cutoff_frequency_;
     bool updated_joint_;
 
     mobility::Type mobility_type_;

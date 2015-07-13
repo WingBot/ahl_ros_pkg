@@ -70,13 +70,13 @@ void JointLimit::computeGeneralizedForce(Eigen::VectorXd& tau)
     if(q_max_diff < threshold_)
     {
       std::cout << i << " : max : " << mnp_->q.coeff(i) << std::endl;
-      tau.coeffRef(i) += -param_->getKpLimit() * q_max_diff - param_->getKvLimit() * mnp_->dq.coeff(i);
+      tau.coeffRef(i) += -param_->getKpLimit().coeff(i, i) * q_max_diff - param_->getKvLimit().coeff(i, i) * mnp_->dq.coeff(i);
       N_.coeffRef(i, i) = 0;
     }
     if(-q_min_diff < threshold_)
     {
       std::cout << i << " : min : " << mnp_->q.coeff(i) << std::endl;
-      tau.coeffRef(i) += -param_->getKpLimit() * q_min_diff - param_->getKvLimit() * mnp_->dq.coeff(i);
+      tau.coeffRef(i) += -param_->getKpLimit().coeff(i, i) * q_min_diff - param_->getKvLimit().coeff(i, i) * mnp_->dq.coeff(i);
       N_.coeffRef(i, i) = 0;
     }
   }

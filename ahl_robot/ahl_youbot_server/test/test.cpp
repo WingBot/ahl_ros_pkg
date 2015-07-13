@@ -36,16 +36,18 @@
  *
  *********************************************************************/
 
+#include <fstream>
 #include <boost/thread.hpp>
 #include <Eigen/Dense>
 #include <ros/ros.h>
+#include <geometry_msgs/Pose.h>
 #include <ahl_gazebo_interface/gazebo_interface.hpp>
 #include <ahl_gazebo_interface/exception.hpp>
 #include <ahl_robot/ahl_robot.hpp>
 #include <ahl_robot_controller/exception.hpp>
 #include <ahl_robot_controller/robot_controller.hpp>
 #include <ahl_robot_controller/tasks.hpp>
-#include <ahl_robot_controller/mobility/mecanum_wheel.hpp>
+#include <ahl_youbot_server/param.hpp>
 
 using namespace ahl_robot;
 using namespace ahl_ctrl;
@@ -62,9 +64,94 @@ TaskPtr joint_limit;
 TaskPtr position_control;
 TaskPtr orientation_control;
 ahl_gazebo_if::GazeboInterfacePtr gazebo_interface;
-ahl_ctrl::MecanumWheelPtr mecanum_;
+ahl_gazebo_if::GazeboInterfacePtr gazebo_interface_wheel;
+ahl_gazebo_if::GazeboInterfacePtr gazebo_interface_base;
 bool initialized = false;
 bool joint_updated = false;
+Eigen::VectorXd tau_wheel;
+bool tau_computed = false;
+
+void updateWheel(const ros::TimerEvent&)
+{
+  try
+  {
+    boost::mutex::scoped_lock lock(mutex);
+    if(gazebo_interface_wheel->subscribed() && gazebo_interface_base->subscribed())
+    {
+      if(tau_wheel.rows() != 3)
+        return;
+
+      if(!updated)
+        return;
+
+      Eigen::VectorXd q = gazebo_interface_wheel->getJointStates();
+      robot->updateWheel(q);
+      Eigen::VectorXd q_base = gazebo_interface_base->getJointStates();
+      Eigen::Vector3d q_base_pos;
+      q_base_pos << q_base.coeff(0), q_base.coeff(1), 0.0;
+      Eigen::Quaternion<double> q_base_ori;
+      double rad = q_base.coeff(2);
+      rad = atan2(sin(rad), cos(rad));
+      q_base_ori.x() = 1.0;
+      q_base_ori.y() = 0.0;
+      q_base_ori.z() = 1.0 * sin(0.5 * rad);
+      q_base_ori.w() = cos(0.5 * rad);
+      robot->updateBase(q_base_pos, q_base_ori);
+
+      static double ori = 0.0;
+
+      Eigen::VectorXd v_base;
+      controller->computeBaseVelocityFromTorque(tau_wheel, v_base, 3);
+/*
+      //std::cout << v_base.transpose() << std::endl;
+      static Eigen::VectorXd x = Eigen::VectorXd::Zero(v_base.rows());
+      x += v_base * robot->getMobility()->update_rate;
+      //std::cout << "x : " << x.transpose() << std::endl;
+      
+      Eigen::VectorXd v_wheel;
+      controller->computeWheelVelocityFromBaseVelocity(v_base, v_wheel);
+
+      Eigen::VectorXd q_wheel_d = robot->getMobility()->q + robot->getMobility()->update_rate * v_wheel;
+
+      //std::cout << q_wheel_d << std::endl;
+
+      std::vector<Eigen::Quaternion<double> > quat_d;
+      for(unsigned int i = 0; i < q_wheel_d.rows(); ++i)
+      {
+        double rad = q_wheel_d.coeff(i);
+
+        Eigen::Quaternion<double> quat;
+        quat.x() = 0.0;
+        quat.y() = sin(rad * 0.5);
+        quat.z() = 0.0;
+        quat.w() = cos(rad * 0.5);
+
+        quat_d.push_back(quat);
+      }
+
+      gazebo_interface_wheel->rotateLink(quat_d);
+      //Eigen::VectorXd tau;
+      //controller->computeWheelTorqueFromBaseVelocity(v_base, tau);
+      //std::cout << tau.transpose() << std::endl;
+      //gazebo_interface_wheel->applyJointEfforts(tau);
+      //std::cout << "v_base : " << v_base.transpose() << std::endl;
+      //std::cout << "tau    : " << tau.transpose() << std::endl;
+      */
+    }
+  }
+  catch(ahl_robot::Exception& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+  }
+  catch(ahl_ctrl::Exception& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+  }
+  catch(ahl_gazebo_if::Exception& e)
+  {
+    ROS_ERROR_STREAM(e.what());
+  }
+}
 
 void updateModel(const ros::TimerEvent&)
 {
@@ -77,7 +164,6 @@ void updateModel(const ros::TimerEvent&)
       robot->computeMassMatrix("mnp");
       controller->updateModel();
       updated = true;
-      //tf_pub->publish(robot);
     }
   }
   catch(ahl_robot::Exception& e)
@@ -104,6 +190,31 @@ void control(const ros::TimerEvent&)
     {
       Eigen::VectorXd q = gazebo_interface->getJointStates();
       robot->update("mnp", q);
+/*
+      {
+      static ros::NodeHandle nh;
+      static ros::Publisher pub = nh.advertise<geometry_msgs::Pose>("/test/pose", 10);
+      geometry_msgs::Pose pose;
+      ahl_robot::ManipulatorPtr mnp = robot->getManipulator("mnp");
+      pose.position.x = mnp->q[1];
+      pose.position.y = mnp->dq[1];
+      pub.publish(pose);
+      }
+*/
+/*
+      static std::ofstream ofs("test.data");
+      static long cnt = 0;
+      ofs << cnt * 0.001 << " ";
+      ++cnt;
+      ahl_robot::ManipulatorPtr mnp = robot->getManipulator("mnp");
+      for(unsigned int i = 0; i < mnp->dof; ++i)
+      {
+        ofs << mnp->dq[i] << " ";
+      }
+      ofs << std::endl;
+*/
+
+
       joint_updated = true;
     }
 
@@ -116,6 +227,9 @@ void control(const ros::TimerEvent&)
         Eigen::VectorXd qd = Eigen::VectorXd::Constant(robot->getDOF("mnp"), M_PI / 4.0);
         double sin_val = 1.0;//std::abs(sin(2.0 * M_PI * 0.1 * cnt * 0.001));
         qd = sin_val * qd;
+        qd.coeffRef(0) = 0.5;
+        qd.coeffRef(1) = 0.0;
+        qd.coeffRef(2) = 0.0;
         joint_control->setGoal(qd);
 
         static int reached = 0;
@@ -127,13 +241,15 @@ void control(const ros::TimerEvent&)
           {
             initialized = true;
             controller->clearTask();
-            controller->addTask(damping, 0);
+            //controller->addTask(damping, 0);
+            controller->addTask(joint_control, 0);
             controller->addTask(gravity_compensation, 10);
             controller->addTask(position_control, 10);
             controller->addTask(orientation_control, 5);
             //controller->addTask(joint_limit, 100);
             Eigen::Vector3d xd;
-            xd << 1.4, 0.15, 0.1;
+            xd << 0.4, 0.15, 0.1;
+
             position_control->setGoal(xd);
 
             Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
@@ -142,8 +258,6 @@ void control(const ros::TimerEvent&)
               0, 1, 0,
               -sin(rad), 0, cos(rad);
             orientation_control->setGoal(R);
-
-            std::cout << "OK" << std::endl;
           }
         }
         else
@@ -153,11 +267,22 @@ void control(const ros::TimerEvent&)
       }
       else
       {
+        Eigen::VectorXd qd(robot->getDOF("mnp"));
+        qd.coeffRef(0) = robot->getManipulator("mnp")->q.coeff(0);
+        qd.coeffRef(1) = robot->getManipulator("mnp")->q.coeff(1);
+        qd.coeffRef(2) = robot->getManipulator("mnp")->q.coeff(2) + robot->getManipulator("mnp")->q.coeff(3);
+        qd.coeffRef(3) = 0.0;
+        qd.coeffRef(4) = M_PI / 6.0;
+        qd.coeffRef(5) = M_PI / 6.0;
+        qd.coeffRef(6) = M_PI / 6.0;
+        qd.coeffRef(7) = 0.0;
+        joint_control->setGoal(qd);
+
         Eigen::Vector3d xd;
-        xd << 1.4, 0.15, 0.1;
-        //xd.coeffRef(0) += 0.1 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
+        xd << 1.4, 0.15, 0.08;
+        //xd.coeffRef(0) += 0.2 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
         //xd.coeffRef(1) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
-        xd.coeffRef(2) += 0.1 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
+        xd.coeffRef(2) += 0.08 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
 
         position_control->setGoal(xd);
         Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
@@ -165,6 +290,7 @@ void control(const ros::TimerEvent&)
         R << cos(rad), 0, sin(rad),
           0, 1, 0,
           -sin(rad), 0, cos(rad);
+
         orientation_control->setGoal(R);
       }
 
@@ -174,8 +300,8 @@ void control(const ros::TimerEvent&)
       Eigen::Vector3d cmd_vel;
       controller->computeGeneralizedForce(tau);
       gazebo_interface->applyJointEfforts(tau);
+      tau_wheel = tau.block(0, 0, 3, 1);
     }
-
   }
   catch(ahl_robot::Exception& e)
   {
@@ -196,6 +322,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "youbot_test");
   ros::NodeHandle nh;
 
+  //ros::Timer timer_update_wheel = nh.createTimer(ros::Duration(0.01), updateWheel);
   ros::Timer timer_update_model = nh.createTimer(ros::Duration(0.01), updateModel);
   ros::Timer timer_control = nh.createTimer(ros::Duration(0.001), control);
 
@@ -207,12 +334,14 @@ int main(int argc, char** argv)
     std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot/yaml/youbot.yaml";
     parser->load(path, robot);
 
+    //ahl_youbot::ParamPtr param = ahl_youbot::ParamPtr(new ahl_youbot::Param);
+
     controller = RobotControllerPtr(new RobotController());
     controller->init(robot, "mnp");
 
     using namespace ahl_gazebo_if;
     gazebo_interface = GazeboInterfacePtr(new GazeboInterface());
-    gazebo_interface->setDuration(0.010);
+    gazebo_interface->setDuration(0.01);
     gazebo_interface->addJoint("youbot::base_x_joint");
     gazebo_interface->addJoint("youbot::base_y_joint");
     gazebo_interface->addJoint("youbot::base_yaw_joint");
@@ -221,10 +350,26 @@ int main(int argc, char** argv)
     gazebo_interface->addJoint("youbot::joint3");
     gazebo_interface->addJoint("youbot::joint4");
     gazebo_interface->addJoint("youbot::joint5");
-    //gazebo_interface->addMobility2D("youbot");
     gazebo_interface->connect();
 
-    mecanum_ = ahl_ctrl::MecanumWheelPtr(new ahl_ctrl::MecanumWheel(0.3, 0.471, 0.05));
+    tau_wheel = Eigen::Vector3d::Zero();
+    gazebo_interface_wheel = GazeboInterfacePtr(new GazeboInterface());
+    gazebo_interface_wheel->setDuration(1.0);
+    gazebo_interface_wheel->addJoint("youbot::wheel_joint_fl");
+    gazebo_interface_wheel->addJoint("youbot::wheel_joint_fr");
+    gazebo_interface_wheel->addJoint("youbot::wheel_joint_bl");
+    gazebo_interface_wheel->addJoint("youbot::wheel_joint_br");
+    gazebo_interface_wheel->addLink("youbot", "wheel_link_fl");
+    gazebo_interface_wheel->addLink("youbot", "wheel_link_fr");
+    gazebo_interface_wheel->addLink("youbot", "wheel_link_bl");
+    gazebo_interface_wheel->addLink("youbot", "wheel_link_br");
+    gazebo_interface_wheel->connect();
+
+    gazebo_interface_base = GazeboInterfacePtr(new GazeboInterface());
+    gazebo_interface_base->addJoint("youbot::base_x_joint");
+    gazebo_interface_base->addJoint("youbot::base_y_joint");
+    gazebo_interface_base->addJoint("youbot::base_yaw_joint");
+    gazebo_interface_base->connect();
 
     tf_pub = TfPublisherPtr(new TfPublisher());
 

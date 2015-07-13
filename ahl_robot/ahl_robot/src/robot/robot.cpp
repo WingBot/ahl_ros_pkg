@@ -65,6 +65,26 @@ void Robot::update(const std::string& mnp_name, const Eigen::VectorXd& q, const 
   mnp_[mnp_name]->update(q, dq);
 }
 
+void Robot::updateBase(const Eigen::VectorXd& p, const Eigen::Quaternion<double>& r)
+{
+  if(!mobility_)
+  {
+    throw ahl_robot::Exception("Robot::updateBase", "Mobility pointer is null.");
+  }
+
+  mobility_->updateBase(p, r);
+}
+
+void Robot::updateWheel(const Eigen::VectorXd& q)
+{
+  if(!mobility_)
+  {
+    throw ahl_robot::Exception("Robot::updateWheel", "Mobility pointer is null.");
+  }
+
+  mobility_->updateWheel(q);
+}
+
 void Robot::computeBasicJacobian(const std::string& mnp_name)
 {
   if(mnp_.find(mnp_name) == mnp_.end())

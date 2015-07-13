@@ -3,6 +3,7 @@ project(ahl_robot_controller)
 
 find_package(
   catkin REQUIRED COMPONENTS
+    ahl_digital_filter
     ahl_robot
     dynamic_reconfigure
     gazebo_msgs
@@ -28,6 +29,7 @@ catkin_package(
   LIBRARIES
     ahl_robot_controller
   CATKIN_DEPENDS
+    ahl_digital_filter
     ahl_robot
     dynamic_reconfigure
     gazebo_msgs
