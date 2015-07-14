@@ -1725,8 +1725,9 @@ void GazeboRosApiPlugin::updateLinkStates(const gazebo_msgs::LinkStates::ConstPt
       gazebo::math::Quaternion frame_rot = frame_pose.rot;
 
       target_pose[i].pos = frame_pos + frame_rot.RotateVector(target_pos);
-      //target_pose[i].rot = frame_rot * target_pose[i].rot;
+      target_pose[i].rot = frame_rot * target_pose[i].rot;
 
+/*
       gazebo::math::Quaternion rot_trans;
       rot_trans.x = -target_rot.x;
       rot_trans.y = -target_rot.y;
@@ -1736,7 +1737,8 @@ void GazeboRosApiPlugin::updateLinkStates(const gazebo_msgs::LinkStates::ConstPt
       target_pose[i].rot = frame_rot * target_rot;
 
       double rad = 2.0 * acos(target_pose[i].rot.w);
-      std::cout << rad << " : " << target_pose[i].rot.y << std::endl;
+*/
+      //std::cout << i << ", " << rad << " : " << target_pose[i].rot.y << std::endl;
 
 /*
       if(target_pose[i].rot.y < 0.0)
@@ -1765,17 +1767,11 @@ void GazeboRosApiPlugin::updateLinkStates(const gazebo_msgs::LinkStates::ConstPt
       return;
     }
 
-  }
-
-  bool is_paused = world_->IsPaused();
-  if (!is_paused) world_->SetPaused(true);
-
-  for(unsigned int i = 0; i < target_pose.size(); ++i)
-  {
+    bool is_paused = world_->IsPaused();
+    if (!is_paused) world_->SetPaused(true);
     body->SetWorldPose(target_pose[i]);
+    world_->SetPaused(is_paused);
   }
-
-  world_->SetPaused(is_paused);
 }
 
 void GazeboRosApiPlugin::transformWrench( gazebo::math::Vector3 &target_force, gazebo::math::Vector3 &target_torque,

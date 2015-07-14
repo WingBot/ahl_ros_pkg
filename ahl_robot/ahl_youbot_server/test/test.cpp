@@ -70,6 +70,7 @@ bool initialized = false;
 bool joint_updated = false;
 Eigen::VectorXd tau_wheel;
 bool tau_computed = false;
+Eigen::VectorXd pose_base;
 
 void updateWheel(const ros::TimerEvent&)
 {
@@ -86,57 +87,40 @@ void updateWheel(const ros::TimerEvent&)
 
       Eigen::VectorXd q = gazebo_interface_wheel->getJointStates();
       robot->updateWheel(q);
-      Eigen::VectorXd q_base = gazebo_interface_base->getJointStates();
-      Eigen::Vector3d q_base_pos;
-      q_base_pos << q_base.coeff(0), q_base.coeff(1), 0.0;
-      Eigen::Quaternion<double> q_base_ori;
-      double rad = q_base.coeff(2);
-      rad = atan2(sin(rad), cos(rad));
-      q_base_ori.x() = 1.0;
-      q_base_ori.y() = 0.0;
-      q_base_ori.z() = 1.0 * sin(0.5 * rad);
-      q_base_ori.w() = cos(0.5 * rad);
-      robot->updateBase(q_base_pos, q_base_ori);
 
-      static double ori = 0.0;
+      Eigen::Vector3d base_pos;
+      base_pos << pose_base[0], pose_base[1], 0.0;
+      Eigen::Quaternion<double> base_ori;
+      base_ori.x() = 0.0;
+      base_ori.y() = 0.0;
+      base_ori.z() = sin(0.5 * pose_base[2]);
+      base_ori.w() = cos(0.5 * pose_base[2]);
+
+      robot->updateBase(base_pos, base_ori);
 
       Eigen::VectorXd v_base;
       controller->computeBaseVelocityFromTorque(tau_wheel, v_base, 3);
-/*
-      //std::cout << v_base.transpose() << std::endl;
-      static Eigen::VectorXd x = Eigen::VectorXd::Zero(v_base.rows());
-      x += v_base * robot->getMobility()->update_rate;
-      //std::cout << "x : " << x.transpose() << std::endl;
-      
+
       Eigen::VectorXd v_wheel;
       controller->computeWheelVelocityFromBaseVelocity(v_base, v_wheel);
 
-      Eigen::VectorXd q_wheel_d = robot->getMobility()->q + robot->getMobility()->update_rate * v_wheel;
-
-      //std::cout << q_wheel_d << std::endl;
+      Eigen::VectorXd q_wheel_d = robot->getMobility()->update_rate * v_wheel;
 
       std::vector<Eigen::Quaternion<double> > quat_d;
       for(unsigned int i = 0; i < q_wheel_d.rows(); ++i)
       {
-        double rad = q_wheel_d.coeff(i);
+        double rad_wheel = q_wheel_d.coeff(i);
 
         Eigen::Quaternion<double> quat;
         quat.x() = 0.0;
-        quat.y() = sin(rad * 0.5);
+        quat.y() = sin(rad_wheel * 0.5);
         quat.z() = 0.0;
-        quat.w() = cos(rad * 0.5);
+        quat.w() = cos(rad_wheel * 0.5);
 
         quat_d.push_back(quat);
       }
 
       gazebo_interface_wheel->rotateLink(quat_d);
-      //Eigen::VectorXd tau;
-      //controller->computeWheelTorqueFromBaseVelocity(v_base, tau);
-      //std::cout << tau.transpose() << std::endl;
-      //gazebo_interface_wheel->applyJointEfforts(tau);
-      //std::cout << "v_base : " << v_base.transpose() << std::endl;
-      //std::cout << "tau    : " << tau.transpose() << std::endl;
-      */
     }
   }
   catch(ahl_robot::Exception& e)
@@ -190,32 +174,9 @@ void control(const ros::TimerEvent&)
     {
       Eigen::VectorXd q = gazebo_interface->getJointStates();
       robot->update("mnp", q);
-/*
-      {
-      static ros::NodeHandle nh;
-      static ros::Publisher pub = nh.advertise<geometry_msgs::Pose>("/test/pose", 10);
-      geometry_msgs::Pose pose;
-      ahl_robot::ManipulatorPtr mnp = robot->getManipulator("mnp");
-      pose.position.x = mnp->q[1];
-      pose.position.y = mnp->dq[1];
-      pub.publish(pose);
-      }
-*/
-/*
-      static std::ofstream ofs("test.data");
-      static long cnt = 0;
-      ofs << cnt * 0.001 << " ";
-      ++cnt;
-      ahl_robot::ManipulatorPtr mnp = robot->getManipulator("mnp");
-      for(unsigned int i = 0; i < mnp->dof; ++i)
-      {
-        ofs << mnp->dq[i] << " ";
-      }
-      ofs << std::endl;
-*/
-
-
       joint_updated = true;
+
+      pose_base = q.block(0, 0, 3, 1);
     }
 
     if(updated)
@@ -279,10 +240,10 @@ void control(const ros::TimerEvent&)
         joint_control->setGoal(qd);
 
         Eigen::Vector3d xd;
-        xd << 2.4, 0.15, 0.08;
+        xd << 2.4, 0.15, 0.07;
         //xd.coeffRef(0) += 0.2 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
-        //xd.coeffRef(1) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
-        xd.coeffRef(2) += 0.08 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        xd.coeffRef(1) += 0.02 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
+        xd.coeffRef(2) += 0.07 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
 
         position_control->setGoal(xd);
         Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
@@ -322,7 +283,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "youbot_test");
   ros::NodeHandle nh;
 
-  //ros::Timer timer_update_wheel = nh.createTimer(ros::Duration(0.01), updateWheel);
+  ros::Timer timer_update_wheel = nh.createTimer(ros::Duration(0.01), updateWheel);
   ros::Timer timer_update_model = nh.createTimer(ros::Duration(0.01), updateModel);
   ros::Timer timer_control = nh.createTimer(ros::Duration(0.001), control);
 

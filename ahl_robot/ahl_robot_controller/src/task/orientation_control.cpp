@@ -106,7 +106,12 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   double c = 0.0;
   if(norm != 0.0)
   {
-    c = 1.0 / norm * 2.0 * acos(q.w());
+    c = 2.0 * acos(q.w()) / norm;
+
+    if(c > param_->getOriErrorMax())
+      c = param_->getOriErrorMax();
+    else if(c < -param_->getOriErrorMax())
+      c = -param_->getOriErrorMax();
   }
   del_phi << q.x() * c, q.y() * c, q.z() * c;
 

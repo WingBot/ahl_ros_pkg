@@ -11,10 +11,10 @@ MecanumWheel::MecanumWheel(const ahl_robot::MobilityPtr& mobility, const ParamPt
 
   decomposer_.resize(4, 3);
   decomposer_ <<
-    1.0,  1.0, -(l1 + l2),
-    1.0, -1.0,   l1 + l2,
     1.0, -1.0, -(l1 + l2),
-    1.0, 1.0,    l1 + l2;
+    1.0,  1.0,   l1 + l2,
+    1.0,  1.0, -(l1 + l2),
+    1.0, -1.0,   l1 + l2;
 
   if(mobility_->wheel_radius == 0.0)
   {
@@ -29,6 +29,7 @@ void MecanumWheel::computeBaseVelocityFromTorque(
 {
   Eigen::MatrixXd D = 2.0 * M_PI * mobility_->cutoff_frequency_base * M;
   Eigen::MatrixXd M_inv = Eigen::MatrixXd::Zero(M.rows(), M.cols());
+
   for(unsigned int i = 0; i < M.rows(); ++i)
   {
     M_inv.coeffRef(i, i) = 1.0 / M.coeff(i, i);
