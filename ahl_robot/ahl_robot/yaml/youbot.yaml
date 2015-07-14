@@ -44,7 +44,7 @@ manipulators:
       q_min: -100000.0
       q_max:  100000.0
       dq_max: 0.8
-      tau_max: 100.0
+      tau_max: 50.0
       init_q: 0
 
     - name: base_y
@@ -64,7 +64,7 @@ manipulators:
       q_min: -100000.0
       q_max:  100000.0
       dq_max: 0.8
-      tau_max: 100.0
+      tau_max: 50.0
       init_q: 0
 
     - name: base_yaw
@@ -84,7 +84,7 @@ manipulators:
       q_min: -100000.0
       q_max:  100000.0
       dq_max: 1.04719
-      tau_max: 100.0
+      tau_max: 50.0
       init_q: 0
 
     - name: link1

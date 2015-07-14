@@ -91,7 +91,13 @@ void PositionControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   }
 
   Eigen::Vector3d x = mnp_->T_abs[idx_].block(0, 3, 3, 1);
-  Eigen::VectorXd F_unit = -param_->getKpTask().block(0, 0, 3, 3) * (x - xd_) - param_->getKvTask().block(0, 0, 3, 3) * Jv_ * mnp_->dq;
+  Eigen::VectorXd error = x - xd_;
+  if(error.norm() > param_->getPosErrorMax())
+  {
+    error = param_->getPosErrorMax() / error.norm() * error;
+  }
+
+  Eigen::VectorXd F_unit = -param_->getKpTask().block(0, 0, 3, 3) * error - param_->getKvTask().block(0, 0, 3, 3) * Jv_ * mnp_->dq;
   Eigen::VectorXd F = lambda_ * F_unit;
 
   tau = Jv_.transpose() * F;

@@ -62,18 +62,38 @@ void JointLimit::computeGeneralizedForce(Eigen::VectorXd& tau)
   tau = Eigen::VectorXd::Zero(mnp_->dof);
 
   N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
+
   for(unsigned int i = 0; i < mnp_->q.rows(); ++i)
   {
     double q_max_diff = q_max_.coeff(i) - mnp_->q.coeff(i);
     double q_min_diff = q_min_.coeff(i) - mnp_->q.coeff(i);
 
-    if(q_max_diff < threshold_)
+    if(q_max_diff < 0.0)
     {
       std::cout << i << " : max : " << mnp_->q.coeff(i) << std::endl;
+
+      q_max_diff = threshold_;
+      tau.coeffRef(i) += -param_->getKpLimit().coeff(i, i) * q_max_diff - param_->getKvLimit().coeff(i, i) * mnp_->dq.coeff(i);
+      N_.coeffRef(i, i) = 0;
+
+    }
+    else if(q_max_diff < threshold_)
+    {
+      std::cout << i << " : max : " << mnp_->q.coeff(i) << std::endl;
+
       tau.coeffRef(i) += -param_->getKpLimit().coeff(i, i) * q_max_diff - param_->getKvLimit().coeff(i, i) * mnp_->dq.coeff(i);
       N_.coeffRef(i, i) = 0;
     }
-    if(-q_min_diff < threshold_)
+
+    if(q_min_diff > 0.0)
+    {
+      std::cout << i << " : min : " << mnp_->q.coeff(i) << std::endl;
+
+      q_min_diff = -threshold_;
+      tau.coeffRef(i) += -param_->getKpLimit().coeff(i, i) * q_min_diff - param_->getKvLimit().coeff(i, i) * mnp_->dq.coeff(i);
+      N_.coeffRef(i, i) = 0;
+    }
+    else if(-q_min_diff < threshold_)
     {
       std::cout << i << " : min : " << mnp_->q.coeff(i) << std::endl;
       tau.coeffRef(i) += -param_->getKpLimit().coeff(i, i) * q_min_diff - param_->getKvLimit().coeff(i, i) * mnp_->dq.coeff(i);

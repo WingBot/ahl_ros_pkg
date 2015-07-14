@@ -43,3 +43,13 @@ target_link_libraries(
     ${catkin_LIBRARIES}
 )
 
+add_executable(
+  tuning
+    src/tuning/main.cpp
+)
+
+target_link_libraries(
+  tuning
+    ${catkin_LIBRARIES}
+)
+

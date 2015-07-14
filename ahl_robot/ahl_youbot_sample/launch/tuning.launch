@@ -1,0 +1,25 @@
+<launch>
+  <node pkg="ahl_youbot_sample" name="tuning" type="tuning" output="screen">
+    <param name="joint_idx" value="1"/>
+    <param name="current" value="0.25"/>
+    <param name="sec" value="3.0"/>
+
+    <param name="Kp0" value="2000"/>
+    <param name="Kp1" value="0"/>
+    <param name="Kp2" value="0"/>
+    <param name="Kp3" value="0"/>
+    <param name="Kp4" value="0"/>
+
+    <param name="Ki0" value="0"/>
+    <param name="Ki1" value="0"/>
+    <param name="Ki2" value="0"/>
+    <param name="Ki3" value="0"/>
+    <param name="Ki4" value="0"/>
+
+    <param name="Kd0" value="0"/>
+    <param name="Kd1" value="0"/>
+    <param name="Kd2" value="0"/>
+    <param name="Kd3" value="0"/>
+    <param name="Kd4" value="0"/>
+  </node>
+</launch>

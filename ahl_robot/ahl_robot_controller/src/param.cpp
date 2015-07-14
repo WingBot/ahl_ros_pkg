@@ -44,6 +44,7 @@ Param::Param(unsigned int dof)
   : dof_(dof),
     kp_(0.0), kv_(0.0), kv_damp_(0.0),
     kp_limit_(0.0), kv_limit_(0.0),
+    pos_error_max_(100.0), ori_error_max_(100.0),
     kp_wheel_(0.0), kv_wheel_(0.0)
 {
   Kp_joint_ = Eigen::MatrixXd::Zero(dof, dof);
@@ -83,13 +84,9 @@ void Param::update(ahl_robot_controller::ParamConfig& config, uint32_t level)
   Kp_limit_ = Kp_limit.asDiagonal();
   Kv_limit_ = Kv_limit.asDiagonal();
 
-/*
-  kp_ = config.kp;
-  kv_ = config.kv;
-  kv_damp_ = config.kv_damp;
-  kp_limit_ = config.kp_limit;
-  kv_limit_ = config.kv_limit;
-*/
+  pos_error_max_ = config.pos_error_max;
+  ori_error_max_ = config.ori_error_max;
+
   g_ << config.gx, config.gy, config.gz;
   kp_wheel_ = config.kp_wheel;
   kv_wheel_ = config.kv_wheel;

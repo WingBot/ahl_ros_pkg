@@ -279,7 +279,7 @@ void control(const ros::TimerEvent&)
         joint_control->setGoal(qd);
 
         Eigen::Vector3d xd;
-        xd << 1.4, 0.15, 0.08;
+        xd << 2.4, 0.15, 0.08;
         //xd.coeffRef(0) += 0.2 * sin(2.0 * M_PI * 0.1 * cnt * 0.001);
         //xd.coeffRef(1) += 0.1 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);
         xd.coeffRef(2) += 0.08 * sin(2.0 * M_PI * 0.2 * cnt * 0.001);

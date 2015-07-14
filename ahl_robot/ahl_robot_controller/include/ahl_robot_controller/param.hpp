@@ -96,6 +96,18 @@ namespace ahl_ctrl
       return Kv_limit_;
     }
 
+    double getPosErrorMax()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return pos_error_max_;
+    }
+
+    double getOriErrorMax()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return ori_error_max_;
+    }
+
     const Eigen::Vector3d& getG()
     {
       boost::mutex::scoped_lock lock(mutex_);
@@ -136,6 +148,8 @@ namespace ahl_ctrl
     Eigen::MatrixXd Kv_damp_;
     Eigen::MatrixXd Kp_limit_;
     Eigen::MatrixXd Kv_limit_;
+    double pos_error_max_;
+    double ori_error_max_;
     double kp_wheel_;
     double kv_wheel_;
     Eigen::Vector3d g_;
