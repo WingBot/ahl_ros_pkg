@@ -36,62 +36,79 @@
  *
  *********************************************************************/
 
-#include <stdexcept>
 #include <ros/ros.h>
-#include <ahl_robot/exception.hpp>
-#include <ahl_robot_controller/exception.hpp>
-#include <ahl_gazebo_interface/exception.hpp>
-#include "ahl_youbot_server/server.hpp"
-#include "ahl_youbot_server/exception.hpp"
+#include "ahl_robot/exception.hpp"
+#include "ahl_robot/robot/parser.hpp"
+#include "ahl_robot/tf/tf_publisher.hpp"
 
+using namespace ahl_robot;
+
+Eigen::MatrixXd M;
+Eigen::MatrixXd J;
+Eigen::MatrixXd T0, T1, T2;
+
+void calc()
+{
+  //std::cout << "M : " << std::endl << M.inverse() << std::endl;
+  //          << "J : " << std::endl << J << std::endl << std::endl;
+  Eigen::MatrixXd M_inv = M.inverse();
+  Eigen::MatrixXd Jv = J.block(0, 0, 3, J.cols());
+  Eigen::MatrixXd Lambda_inv = Jv * M_inv * Jv.transpose();
+  Eigen::MatrixXd Lambda = Lambda_inv.inverse();
+  Eigen::MatrixXd J_dyn_inv = M_inv * Jv.transpose() * Lambda;
+  Eigen::MatrixXd I = Eigen::MatrixXd::Identity(15, 15);
+  Eigen::MatrixXd N = I - J_dyn_inv * Jv;
+
+  //std::cout << N.transpose() << std::endl << std::endl;
+}
 
 int main(int argc, char** argv)
 {
+  ros::init(argc, argv, "parser_test");
+  ros::NodeHandle nh;
+
   try
   {
-    ros::init(argc, argv, "ahl_youbot_server");
-    ros::NodeHandle nh;
+    std::string name = "red_arm2";
+    RobotPtr robot = RobotPtr(new Robot(name));
 
-    using namespace ahl_youbot;
-    ServerPtr server = ServerPtr(new Server());
+    ParserPtr parser = ParserPtr(new Parser());
+    std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot/yaml/red_arm2.yaml";
+    parser->load(path, robot);
 
     ros::MultiThreadedSpinner spinner;
-    spinner.spin();
-  }
-  catch(ros::Exception& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    return -1;
+
+    TfPublisherPtr tf_publisher = TfPublisherPtr(new TfPublisher());
+
+    const std::string mnp_name = "mnp";
+    unsigned long cnt = 0;
+    ros::Rate r(10.0);
+
+    while(ros::ok())
+    {
+      Eigen::VectorXd q = Eigen::VectorXd::Zero(robot->getDOF(mnp_name));
+      ManipulatorPtr mnp = robot->getManipulator(mnp_name);
+
+      double goal = sin(2.0 * M_PI * 0.2 * cnt * 0.1);
+      ++cnt;
+
+      std::cout << M_PI / 4.0 * goal << std::endl;
+      q = Eigen::VectorXd::Constant(q.rows(), 0.0 * M_PI / 4.0);
+
+      robot->update(mnp_name, q);
+      robot->computeBasicJacobian(mnp_name);
+      robot->computeMassMatrix(mnp_name);
+      //std::cout << robot->getMassMatrix(mnp_name) << std::endl << std::endl;
+      //std::cout << robot->getBasicJacobian(mnp_name, "gripper") << std::endl << std::endl;
+
+      //calc();
+      tf_publisher->publish(robot, false);
+      r.sleep();
+    }
   }
   catch(ahl_robot::Exception& e)
   {
     ROS_ERROR_STREAM(e.what());
-    return -1;
-  }
-  catch(ahl_ctrl::Exception& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    return -1;
-  }
-  catch(ahl_gazebo_if::Exception& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    return -1;
-  }
-  catch(ahl_youbot::Exception& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    return -1;
-  }
-  catch(std::exception& e)
-  {
-    ROS_ERROR_STREAM(e.what());
-    return -1;
-  }
-  catch(...)
-  {
-    ROS_ERROR_STREAM("Unknown exception occurred.");
-    return -1;
   }
 
   return 0;

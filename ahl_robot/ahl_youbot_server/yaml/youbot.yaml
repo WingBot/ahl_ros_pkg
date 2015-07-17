@@ -2,8 +2,26 @@ name: youbot
 xyz: [0, 0, 0]
 rpy: [0, 0, 0]
 world_frame: map
-cut_off_pseudo_differential:
-tau_pseudo_differential:
+
+differentiator:
+  update_rate: 0.001
+  cutoff_frequency: 30.0
+
+mobility:
+  update_rate: 0.001
+  type: mecanum_wheel
+  cutoff_frequency_base: 10.0
+  cutoff_frequency_wheel: 50.0
+  command: base_velocity
+  tread_width: 0.3
+  wheel_base: 0.471
+  wheel_radius: 0.05
+  joints:
+    - name: wheel_joint_fl
+    - name: wheel_joint_fr
+    - name: wheel_joint_bl
+    - name: wheel_joint_br
+
 manipulators:
 
   - name: mnp
@@ -26,7 +44,7 @@ manipulators:
       q_min: -100000.0
       q_max:  100000.0
       dq_max: 0.8
-      tau_max: 100.0
+      tau_max: 50.0
       init_q: 0
 
     - name: base_y
@@ -46,7 +64,7 @@ manipulators:
       q_min: -100000.0
       q_max:  100000.0
       dq_max: 0.8
-      tau_max: 100.0
+      tau_max: 50.0
       init_q: 0
 
     - name: base_yaw
@@ -61,12 +79,12 @@ manipulators:
         [ 0.13063, -0.43726, -0.42639,
          -0.43726,  0.30975, -0.43696,
          -0.42639, -0.43696,  0.37087]
-      com_in_link: [-0.009443, 0.000392, -0.012768]
+      com_in_link: [-0.009443, 0, -0.012768]
 
       q_min: -100000.0
       q_max:  100000.0
       dq_max: 1.04719
-      tau_max: 100.0
+      tau_max: 50.0
       init_q: 0
 
     - name: link1
@@ -118,9 +136,9 @@ manipulators:
 
       mass: 0.821
       inertia_matrix_in_com:
-        [0.0018468,          0,         0,
-                 0, 0.00172767,         0,
-                 0,          0, 0.0005843]
+        [0.001847,        0,        0,
+                0, 0.001728,        0,
+                0,        0, 0.000584]
       com_in_link: [0.000130, 0.028500, 0.079400]
 
       q_min: -2.635447
@@ -138,9 +156,9 @@ manipulators:
 
       mass: 0.769
       inertia_matrix_in_com:
-        [0.0010573,          0,          0,
-                 0,  0.0006764,          0,
-                 0,          0,  0.0006610]
+        [0.001057,         0,         0,
+                0,  0.000676,         0,
+                0,         0,  0.000661]
       com_in_link: [0.000124, -0.005595, 0.040469]
 
       q_min: -1.788962
@@ -158,10 +176,10 @@ manipulators:
 
       mass: 0.906
       inertia_matrix_in_com:
-        [ 0.021773,         0, -0.000180,
-                 0,  0.021527, -0.000008,
-         -0.000180, -0.000008,  0.000427]
-      com_in_link: [-0.000023, 0.000484, 0.077887]
+        [ 0.001229,        0,        0,
+                 0, 0.000856,        0,
+                 0,        0, 0.000692]
+      com_in_link: [-0.000635, 0.000445, 0.027971]
 
       q_min: -2.879793
       q_max:  2.879793
@@ -176,9 +194,9 @@ manipulators:
       xyz_in_parent: [0, 0, 0.132]
       rpy_in_parent: [0, 0, 0]
 
-      mass: 0
+      mass: 0.01
       inertia_matrix_in_com:
-        [0, 0, 0,
-         0, 0, 0,
-         0, 0, 0]
+        [0.000010,        0,        0,
+                0, 0.000010,        0,
+                0,        0, 0.000010]
       com_in_link: [0, 0, 0]

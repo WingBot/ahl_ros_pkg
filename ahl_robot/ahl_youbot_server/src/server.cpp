@@ -51,15 +51,17 @@ Server::Server()
   std::string robot_name = "";
   std::string mnp_name = "";
   std::string yaml = "";
+
   double period = 0.01;
   double servo_period = 0.005;
   bool use_real_robot = false;
+
   local_nh.param<std::string>("robot/name", robot_name, "youbot");
   local_nh.param<std::string>("robot/mnp_name", mnp_name, "");
   local_nh.param<std::string>("robot/yaml", yaml, "");
   local_nh.param<double>("robot/period", period, 0.01);
   local_nh.param<double>("robot/servo_period", servo_period, 0.005);
-  local_nh.param<bool>("robot/real", use_real_robot, false);
+  local_nh.param<bool>("robot/use_real_robot", use_real_robot, false);
 
   action_server_ = ActionServerPtr(
     new ActionServer(robot_name, mnp_name, yaml, period, servo_period, use_real_robot));

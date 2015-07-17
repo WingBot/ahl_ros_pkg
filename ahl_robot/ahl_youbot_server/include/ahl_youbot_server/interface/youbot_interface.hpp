@@ -39,19 +39,59 @@
 #ifndef __AHL_YOUBOT_SERVER_YOUBOT_INTERFACE_HPP
 #define __AHL_YOUBOT_SERVER_YOUBOT_INTERFACE_HPP
 
+#include <yaml-cpp/yaml.h>
+#include <youbot_driver/youbot/YouBotBase.hpp>
+#include <youbot_driver/youbot/YouBotManipulator.hpp>
 #include "ahl_youbot_server/interface/interface.hpp"
 
 namespace ahl_youbot
 {
 
+  typedef boost::shared_ptr<youbot::YouBotBase> YouBotBasePtr;
+  typedef boost::shared_ptr<youbot::YouBotManipulator> YouBotManipulatorPtr;
+
+  namespace youbot_if
+  {
+    static const std::string CONFIG_BASE = "youbot-base";
+    static const std::string CONFIG_MANIPULATOR = "youbot-manipulator";
+
+    namespace tag
+    {
+      static const std::string JOINT = "joint";
+      static const std::string OFFSET = "offset";
+      static const std::string FLIP_DIRECTION = "flip_direction";
+      static const std::string P_CURRENT = "Kp_current";
+      static const std::string I_CURRENT = "Ki_current";
+      static const std::string D_CURRENT = "Kd_current";
+    }
+  }
+
   class YoubotInterface : public Interface
   {
   public:
-    YoubotInterface() {}
+    YoubotInterface(unsigned int dof, const std::string& ahl_cfg_path, const std::string& cfg_path, bool do_calibration);
+    ~YoubotInterface();
 
-    bool getJointStates(Eigen::VectorXd& q) {}
-    bool getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq) {}
-    bool applyJointEfforts(const Eigen::VectorXd& tau) {}
+    bool getJointStates(Eigen::VectorXd& q); 
+    bool getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq);
+    bool getJointEfforts(Eigen::VectorXd& tau);
+    bool getOdometry(Eigen::Vector3d& q);
+    bool getOdometry(Eigen::Vector3d& q, Eigen::Vector3d& dq);
+    bool applyJointEfforts(const Eigen::VectorXd& tau);
+    bool applyBaseVelocity(const Eigen::Vector3d& v);
+
+  private:
+    void init(const std::string& ahl_cfg_path);
+    void checkTag(const YAML::Node& node, const std::string& tag);
+
+    unsigned int dof_;
+    unsigned int base_dof_;
+    unsigned int arm_dof_;
+    YouBotBasePtr base_;
+    YouBotManipulatorPtr mnp_;
+
+    Eigen::VectorXd q_offset_;
+    Eigen::VectorXi flip_direction_;
   };
 
 }

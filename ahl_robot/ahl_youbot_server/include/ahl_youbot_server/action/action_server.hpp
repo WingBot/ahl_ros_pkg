@@ -56,15 +56,12 @@ namespace ahl_youbot
   {
   public:
     ActionServer(
-      const std::string& robot_name, const std::string& mnp_name, const std::string& yaml,
-      double period, double servo_period, bool use_real_robot);
+      const std::string& robot_name, const std::string& mnp_name, const std::string& yaml, double period, double servo_period, bool use_real_robot);
 
     void start();
     void stop();
-    void changeActionTo(Action::Type action_type)
-    {
-      action_type_ = action_type;
-    }
+
+    void switchActionTo(Action::Type action_type);
 
     const std::string& getActionName(Action::Type type)
     {
@@ -72,10 +69,17 @@ namespace ahl_youbot
     }
 
   private:
-    void timerCB(const ros::TimerEvent&);
-    void servoTimerCB(const ros::TimerEvent&);
+    void updateRobotOnce();
+    bool updateMobilityOnce();
+    bool updateManipulatorOnce();
+    void convertYawToQuaternion(double yaw, Eigen::Quaternion<double>& q);
+    void convertQuaternionToYaw(const Eigen::Quaternion<double>& q, double& yaw);
+    void updateMobility(const Eigen::Vector3d& odom);
 
-    bool updated_model_;
+    void copyOdometryTo(Eigen::Vector3d& odom);
+
+    void lowRateTimerCB(const ros::TimerEvent&);
+    void highRateTimerCB(const ros::TimerEvent&);
 
     std::map<Action::Type, ActionPtr> action_;
     Action::Type action_type_;
@@ -84,12 +88,6 @@ namespace ahl_youbot
     ahl_robot::RobotPtr robot_;
     ahl_robot::TfPublisherPtr tf_pub_;
     std::string mnp_name_;
-    Eigen::VectorXd q_;
-    Eigen::VectorXd dq_;
-    Eigen::VectorXd q_arm_;
-    Eigen::VectorXd dq_arm_;
-    Eigen::VectorXd q_base_;
-    Eigen::VectorXd dq_base_;
 
     ahl_ctrl::RobotControllerPtr controller_;
 

@@ -295,8 +295,6 @@ int main(int argc, char** argv)
     std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot/yaml/youbot.yaml";
     parser->load(path, robot);
 
-    //ahl_youbot::ParamPtr param = ahl_youbot::ParamPtr(new ahl_youbot::Param);
-
     controller = RobotControllerPtr(new RobotController());
     controller->init(robot, "mnp");
 

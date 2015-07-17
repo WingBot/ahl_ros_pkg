@@ -45,6 +45,11 @@ TaskSpaceHybridControlAction::TaskSpaceHybridControlAction(const std::string& ac
 {
 }
 
+void TaskSpaceHybridControlAction::init()
+{
+
+}
+
 void TaskSpaceHybridControlAction::execute(void* goal)
 {
   ROS_INFO_STREAM("TaskSpaceHybridControlAction");

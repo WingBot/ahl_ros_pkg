@@ -49,6 +49,7 @@ namespace ahl_youbot
   public:
     TaskSpaceHybridControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot);
 
+    virtual void init();
     virtual void execute(void* goal);
 
   private:

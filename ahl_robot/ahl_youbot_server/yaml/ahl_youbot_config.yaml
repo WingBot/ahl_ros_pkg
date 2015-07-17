@@ -1,0 +1,34 @@
+joint1:
+  offset: 2.949606
+  flip_direction: 1
+  Kp_current: 120
+  Ki_current: 300
+  Kd_current: 0
+
+joint2:
+  offset: -1.134464
+  flip_direction: 0
+  Kp_current: 120
+  Ki_current: 300
+  Kd_current: 0
+
+joint3:
+  offset: 2.548187
+  flip_direction: 0
+  Kp_current: 120
+  Ki_current: 300
+  Kd_current: 0
+
+joint4:
+  offset: -1.788962
+  flip_direction: 0
+  Kp_current: 120
+  Ki_current: 300
+  Kd_current: 0
+
+joint5:
+  offset: 2.940397
+  flip_direction: 1
+  Kp_current: 120
+  Ki_current: 300
+  Kd_current: 0

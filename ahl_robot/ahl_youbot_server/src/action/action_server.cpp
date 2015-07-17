@@ -37,7 +37,7 @@
  *********************************************************************/
 
 #include <stdexcept>
-#include "ahl_youbot_server/exceptions.hpp"
+#include "ahl_youbot_server/exception.hpp"
 #include "ahl_youbot_server/action/action_server.hpp"
 #include "ahl_youbot_server/action/float_action.hpp"
 #include "ahl_youbot_server/action/joint_space_control_action.hpp"
@@ -51,14 +51,37 @@ using namespace ahl_youbot;
 ActionServer::ActionServer(
   const std::string& robot_name, const std::string& mnp_name, const std::string& yaml,
   double period, double servo_period, bool use_real_robot)
-  : updated_model_(false), mnp_name_(mnp_name)
+  : mnp_name_(mnp_name)
 {
   action_type_ = Action::FLOAT;
+
+  // Initialize robot
+  robot_ = ahl_robot::RobotPtr(new ahl_robot::Robot(robot_name));
+  ahl_robot::ParserPtr parser = ahl_robot::ParserPtr(new ahl_robot::Parser());
+  parser->load(yaml, robot_);
+
+  // Initialize robot controller
+  controller_ = ahl_ctrl::RobotControllerPtr(new ahl_ctrl::RobotController());
+  controller_->init(robot_, mnp_name);
+
+  // Initialize TfPublisher
+  tf_pub_ = ahl_robot::TfPublisherPtr(new ahl_robot::TfPublisher());
 
   // Initialize interface
   if(use_real_robot)
   {
-    interface_ = InterfacePtr(new YoubotInterface());
+    ros::NodeHandle local_nh("~");
+
+    std::string ahl_cfg_yaml = "";
+    std::string cfg_path = "";
+    bool do_calibration = true;
+
+    local_nh.param<std::string>("interface/config/ahl_cfg_yaml", ahl_cfg_yaml, "");
+    local_nh.param<std::string>("interface/config/path", cfg_path, "");
+    local_nh.param<bool>("interface/config/do_calibration", do_calibration, true);
+
+    interface_ = InterfacePtr(
+      new YoubotInterface(robot_->getDOF(mnp_name_), ahl_cfg_yaml, cfg_path, do_calibration));
   }
   else
   {
@@ -71,71 +94,33 @@ ActionServer::ActionServer(
     interface_ = InterfacePtr(new GazeboInterface(joint_list, servo_period * 5.0));
   }
 
-  // Initialize robot
-  using namespace ahl_robot;
-  robot_ = RobotPtr(new Robot(robot_name));
-  ParserPtr parser = ParserPtr(new Parser());
-  parser->load(yaml, robot_);
-  q_ = robot_->getJointPosition(mnp_name);
-  dq_ = Eigen::VectorXd::Zero(q_.rows());
-
-  const int xy_yaw = 3;
-  q_base_.resize(xy_yaw);
-  dq_base_.resize(q_base_.rows());
-
-  if(q_base_.rows() > robot_->getDOF(mnp_name))
-  {
-    std::stringstream msg;
-    msg << "q_base_.rows() > robot_->getDOF()" << std::endl
-        << "  q_base_.rows   : " << q_base_.rows() << std::endl
-        << "  robot_->getDOF : " << robot_->getDOF(mnp_name);
-    throw ahl_youbot::Exception("ahl_youbot::ActionServer::ActionServer", msg.str());
-  }
-
-  for(unsigned int i = 0; i < q_base_.rows(); ++i)
-  {
-    q_base_.coeffRef(i)  = q_.coeff(i);
-  }
-  dq_base_ = Eigen::VectorXd::Zero(dq_base_.rows());
-
-  q_arm_.resize(q_.rows() - q_base_.rows());
-  dq_arm_.resize(q_arm_.rows());
-
-  for(unsigned int i = q_base_.rows(); i < q_.rows(); ++i)
-  {
-    q_arm_.coeffRef(i - q_base_.rows())  = q_.coeff(i);
-  }
-  dq_arm_ = Eigen::VectorXd::Zero(dq_arm_.rows());
-
-  // Initialize TfPublisher
-  tf_pub_ = ahl_robot::TfPublisherPtr(new ahl_robot::TfPublisher());
-
-  // Initialize robot controller
-  controller_ = ahl_ctrl::RobotControllerPtr(new ahl_ctrl::RobotController());
-  controller_->init(robot_, mnp_name);
-
   // Initialize action
   action_[Action::FLOAT] = ActionPtr(
     new FloatAction("float", robot_, controller_, interface_));
   action_[Action::JOINT_SPACE_CONTROL] = ActionPtr(
-    new JointSpaceControlAction("joint_space_control", robot_));
+    new JointSpaceControlAction("joint_space_control", robot_, controller_, interface_));
   action_[Action::TASK_SPACE_CONTROL] = ActionPtr(
-    new TaskSpaceControlAction("task_space_control", robot_));
+    new TaskSpaceControlAction("task_space_control", robot_, controller_, interface_));
   action_[Action::TASK_SPACE_HYBRID_CONTROL] = ActionPtr(
     new TaskSpaceHybridControlAction("task_space_hybrid_control", robot_));
 
-  // Initialize 2 timer loops
+  action_[action_type_]->init();
+
+  this->updateRobotOnce();
+
+  // Initialize timers
   ros::NodeHandle nh;
 
   timer_ = nh.createTimer(
-    ros::Duration(period), &ActionServer::timerCB, this);
+    ros::Duration(period), &ActionServer::lowRateTimerCB, this);
   servo_timer_ = nh.createTimer(
-    ros::Duration(servo_period), &ActionServer::servoTimerCB, this);
+    ros::Duration(servo_period), &ActionServer::highRateTimerCB, this);
 }
 
 void ActionServer::start()
 {
   boost::mutex::scoped_lock lock(mutex_);
+  this->updateRobotOnce();
   timer_.start();
   servo_timer_.start();
 }
@@ -147,41 +132,131 @@ void ActionServer::stop()
   servo_timer_.stop();
 }
 
-void ActionServer::timerCB(const ros::TimerEvent&)
+void ActionServer::switchActionTo(Action::Type action_type)
+{
+  boost::mutex::scoped_lock lock(mutex_);
+  action_type_ = action_type;
+  action_[action_type_]->init();
+}
+
+void ActionServer::updateRobotOnce()
+{
+  ros::Rate r(10.0);
+
+  while(ros::ok())
+  {
+    if(this->updateMobilityOnce())
+    {
+      break;
+    }
+    else
+    {
+      ROS_INFO_STREAM("Waiting update of mobility ...");
+    }
+
+    r.sleep();
+  }
+
+  while(ros::ok())
+  {
+    if(this->updateManipulatorOnce())
+    {
+      break;
+    }
+    else
+    {
+      ROS_INFO_STREAM("Waiting update of manipulator ...");
+    }
+
+    r.sleep();
+  }
+
+  robot_->computeBasicJacobian(mnp_name_);
+  robot_->computeMassMatrix(mnp_name_);
+}
+
+bool ActionServer::updateMobilityOnce()
+{
+  Eigen::Vector3d odom = Eigen::Vector3d::Zero();
+
+  if(interface_->getOdometry(odom))
+  {
+    this->updateMobility(odom);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool ActionServer::updateManipulatorOnce()
+{
+  Eigen::VectorXd q = Eigen::VectorXd::Zero(robot_->getDOF(mnp_name_));
+
+  if(interface_->getJointStates(q))
+  {
+    Eigen::Vector3d odom;
+
+    this->copyOdometryTo(odom);
+    q.block(0, 0, 3, 1) = odom;
+    robot_->update(mnp_name_, q);
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void ActionServer::convertYawToQuaternion(double yaw, Eigen::Quaternion<double>& q)
+{
+  q.x() = 0.0;
+  q.y() = 0.0;
+  q.z() = sin(0.5 * yaw);
+  q.w() = cos(0.5 * yaw);
+}
+
+void ActionServer::convertQuaternionToYaw(const Eigen::Quaternion<double>& q, double& yaw)
+{
+  yaw = 2.0 * acos(q.w());
+  yaw = atan2(sin(yaw), cos(yaw));
+
+  if(q.z() < 0.0)
+  {
+    yaw *= -1.0;
+  }
+}
+
+void ActionServer::updateMobility(const Eigen::Vector3d& odom)
+{
+  Eigen::Vector3d position = Eigen::Vector3d::Zero();
+  Eigen::Quaternion<double> orientation;
+
+  position.block(0, 0, 2, 1) = odom.block(0, 0, 2, 1);
+  this->convertYawToQuaternion(odom[2], orientation);
+
+  robot_->updateBase(position, orientation);
+}
+
+void ActionServer::copyOdometryTo(Eigen::Vector3d& odom)
+{
+  odom.block(0, 0, 2, 1) = robot_->getMobility()->p.block(0, 0, 2, 1);
+  this->convertQuaternionToYaw(robot_->getMobility()->r, odom[2]);
+}
+
+void ActionServer::lowRateTimerCB(const ros::TimerEvent&)
 {
   try
   {
     boost::mutex::scoped_lock lock(mutex_);
-    // update robot model
-    if(interface_->getJointStates(q_arm_))
-    // TO DO : get base motion
-    {
-      for(unsigned int i = 0; i < q_base_.rows(); ++i)
-      {
-        q_.coeffRef(i) = q_base_.coeff(i);
-      }
-      for(unsigned int i = 0; i < q_.rows() - q_base_.rows(); ++i)
-      {
-        q_.coeffRef(i + q_base_.rows()) = q_arm_.coeff(i);
-      }
+    robot_->computeBasicJacobian(mnp_name_);
+    robot_->computeMassMatrix(mnp_name_);
+    controller_->updateModel();
+    // apply base velocity
 
-      //std::cout << "q : " << std::endl;
-      //std::cout << q_ << std::endl;
-
-      robot_->update(mnp_name_, q_);
-/*      ahl_robot::ManipulatorPtr mnp = robot_->getManipulator("mnp");
-      for(unsigned int i = 0; i < q_.rows() - q_base_.rows(); ++i)
-      {
-        mnp->dq(i + q_base_.rows()) = dq_arm_.coeff(i);
-      }
-*/
-      tf_pub_->publish(robot_, false);
-      updated_model_ = true;
-    }
-    else
-    {
-      updated_model_ = false;
-    }
+    tf_pub_->publish(robot_, false);
   }
   catch(ahl_youbot::Exception& e)
   {
@@ -205,14 +280,24 @@ void ActionServer::timerCB(const ros::TimerEvent&)
   }
 }
 
-void ActionServer::servoTimerCB(const ros::TimerEvent&)
+void ActionServer::highRateTimerCB(const ros::TimerEvent&)
 {
   try
   {
     boost::mutex::scoped_lock lock(mutex_);
-    if(!updated_model_)
-      return;
 
+    // update mobility
+    Eigen::Vector3d odom;
+    interface_->getOdometry(odom);
+    this->updateMobility(odom);
+
+    // update joint angle
+    Eigen::VectorXd q = Eigen::VectorXd::Zero(robot_->getDOF(mnp_name_));;
+    interface_->getJointStates(q);
+    q.block(0, 0, 3, 1) = odom;
+    robot_->update(mnp_name_, q);
+
+    // compute tau in execute method
     void* test;
     action_[action_type_]->execute(test);
   }

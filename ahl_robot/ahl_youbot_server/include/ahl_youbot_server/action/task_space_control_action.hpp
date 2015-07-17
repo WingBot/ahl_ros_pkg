@@ -39,7 +39,11 @@
 #ifndef __AHL_YOUBOT_SERVER_TASK_SPACE_CONTROL_ACTION_HPP
 #define __AHL_YOUBOT_SERVER_TASK_SPACE_CONTROL_ACTION_HPP
 
+#include <ahl_robot_srvs/TaskSpaceControl.h>
+#include <ahl_robot_controller/robot_controller.hpp>
+#include <ahl_robot_controller/task/task.hpp>
 #include "ahl_youbot_server/action/action.hpp"
+#include "ahl_youbot_server/interface/interface.hpp"
 
 namespace ahl_youbot
 {
@@ -47,12 +51,25 @@ namespace ahl_youbot
   class TaskSpaceControlAction : public Action
   {
   public:
-    TaskSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot);
+    enum TaskList
+    {
+      EE_POSITION_CONTROL,
+      EE_ORIENTATION_CONTROL,
+      GRAVITY_COMPENSATION,
+      JOINT_CONTROL,
+      TASK_NUM,
+    };
 
+    TaskSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface);
+
+    virtual void init();
     virtual void execute(void* goal);
 
   private:
+    ahl_ctrl::RobotControllerPtr controller_;
+    std::map<TaskSpaceControlAction::TaskList, ahl_ctrl::TaskPtr> task_;
     ahl_robot::RobotPtr robot_;
+    InterfacePtr interface_;
   };
 
 }

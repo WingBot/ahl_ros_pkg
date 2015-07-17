@@ -36,7 +36,7 @@
  *
  *********************************************************************/
 
-#include "ahl_youbot_server/exceptions.hpp"
+#include "ahl_youbot_server/exception.hpp"
 #include "ahl_youbot_server/interface/gazebo_interface.hpp"
 
 using namespace ahl_youbot;
@@ -118,6 +118,21 @@ bool GazeboInterface::getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq)
   }
 }
 
+bool GazeboInterface::getJointEfforts(Eigen::VectorXd& tau)
+{
+  return false;
+}
+
+bool GazeboInterface::getOdometry(Eigen::Vector3d& q)
+{
+  return false;
+}
+
+bool GazeboInterface::getOdometry(Eigen::Vector3d& q, Eigen::Vector3d& dq)
+{
+  return false;
+}
+
 bool GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
 {
   if(tau.rows() != effort_.name.size())
@@ -163,6 +178,11 @@ bool GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
   }
 
   pub_apply_joint_efforts_.publish(effort_);
+}
+
+bool GazeboInterface::applyBaseVelocity(const Eigen::Vector3d& v)
+{
+  return false;
 }
 
 void GazeboInterface::jointStatesCB(const gazebo_msgs::JointStates::ConstPtr& msg)

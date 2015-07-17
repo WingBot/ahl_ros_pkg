@@ -128,3 +128,18 @@ target_link_libraries(
   parser_test4
     ahl_robot
 )
+
+add_executable(
+  parser_test5
+    test/test5.cpp
+)
+
+add_dependencies(
+  parser_test5
+    ahl_robot_gencpp
+)
+
+target_link_libraries(
+  parser_test5
+    ahl_robot
+)

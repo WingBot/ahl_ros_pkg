@@ -44,6 +44,7 @@ bool Ready::callFloat(
   ahl_robot_srvs::Float::Request& req,
   ahl_robot_srvs::Float::Response& res)
 {
+  server()->switchActionTo(Action::FLOAT);
   return true;
 }
 
@@ -51,6 +52,7 @@ bool Ready::callJointSpaceControl(
   ahl_robot_srvs::JointSpaceControl::Request& req,
   ahl_robot_srvs::JointSpaceControl::Response& res)
 {
+  server()->switchActionTo(Action::JOINT_SPACE_CONTROL);
   return true;
 }
 

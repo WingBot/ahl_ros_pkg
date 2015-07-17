@@ -36,13 +36,23 @@
  *
  *********************************************************************/
 
+#include <ahl_robot_controller/task/position_control.hpp>
+#include <ahl_robot_controller/task/orientation_control.hpp>
+#include <ahl_robot_controller/task/joint_control.hpp>
+#include <ahl_robot_controller/task/gravity_compensation.hpp>
 #include "ahl_youbot_server/action/task_space_control_action.hpp"
 
 using namespace ahl_youbot;
 
-TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot)
-  : Action(action_name), robot_(robot)
+TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface)
+  : Action(action_name), robot_(robot), controller_(controller), interface_(interface)
 {
+
+}
+
+void TaskSpaceControlAction::init()
+{
+
 }
 
 void TaskSpaceControlAction::execute(void* goal)

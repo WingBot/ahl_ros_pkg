@@ -53,6 +53,7 @@ namespace ahl_youbot
   public:
     FloatAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface);
 
+    virtual void init();
     virtual void execute(void* goal);
 
   private:
@@ -63,7 +64,6 @@ namespace ahl_youbot
     ahl_ctrl::TaskPtr task_;
     ahl_robot::RobotPtr robot_;
     InterfacePtr interface_;
-    FloatRequestPtr req_;
   };
 
 }

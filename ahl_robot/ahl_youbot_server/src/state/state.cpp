@@ -49,6 +49,7 @@ bool State::callCancel(
   std_srvs::Empty::Request& req,
   std_srvs::Empty::Response& res)
 {
+  server_->switchActionTo(Action::FLOAT);
   return false;
 }
 

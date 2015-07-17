@@ -57,7 +57,11 @@ namespace ahl_youbot
 
     bool getJointStates(Eigen::VectorXd& q);
     bool getJointStates(Eigen::VectorXd& q, Eigen::VectorXd& dq);
+    bool getJointEfforts(Eigen::VectorXd& tau);
+    bool getOdometry(Eigen::Vector3d& q);
+    bool getOdometry(Eigen::Vector3d& q, Eigen::Vector3d& dq);
     bool applyJointEfforts(const Eigen::VectorXd& tau);
+    bool applyBaseVelocity(const Eigen::Vector3d& v);
   private:
     void jointStatesCB(const gazebo_msgs::JointStates::ConstPtr& msg);
 

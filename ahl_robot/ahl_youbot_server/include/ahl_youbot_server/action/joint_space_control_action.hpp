@@ -39,7 +39,11 @@
 #ifndef __AHL_YOUBOT_SERVER_JOINT_SPACE_CONTROL_ACTION_HPP
 #define __AHL_YOUBOT_SERVER_JOINT_SPACE_CONTROL_ACTION_HPP
 
+#include <ahl_robot_srvs/JointSpaceControl.h>
+#include <ahl_robot_controller/robot_controller.hpp>
+#include <ahl_robot_controller/task/task.hpp>
 #include "ahl_youbot_server/action/action.hpp"
+#include "ahl_youbot_server/interface/interface.hpp"
 
 namespace ahl_youbot
 {
@@ -47,12 +51,27 @@ namespace ahl_youbot
   class JointSpaceControlAction : public Action
   {
   public:
-    JointSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot);
+    enum TaskList
+    {
+      GRAVITY_COMPENSATION,
+      JOINT_CONTROL,
+      TASK_NUM,
+    };
 
+    JointSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface);
+
+    virtual void init();
     virtual void execute(void* goal);
 
   private:
+    typedef ahl_robot_srvs::JointSpaceControl::Request JointSpaceRequest;
+    typedef boost::shared_ptr<JointSpaceRequest> JointSpaceRequestPtr;
+
+    ahl_ctrl::RobotControllerPtr controller_;
+    std::map<JointSpaceControlAction::TaskList, ahl_ctrl::TaskPtr> task_;
     ahl_robot::RobotPtr robot_;
+    InterfacePtr interface_;
+    JointSpaceRequestPtr req_;
   };
 
 }

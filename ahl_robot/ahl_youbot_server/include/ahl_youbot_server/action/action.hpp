@@ -62,6 +62,7 @@ namespace ahl_youbot
       : action_name_(action_name) {}
     virtual ~Action() {}
 
+    virtual void init() = 0;
     virtual void execute(void* goal) = 0;
 
     virtual const std::string& getActionName() const

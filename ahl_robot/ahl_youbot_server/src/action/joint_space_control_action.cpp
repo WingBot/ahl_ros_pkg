@@ -36,16 +36,48 @@
  *
  *********************************************************************/
 
+#include <ahl_robot_controller/task/gravity_compensation.hpp>
+#include <ahl_robot_controller/task/joint_control.hpp>
 #include "ahl_youbot_server/action/joint_space_control_action.hpp"
 
 using namespace ahl_youbot;
 
-JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot)
-  : Action(action_name), robot_(robot)
+JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface)
+  : Action(action_name), robot_(robot), controller_(controller), interface_(interface)
 {
+  req_ = JointSpaceRequestPtr(new JointSpaceRequest());
+
+  task_[GRAVITY_COMPENSATION] = ahl_ctrl::TaskPtr(
+    new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
+  task_[JOINT_CONTROL] = ahl_ctrl::TaskPtr(
+    new ahl_ctrl::JointControl(robot_->getManipulator("mnp")));
+
+  std::map<JointSpaceControlAction::TaskList, ahl_ctrl::TaskPtr>::iterator it;
+  for(it = task_.begin(); it != task_.end(); ++it)
+  {
+    const int priority = 0;
+    controller_->addTask(it->second, priority);
+  }
+}
+
+void JointSpaceControlAction::init()
+{
+  controller_->clearTask();
+
+  std::map<JointSpaceControlAction::TaskList, ahl_ctrl::TaskPtr>::iterator it;
+  for(it = task_.begin(); it != task_.end(); ++it)
+  {
+    const int priority = 0;
+    controller_->addTask(it->second, priority);
+  }
 }
 
 void JointSpaceControlAction::execute(void* goal)
 {
-  ROS_INFO_STREAM("JointSpaceControlAction");
+  Eigen::VectorXd q = Eigen::VectorXd::Constant(robot_->getDOF("mnp"), M_PI / 4.0);
+  task_[JOINT_CONTROL]->setGoal(q);
+
+  Eigen::VectorXd tau = Eigen::VectorXd::Zero(robot_->getDOF("mnp"));
+  controller_->computeGeneralizedForce(tau);
+  interface_->applyJointEfforts(tau);
 }
