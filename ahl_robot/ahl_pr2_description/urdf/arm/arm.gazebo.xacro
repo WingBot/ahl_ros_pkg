@@ -27,7 +27,7 @@
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>1</selfCollide>
+      <selfCollide>0</selfCollide>
     </gazebo>
 
     <gazebo reference="upper_arm_l_link">
@@ -82,7 +82,7 @@
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>0</selfCollide>
+      <selfCollide>1</selfCollide>
     </gazebo>
 
     <!-- right arm -->
@@ -106,7 +106,7 @@
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>1</selfCollide>
+      <selfCollide>0</selfCollide>
     </gazebo>
 
     <gazebo reference="upper_arm_r_link">
@@ -161,7 +161,7 @@
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>0</selfCollide>
+      <selfCollide>1</selfCollide>
     </gazebo>
   </xacro:macro>
 </robot>

@@ -71,7 +71,7 @@
 
   <xacro:macro name="base_link_inertial">
     <inertial>
-      <mass value="118"/>
+      <mass value="118.0"/>
       <origin xyz="-0.062 0 0.201"/>
       <inertia ixx="8.431730" ixy="0" ixz="0" iyy="8.533050" iyz="0" izz="3.787470"/>
     </inertial>
@@ -98,7 +98,7 @@
       </material>
     </visual>
   </xacro:macro>
-  <property name="caster_damping" value="1"/>
+  <property name="caster_damping" value="0.7"/>
   <property name="caster_friction" value="0.2"/>
   <property name="caster_effort" value="10000"/>
   <property name="caster_velocity" value="10000"/>
@@ -115,7 +115,7 @@
   </xacro:macro>
   <property name="wheel_radius" value="0.075"/>
   <property name="wheel_length" value="0.10"/>
-  <property name="wheel_damping" value="1"/>
+  <property name="wheel_damping" value="0.7"/>
   <property name="wheel_friction" value="0.2"/>
   <property name="wheel_effort" value="10000"/>
   <property name="wheel_velocity" value="10000"/>

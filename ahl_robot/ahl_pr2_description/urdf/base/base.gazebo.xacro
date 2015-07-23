@@ -47,7 +47,7 @@
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>1</selfCollide>
+      <selfCollide>0</selfCollide>
     </gazebo>
 
     <gazebo reference="caster_fl_link">
@@ -146,7 +146,7 @@
       <mu2>0</mu2>
       <kp>10000000000.0</kp>
       <kd>100000000.0</kd>
-      <selfCollide>1</selfCollide>
+      <selfCollide>0</selfCollide>
     </gazebo>
 
   </xacro:macro>
