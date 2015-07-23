@@ -102,8 +102,8 @@
   <property name="wrist_flex_friction" value="0"/>
   <property name="wrist_flex_effort" value="10000"/>
   <property name="wrist_flex_velocity" value="10000"/>
-  <property name="wrist_flex_upper" value="-2.180004"/>
-  <property name="wrist_flex_lower" value="0"/>
+  <property name="wrist_flex_upper" value="0"/>
+  <property name="wrist_flex_lower" value="-2.180004"/>
 
   <property name="wrist_roll_x" value="0.03"/>
   <property name="wrist_roll_y" value="0"/>

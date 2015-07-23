@@ -121,8 +121,8 @@ manipulators:
                 0,        0, 0.273538]
       com_in_link: [-0.001, 0, -0.098]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -0.714602
+      q_max: 2.285404
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -141,8 +141,8 @@ manipulators:
               0,        0, 0.019758]
       com_in_link: [0.02195, 0, -0.03127]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -0.523601
+      q_max: 1.396300
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -181,8 +181,8 @@ manipulators:
                 0,        0, 0.003592]
       com_in_link: [0.010, 0, -0.012]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -2.321305
+      q_max: 0
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -221,8 +221,8 @@ manipulators:
                 0,        0, 0.000645]
       com_in_link: [-0.002, 0, -0.001]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -2.180004
+      q_max: 0
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -256,9 +256,9 @@ manipulators:
 
       mass: 0.430
       inertia_matrix_in_com:
-        [0.000200,        0,        0,
-                0, 0.000297,        0,
-                0,        0, 0.000281]
+        [0.000110,        0,        0,
+                0, 0.000207,        0,
+                0,        0, 0.000191]
       com_in_link: [0.036, 0, 0]
 
       q_min: 0
@@ -364,8 +364,8 @@ manipulators:
                 0,        0, 0.273538]
       com_in_link: [-0.001, 0, -0.098]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -2.285404
+      q_max: 0.714602
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -384,8 +384,8 @@ manipulators:
               0,        0, 0.019758]
       com_in_link: [0.02195, 0, -0.03127]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -0.523601
+      q_max: 1.396300
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -404,8 +404,8 @@ manipulators:
 		   0,        0, 0.086016]
       com_in_link: [0.211, 0, -0.001]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -3.900008
+      q_max: 0.800000
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -424,8 +424,8 @@ manipulators:
                 0,        0, 0.003592]
       com_in_link: [0.010, 0, -0.012]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -2.321305
+      q_max: 0
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -464,8 +464,8 @@ manipulators:
                 0,        0, 0.000645]
       com_in_link: [-0.002, 0, -0.001]
 
-      q_min: -3.14
-      q_max: 3.14
+      q_min: -2.180004
+      q_max: 0
       dq_max: 10000
       tau_max: 10000
       init_q: 0
@@ -499,9 +499,9 @@ manipulators:
 
       mass: 0.430
       inertia_matrix_in_com:
-        [0.000200,        0,        0,
-                0, 0.000297,        0,
-                0,        0, 0.000281]
+        [0.000110,        0,        0,
+                0, 0.000207,        0,
+                0,        0, 0.000191]
       com_in_link: [0.036, 0, 0]
 
       q_min: 0
