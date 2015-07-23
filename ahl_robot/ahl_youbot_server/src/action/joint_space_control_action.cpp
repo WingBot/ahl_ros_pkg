@@ -51,13 +51,6 @@ JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name,
     new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
   task_[JOINT_CONTROL] = ahl_ctrl::TaskPtr(
     new ahl_ctrl::JointControl(robot_->getManipulator("mnp")));
-
-  std::map<JointSpaceControlAction::TaskList, ahl_ctrl::TaskPtr>::iterator it;
-  for(it = task_.begin(); it != task_.end(); ++it)
-  {
-    const int priority = 0;
-    controller_->addTask(it->second, priority);
-  }
 }
 
 void JointSpaceControlAction::init()

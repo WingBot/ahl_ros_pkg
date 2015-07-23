@@ -48,14 +48,37 @@ TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name, c
   : Action(action_name), robot_(robot), controller_(controller), interface_(interface)
 {
 
+  task_[EE_POSITION_CONTROL] = ahl_ctrl::TaskPtr(
+    new ahl_ctrl::PositionControl(robot_->getManipulator("mnp"), "gripper"));
+  task_[EE_ORIENTATION_CONTROL] = ahl_ctrl::TaskPtr(
+    new ahl_ctrl::OrientationControl(robot_->getManipulator("mnp"), "gripper"));
+  task_[GRAVITY_COMPENSATION] = ahl_ctrl::TaskPtr(
+    new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
+  task_[JOINT_CONTROL] = ahl_ctrl::TaskPtr(
+    new ahl_ctrl::JointSpaceControl(robot_->getManipulator("mnp")));
 }
 
 void TaskSpaceControlAction::init()
 {
-
+  controller_->addTask(task_[EE_POSITION_CONTROL], 10);
+  controller_->addTask(task_[GRAVITY_COMPENSATION], 10);
+  controller_->addTask(task_[EE_ORIENTATION_CONTROL], 5);
+  controller_->addTask(task_[JOINT_CONTROL], 0);
 }
 
 void TaskSpaceControlAction::execute(void* goal)
 {
   ROS_INFO_STREAM("TaskSpaceControlAction");
+
+  Eigen::Vector3d xd;
+  xd << 0.5, 0.0, 0.2;
+  Eigen::Matrix3d Rd = Eigen::Matrix3d::Identity();
+  Eigen::VectorXd qd = Eigen::VectorXd::Constant(robot_->getDOF("mnp"), M_PI / 6.0);
+  qd.block(0, 0, 3, 1) = Eigen::Vector3d::Zero();
+
+  Eigen::VectorXd tau = Eigen::VectorXd::Zero(robot_->getDOF("mnp"));
+  controller_->computeGeneralizedForce(tau);
+
+  std::cout << "tau : " << tau.transpose() << std::endl;
+  //interface_->applyJointEfforts(tau);
 }
