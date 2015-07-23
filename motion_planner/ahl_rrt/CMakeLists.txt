@@ -73,6 +73,11 @@ add_library(
     src/tree/random_tree.cpp
 )
 
+add_dependencies(
+  ahl_rrt
+    ahl_rrt_gencpp
+)
+
 target_link_libraries(
   ahl_rrt
     ${catkin_LIBRARIES}
