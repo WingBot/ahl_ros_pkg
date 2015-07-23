@@ -6,16 +6,6 @@
 
   <xacro:macro name="pr2_gripper_gazebo">
     <!-- left gripper -->
-    <gazebo reference="gripper_palm_l_link">
-      <gravity>1</gravity>
-      <maxVel>-1</maxVel>
-      <minDepth>0</minDepth>
-      <mu1>0</mu1>
-      <mu2>0</mu2>
-      <kp>10000000000.0</kp>
-      <kd>100000000.0</kd>
-      <selfCollide>1</selfCollide>
-    </gazebo>
 
     <gazebo reference="finger_ll_link">
       <gravity>1</gravity>
@@ -62,17 +52,6 @@
     </gazebo>
 
     <!-- left gripper -->
-
-    <gazebo reference="gripper_palm_r_link">
-      <gravity>1</gravity>
-      <maxVel>-1</maxVel>
-      <minDepth>0</minDepth>
-      <mu1>0</mu1>
-      <mu2>0</mu2>
-      <kp>10000000000.0</kp>
-      <kd>100000000.0</kd>
-      <selfCollide>1</selfCollide>
-    </gazebo>
 
     <gazebo reference="finger_rl_link">
       <gravity>1</gravity>

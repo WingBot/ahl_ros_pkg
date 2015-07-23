@@ -5,7 +5,7 @@
 
   <xacro:macro name="base_x_inertial">
     <inertial>
-      <mass value="0.01"/>
+      <mass value="0.1"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
     </inertial>
@@ -19,7 +19,7 @@
     </visual>
   </xacro:macro>
   <property name="base_x_damping" value="3"/>
-  <property name="base_x_friction" value="0"/>
+  <property name="base_x_friction" value="0.2"/>
   <property name="base_x_effort" value="10000"/>
   <property name="base_x_velocity" value="10000"/>
   <property name="base_x_upper" value="1000000"/>
@@ -27,7 +27,7 @@
 
   <xacro:macro name="base_y_inertial">
     <inertial>
-      <mass value="0.01"/>
+      <mass value="0.1"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
     </inertial>
@@ -41,7 +41,7 @@
     </visual>
   </xacro:macro>
   <property name="base_y_damping" value="3"/>
-  <property name="base_y_friction" value="0"/>
+  <property name="base_y_friction" value="0.2"/>
   <property name="base_y_effort" value="10000"/>
   <property name="base_y_velocity" value="10000"/>
   <property name="base_y_upper" value="1000000"/>
@@ -49,7 +49,7 @@
 
   <xacro:macro name="base_yaw_inertial">
     <inertial>
-      <mass value="100"/>
+      <mass value="300"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
     </inertial>
@@ -63,7 +63,7 @@
     </visual>
   </xacro:macro>
   <property name="base_yaw_damping" value="3"/>
-  <property name="base_yaw_friction" value="0"/>
+  <property name="base_yaw_friction" value="0.2"/>
   <property name="base_yaw_effort" value="10000"/>
   <property name="base_yaw_velocity" value="10000"/>
   <property name="base_yaw_upper" value="1000000"/>
@@ -71,9 +71,9 @@
 
   <xacro:macro name="base_link_inertial">
     <inertial>
-      <mass value="100"/>
-      <origin xyz="0 0 0"/>
-      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+      <mass value="118"/>
+      <origin xyz="-0.062 0 0.201"/>
+      <inertia ixx="8.431730" ixy="0" ixz="0" iyy="8.533050" iyz="0" izz="3.787470"/>
     </inertial>
   </xacro:macro>
 
@@ -82,9 +82,9 @@
   <property name="caster_z" value="0.2"/>
   <xacro:macro name="caster_inertial">
     <inertial>
-      <mass value="1"/>
+      <mass value="3.47"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+      <inertia ixx="0.012412" ixy="0" ixz="0" iyy="0.015218" iyz="0" izz="0.011764"/>
     </inertial>
   </xacro:macro>
   <xacro:macro name="caster_visual">
@@ -93,10 +93,13 @@
       <geometry>
         <box size="0.12 0.02 0.2"/>
       </geometry>
+      <material name="caster_gray">
+        <color rgba="0.4 0.4 0.4 1"/>
+      </material>
     </visual>
   </xacro:macro>
   <property name="caster_damping" value="1"/>
-  <property name="caster_friction" value="0"/>
+  <property name="caster_friction" value="0.2"/>
   <property name="caster_effort" value="10000"/>
   <property name="caster_velocity" value="10000"/>
   <property name="caster_upper" value="1000000"/>
@@ -105,15 +108,15 @@
   <property name="wheel_z" value="-0.17"/>
   <xacro:macro name="wheel_inertial">
     <inertial>
-      <mass value="2"/>
+      <mass value="0.880"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+      <inertia ixx="0.012412" ixy="0" ixz="0" iyy="0.015218" iyz="0" izz="0.011764"/>
     </inertial>
   </xacro:macro>
   <property name="wheel_radius" value="0.075"/>
   <property name="wheel_length" value="0.10"/>
   <property name="wheel_damping" value="1"/>
-  <property name="wheel_friction" value="0"/>
+  <property name="wheel_friction" value="0.2"/>
   <property name="wheel_effort" value="10000"/>
   <property name="wheel_velocity" value="10000"/>
   <property name="wheel_upper" value="1000000"/>
@@ -124,15 +127,15 @@
   <property name="torso_z" value="0.66"/>
   <xacro:macro name="torso_inertial">
     <inertial>
-      <mass value="20"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+      <mass value="36.449"/>
+      <origin xyz="-0.100 0 -0.087" rpy="0 0 0"/>
+      <inertia ixx="2.792330" ixy="0" ixz="0" iyy="2.521060" iyz="0" izz="0.536551"/>
     </inertial>
   </xacro:macro>
   <property name="torso_damping" value="1"/>
-  <property name="torso_friction" value="0"/>
+  <property name="torso_friction" value="0.1"/>
   <property name="torso_effort" value="10000"/>
-  <property name="torso_velocity" value="10000"/>
-  <property name="torso_upper" value="0"/>
-  <property name="torso_lower" value="0.33"/>
+  <property name="torso_velocity" value="4.0"/>
+  <property name="torso_upper" value="0.33"/>
+  <property name="torso_lower" value="0"/>
 </robot>

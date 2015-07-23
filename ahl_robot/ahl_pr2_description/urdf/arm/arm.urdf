@@ -175,7 +175,7 @@
       <parent link="torso_link"/>
       <child link="shoulder_pan_r_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="${shoulder_pan_effort}" velocity="${shoulder_pan_velocity}" lower="${shoulder_pan_lower}" upper="${shoulder_pan_upper}"/>
+      <limit effort="${shoulder_pan_effort}" velocity="${shoulder_pan_velocity}" lower="${-shoulder_pan_upper}" upper="${-shoulder_pan_lower}"/>
       <dynamics damping="${shoulder_pan_damping}" friction="${shoulder_pan_friction}"/>
     </joint>
 
@@ -221,7 +221,7 @@
       <parent link="shoulder_lift_r_link"/>
       <child link="upper_arm_r_link"/>
       <axis xyz="1 0 0"/>
-      <limit effort="${upper_arm_effort}" velocity="${upper_arm_velocity}" lower="${upper_arm_lower}" upper="${upper_arm_upper}"/>
+      <limit effort="${upper_arm_effort}" velocity="${upper_arm_velocity}" lower="${-upper_arm_upper}" upper="${-upper_arm_lower}"/>
       <dynamics damping="${upper_arm_damping}" friction="${upper_arm_friction}"/>
     </joint>
 
@@ -324,6 +324,11 @@
           <mesh filename="package://ahl_pr2_description/meshes/arm/wrist_roll.dae"/>
         </geometry>
       </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://ahl_pr2_description/meshes/arm/wrist_roll.stl"/>
+        </geometry>
+      </collision>
     </link>
 
     <xacro:pr2_arm_gazebo/>

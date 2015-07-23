@@ -12,32 +12,9 @@
 
     <!-- left gripper -->
 
-    <joint name="gripper_palm_l_joint" type="revolute">
-      <origin xyz="${gripper_palm_x} ${gripper_palm_y} ${gripper_palm_z}" rpy="0 0 0"/>
-      <parent link="wrist_roll_l_link"/>
-      <child link="gripper_palm_l_link"/>
-      <axis xyz="1 0 0"/>
-      <limit effort="${gripper_palm_effort}" velocity="${gripper_palm_velocity}" lower="${gripper_palm_lower}" upper="${gripper_palm_upper}"/>
-      <dynamics damping="${gripper_palm_damping}" friction="${gripper_palm_friction}"/>
-    </joint>
-
-    <link name="gripper_palm_l_link">
-      <xacro:gripper_palm_inertial/>
-      <visual>
-        <geometry>
-          <mesh filename="package://ahl_pr2_description/meshes/gripper/gripper_palm.dae"/>
-        </geometry>
-      </visual>
-      <collision>
-        <geometry>
-          <mesh filename="package://ahl_pr2_description/meshes/gripper/gripper_palm.stl"/>
-        </geometry>
-      </collision>
-    </link>
-
     <joint name="finger_ll_joint" type="revolute">
       <origin xyz="${finger_x} ${finger_y} ${finger_z}" rpy="0 0 0"/>
-      <parent link="gripper_palm_l_link"/>
+      <parent link="wrist_roll_l_link"/>
       <child link="finger_ll_link"/>
       <axis xyz="0 0 1"/>
       <limit effort="${finger_effort}" velocity="${finger_velocity}" lower="${finger_lower}" upper="${finger_upper}"/>
@@ -83,10 +60,10 @@
 
     <joint name="finger_lr_joint" type="revolute">
       <origin xyz="${finger_x} ${-finger_y} ${finger_z}" rpy="0 0 0"/>
-      <parent link="gripper_palm_l_link"/>
+      <parent link="wrist_roll_l_link"/>
       <child link="finger_lr_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="${finger_effort}" velocity="${finger_velocity}" lower="${finger_lower}" upper="${finger_upper}"/>
+      <limit effort="${finger_effort}" velocity="${finger_velocity}" lower="${-finger_upper}" upper="${-finger_lower}"/>
       <dynamics damping="${finger_damping}" friction="${finger_friction}"/>
     </joint>
 
@@ -109,7 +86,7 @@
       <parent link="finger_lr_link"/>
       <child link="finger_tip_lr_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="${finger_tip_effort}" velocity="${finger_tip_velocity}" lower="${finger_tip_lower}" upper="${finger_tip_upper}"/>
+      <limit effort="${finger_tip_effort}" velocity="${finger_tip_velocity}" lower="${-finger_tip_upper}" upper="${-finger_tip_lower}"/>
       <dynamics damping="${finger_tip_damping}" friction="${finger_tip_friction}"/>
     </joint>
 
@@ -129,32 +106,9 @@
 
     <!-- right gripper -->
 
-    <joint name="gripper_palm_r_joint" type="revolute">
-      <origin xyz="${gripper_palm_x} ${gripper_palm_y} ${gripper_palm_z}" rpy="0 0 0"/>
-      <parent link="wrist_roll_r_link"/>
-      <child link="gripper_palm_r_link"/>
-      <axis xyz="1 0 0"/>
-      <limit effort="${gripper_palm_effort}" velocity="${gripper_palm_velocity}" lower="${gripper_palm_lower}" upper="${gripper_palm_upper}"/>
-      <dynamics damping="${gripper_palm_damping}" friction="${gripper_palm_friction}"/>
-    </joint>
-
-    <link name="gripper_palm_r_link">
-      <xacro:gripper_palm_inertial/>
-      <visual>
-        <geometry>
-          <mesh filename="package://ahl_pr2_description/meshes/gripper/gripper_palm.dae"/>
-        </geometry>
-      </visual>
-      <collision>
-        <geometry>
-          <mesh filename="package://ahl_pr2_description/meshes/gripper/gripper_palm.stl"/>
-        </geometry>
-      </collision>
-    </link>
-
     <joint name="finger_rl_joint" type="revolute">
       <origin xyz="${finger_x} ${finger_y} ${finger_z}" rpy="0 0 0"/>
-      <parent link="gripper_palm_r_link"/>
+      <parent link="wrist_roll_r_link"/>
       <child link="finger_rl_link"/>
       <axis xyz="0 0 1"/>
       <limit effort="${finger_effort}" velocity="${finger_velocity}" lower="${finger_lower}" upper="${finger_upper}"/>
@@ -200,10 +154,10 @@
 
     <joint name="finger_rr_joint" type="revolute">
       <origin xyz="${finger_x} ${-finger_y} ${finger_z}" rpy="0 0 0"/>
-      <parent link="gripper_palm_r_link"/>
+      <parent link="wrist_roll_r_link"/>
       <child link="finger_rr_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="${finger_effort}" velocity="${finger_velocity}" lower="${finger_lower}" upper="${finger_upper}"/>
+      <limit effort="${finger_effort}" velocity="${finger_velocity}" lower="${-finger_upper}" upper="${-finger_lower}"/>
       <dynamics damping="${finger_damping}" friction="${finger_friction}"/>
     </joint>
 
@@ -226,7 +180,7 @@
       <parent link="finger_rr_link"/>
       <child link="finger_tip_rr_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="${finger_tip_effort}" velocity="${finger_tip_velocity}" lower="${finger_tip_lower}" upper="${finger_tip_upper}"/>
+      <limit effort="${finger_tip_effort}" velocity="${finger_tip_velocity}" lower="${-finger_tip_upper}" upper="${-finger_tip_lower}"/>
       <dynamics damping="${finger_tip_damping}" friction="${finger_tip_friction}"/>
     </joint>
 
