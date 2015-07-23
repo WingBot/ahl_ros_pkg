@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <property name="PI" value="3.1415926535897931"/>
+
+  <property name="gripper_palm_x" value="0"/>
+  <property name="gripper_palm_y" value="0"/>
+  <property name="gripper_palm_z" value="0"/>
+  <xacro:macro name="gripper_palm_inertial">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </xacro:macro>
+  <property name="gripper_palm_damping" value="1"/>
+  <property name="gripper_palm_friction" value="0"/>
+  <property name="gripper_palm_effort" value="10000"/>
+  <property name="gripper_palm_velocity" value="10000"/>
+  <property name="gripper_palm_upper" value="${M_PI / 2}"/>
+  <property name="gripper_palm_lower" value="${-M_PI / 2}"/>
+
+  <property name="finger_x" value="0.0475"/>
+  <property name="finger_y" value="0.01"/>
+  <property name="finger_z" value="0"/>
+  <xacro:macro name="finger_inertial">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </xacro:macro>
+  <property name="finger_damping" value="1"/>
+  <property name="finger_friction" value="0"/>
+  <property name="finger_effort" value="10000"/>
+  <property name="finger_velocity" value="10000"/>
+  <property name="finger_upper" value="${M_PI / 2}"/>
+  <property name="finger_lower" value="${-M_PI / 2}"/>
+
+  <property name="finger_tip_x" value="0.091"/>
+  <property name="finger_tip_y" value="0.005"/>
+  <property name="finger_tip_z" value="0"/>
+  <xacro:macro name="finger_tip_inertial">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </xacro:macro>
+  <property name="finger_tip_damping" value="1"/>
+  <property name="finger_tip_friction" value="0"/>
+  <property name="finger_tip_effort" value="10000"/>
+  <property name="finger_tip_velocity" value="10000"/>
+  <property name="finger_tip_upper" value="${M_PI / 2}"/>
+  <property name="finger_tip_lower" value="${-M_PI / 2}"/>
+</robot>
