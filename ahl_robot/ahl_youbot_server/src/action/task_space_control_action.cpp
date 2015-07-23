@@ -47,7 +47,6 @@ using namespace ahl_youbot;
 TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface)
   : Action(action_name), robot_(robot), controller_(controller), interface_(interface)
 {
-
   task_[EE_POSITION_CONTROL] = ahl_ctrl::TaskPtr(
     new ahl_ctrl::PositionControl(robot_->getManipulator("mnp"), "gripper"));
   task_[EE_ORIENTATION_CONTROL] = ahl_ctrl::TaskPtr(
@@ -55,7 +54,7 @@ TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name, c
   task_[GRAVITY_COMPENSATION] = ahl_ctrl::TaskPtr(
     new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
   task_[JOINT_CONTROL] = ahl_ctrl::TaskPtr(
-    new ahl_ctrl::JointSpaceControl(robot_->getManipulator("mnp")));
+    new ahl_ctrl::JointControl(robot_->getManipulator("mnp")));
 }
 
 void TaskSpaceControlAction::init()
