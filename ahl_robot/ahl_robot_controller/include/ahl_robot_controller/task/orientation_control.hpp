@@ -48,7 +48,7 @@ namespace ahl_ctrl
   class OrientationControl : public Task
   {
   public:
-    OrientationControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh);
+    OrientationControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh = 0.001);
     virtual void setGoal(const Eigen::MatrixXd& Rd);
     virtual void updateModel();
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
