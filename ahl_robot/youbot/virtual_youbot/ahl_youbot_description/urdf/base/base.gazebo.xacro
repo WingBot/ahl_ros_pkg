@@ -4,7 +4,6 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-
   <xacro:macro name="youbot_base_gazebo">
     <gazebo reference="base_x">
       <gravity>0</gravity>
