@@ -88,6 +88,7 @@ namespace ahl_robot
     std::map<std::string, int> name_to_idx;
 
     unsigned int dof;
+    unsigned int macro_manipulator_dof;
 
     //Eigen::MatrixXd J0; // Basic jacobian associated with end effector
     VectorMatrixXd J0; // Basic jacobian associated with link jacobian

@@ -55,6 +55,7 @@ namespace ahl_ctrl
   {
   public:
     RobotController();
+
     void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name);
     void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name, const ParamPtr& param);
     void addTask(const TaskPtr& task, int priority);

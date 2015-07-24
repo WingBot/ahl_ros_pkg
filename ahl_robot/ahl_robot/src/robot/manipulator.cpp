@@ -188,26 +188,24 @@ void Manipulator::computeMassMatrix()
     M += link[i]->m * Jv.transpose() * Jv + Jw.transpose() * link[i]->I * Jw;
   }
 
-  if(mobility_type_ == mobility::MOBILITY_2D)
+  const unsigned int macro_dof = macro_manipulator_dof;
+  if(M.rows() > macro_dof && M.cols() > macro_dof)
   {
-    if(M.rows() > 3 && M.cols() > 3)
-    {
-      M.block(0, 3, 3, M.cols() - 3) = Eigen::MatrixXd::Zero(3, M.cols() - 3);
-      M.block(3, 0, M.rows() - 3, 3) = Eigen::MatrixXd::Zero(M.rows() - 3, 3);
-      M.coeffRef(0, 1) = M.coeffRef(0, 2) = 0.0;
-      M.coeffRef(1, 0) = M.coeffRef(1, 2) = 0.0;
-      M.coeffRef(2, 0) = M.coeffRef(2, 1) = 0.0;
-    }
-    else
-    {
-      std::stringstream msg;
-      msg << "Mass matrix size is not invalid." << std::endl
-          << "  mobility_type : " << mobility_type_ << std::endl
-          << "  M.rows    : " << M.rows() << std::endl
-          << "  M.cols    : " << M.cols();
-      throw ahl_robot::Exception("Manipulator::computeMassMatrix", msg.str());
-    }
+    M.block(0, 0, macro_dof, macro_dof) = Eigen::MatrixXd::Identity(macro_dof, macro_dof) * M.block(0, 0, macro_dof, macro_dof);
+
+    M.block(0, macro_dof, macro_dof, M.cols() - macro_dof) = Eigen::MatrixXd::Zero(macro_dof, M.cols() - macro_dof);
+    M.block(macro_dof, 0, M.rows() - macro_dof, macro_dof) = Eigen::MatrixXd::Zero(M.rows() - macro_dof, macro_dof);
   }
+  else
+  {
+    std::stringstream msg;
+    msg << "Mass matrix size is not invalid." << std::endl
+        << "  macr_manipulator_dof : " << macro_manipulator_dof << std::endl
+        << "  M.rows    : " << M.rows() << std::endl
+        << "  M.cols    : " << M.cols();
+    throw ahl_robot::Exception("Manipulator::computeMassMatrix", msg.str());
+  }
+
 
   M_inv = M.inverse();
 }

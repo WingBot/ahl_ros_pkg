@@ -91,6 +91,8 @@ namespace ahl_robot
     static const std::string TREAD_WIDTH               = "tread_width";
     static const std::string WHEEL_BASE                = "wheel_base";
     static const std::string WHEEL_RADIUS              = "wheel_radius";
+
+    static const std::string MACRO_MANIPULATOR_DOF = "macro_manipulator_dof";
   }
 
   class Parser

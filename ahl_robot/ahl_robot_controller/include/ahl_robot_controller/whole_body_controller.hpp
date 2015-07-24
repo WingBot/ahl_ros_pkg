@@ -36,25 +36,34 @@
  *
  *********************************************************************/
 
-#ifndef __AHL_ROBOT_CONTROLLER_DAMPING_HPP
-#define __AHL_ROBOT_CONTROLLER_DAMPING_HPP
+#ifndef __AHL_ROBOT_CONTROLLER_WHOLE_BODY_CONTROLLER_HPP
+#define __AHL_ROBOT_CONTROLLER_WHOLE_BODY_CONTROLLER_HPP
 
+#include <string>
+#include <vector>
+#include <boost/shared_ptr.hpp>
 #include <ahl_robot/ahl_robot.hpp>
-#include "ahl_robot_controller/task/task.hpp"
+#include "ahl_robot_controller/param.hpp"
+#include "ahl_robot_controller/mobility/mobility_controller.hpp"
 
 namespace ahl_ctrl
 {
 
-  class Damping : public Task
+  class WholeBodyController
   {
   public:
-    Damping(const ahl_robot::ManipulatorPtr& mnp);
-    virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
+    void init(const ahl_robot::RobotPtr& robot, const std::vector<std::string>& mnp_name);
+
+    void clearTask();
+    void updateModel();
 
   private:
-    ahl_robot::ManipulatorPtr mnp_;
+    ParamPtr param_;
+    std::vector<ahl_robot::ManipulatorPtr> mnp_;
+    MobilityControllerPtr mobility_controller_;
+    ahl_robot::MobilityPtr mobility_;
   };
 
 }
 
-#endif /* __AHL_ROBOT_CONTROLLER_DAMPING_HPP */
+#endif /* __AHL_ROBOT_CONTROLLER_WHOLE_BODY_CONTROLLER_HPP */

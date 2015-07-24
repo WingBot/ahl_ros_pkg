@@ -43,19 +43,24 @@
 
 using namespace ahl_robot;
 
-Eigen::MatrixXd M;
-Eigen::MatrixXd J;
-Eigen::MatrixXd T0, T1, T2;
+Eigen::MatrixXd M1, M2;
+Eigen::MatrixXd J1, J2;
 
 void calc()
 {
-  Eigen::MatrixXd M_inv = M.inverse();
-  Eigen::MatrixXd Jv = J.block(0, 0, 3, J.cols());
-  Eigen::MatrixXd Lambda_inv = Jv * M_inv * Jv.transpose();
-  Eigen::MatrixXd Lambda = Lambda_inv.inverse();
-  Eigen::MatrixXd J_dyn_inv = M_inv * Jv.transpose() * Lambda;
-  Eigen::MatrixXd I = Eigen::MatrixXd::Identity(7, 7);
-  Eigen::MatrixXd N = I - J_dyn_inv * Jv;
+  Eigen::MatrixXd M_inv1 = M1.inverse();
+  Eigen::MatrixXd M_inv2 = M2.inverse();
+  Eigen::MatrixXd Jv1 = J1.block(0, 0, 3, J1.cols());
+  Eigen::MatrixXd Jv2 = J2.block(0, 0, 3, J2.cols());
+  Eigen::MatrixXd Lambda_inv1 = Jv1 * M_inv1 * Jv1.transpose();
+  Eigen::MatrixXd Lambda_inv2 = Jv2 * M_inv2 * Jv2.transpose();
+  Eigen::MatrixXd Lambda1 = Lambda_inv1.inverse();
+  Eigen::MatrixXd Lambda2 = Lambda_inv2.inverse();
+  Eigen::MatrixXd J_dyn_inv1 = M_inv1 * Jv1.transpose() * Lambda1;
+  Eigen::MatrixXd J_dyn_inv2 = M_inv2 * Jv2.transpose() * Lambda2;
+  Eigen::MatrixXd I = Eigen::MatrixXd::Identity(M_inv1.rows(), M_inv1.rows());
+  Eigen::MatrixXd N1 = I - J_dyn_inv1 * Jv1;
+  Eigen::MatrixXd N2 = I - J_dyn_inv2 * Jv2;
 
   //std::cout << N.transpose() << std::endl << std::endl;
 }
@@ -78,29 +83,38 @@ int main(int argc, char** argv)
 
     TfPublisherPtr tf_publisher = TfPublisherPtr(new TfPublisher());
 
-    const std::string mnp_name = "left_mnp";
+    const std::string mnp_name1 = "left_mnp";
+    const std::string mnp_name2 = "right_mnp";
     unsigned long cnt = 0;
     ros::Rate r(10.0);
 
     while(ros::ok())
     {
-      Eigen::VectorXd q = Eigen::VectorXd::Zero(robot->getDOF(mnp_name));
-      ManipulatorPtr mnp = robot->getManipulator(mnp_name);
+      Eigen::VectorXd q = Eigen::VectorXd::Zero(robot->getDOF(mnp_name1));
+      ManipulatorPtr left_mnp = robot->getManipulator(mnp_name1);
 
-      //double goal = sin(2.0 * M_PI * 0.2 * cnt * 0.1);
-      //++cnt;
+      double goal = sin(2.0 * M_PI * 0.2 * cnt * 0.1);
+      ++cnt;
 
       //std::cout << M_PI / 4.0 * goal << std::endl;
-      //q = Eigen::VectorXd::Constant(q.rows(), 0.0 * M_PI / 4.0);
-/*
-      robot->update(mnp_name, q);
-      robot->computeBasicJacobian(mnp_name);
-      robot->computeMassMatrix(mnp_name);
-      M = robot->getMassMatrix(mnp_name);
-      J = robot->getBasicJacobian(mnp_name, "gripper_l_link");
+      q = Eigen::VectorXd::Constant(q.rows(), 0.0);
+
+      q[10] = goal;
+
+      robot->update(mnp_name1, q);
+      robot->update(mnp_name2, q);
+
+      robot->computeBasicJacobian(mnp_name1);
+      robot->computeBasicJacobian(mnp_name2);
+      robot->computeMassMatrix(mnp_name1);
+      robot->computeMassMatrix(mnp_name2);
+
+      M1 = robot->getMassMatrix(mnp_name1);
+      M2 = robot->getMassMatrix(mnp_name2);
+      J1 = robot->getBasicJacobian(mnp_name1, "gripper_l_link");
+      J2 = robot->getBasicJacobian(mnp_name2, "gripper_r_link");
 
       calc();
-*/
       tf_publisher->publish(robot, false);
       r.sleep();
     }

@@ -36,8 +36,8 @@
  *
  *********************************************************************/
 
-#ifndef __AHL_ROBOT_CONTROLLER_HPP_TASK_HPP
-#define __AHL_ROBOT_CONTROLLER_HPP_TASK_HPP
+#ifndef __AHL_ROBOT_CONTROLLER_TASK_HPP
+#define __AHL_ROBOT_CONTROLLER_TASK_HPP
 
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
@@ -58,22 +58,6 @@ namespace ahl_ctrl
     const Eigen::MatrixXd getNullSpace() const { return N_; }
 
   protected:
-    void limitTorque(Eigen::VectorXd& tau)
-    {
-      for(unsigned int i = 0; i < tau.rows(); ++i)
-      {
-        if(tau[i] > mnp_->link[i]->tau_max)
-        {
-          tau[i] = mnp_->link[i]->tau_max;
-        }
-        else if(tau[i] < -mnp_->link[i]->tau_max)
-        {
-          tau[i] = -mnp_->link[i]->tau_max;
-        }
-      }
-    }
-
-    ahl_robot::ManipulatorPtr mnp_;
     Eigen::MatrixXd N_;
     ParamPtr param_;
   };
@@ -81,4 +65,4 @@ namespace ahl_ctrl
   typedef boost::shared_ptr<Task> TaskPtr;
 }
 
-#endif /* __AHL_ROBOT_CONTROLLER_HPP_TASK_HPP */
+#endif /* __AHL_ROBOT_CONTROLLER_TASK_HPP */

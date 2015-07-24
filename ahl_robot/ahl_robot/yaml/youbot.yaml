@@ -7,6 +7,8 @@ differentiator:
   update_rate: 0.001
   cutoff_frequency: 30.0
 
+macro_manipulator_dof: 3
+
 mobility:
   update_rate: 0.01
   type: mecanum_wheel

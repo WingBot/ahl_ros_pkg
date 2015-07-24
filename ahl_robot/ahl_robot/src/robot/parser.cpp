@@ -97,6 +97,12 @@ void Parser::loadRobotInfo(const RobotPtr& robot)
   this->loadVector3d(node_, yaml_tag::ROBOT_RPY, rpy);
   math::rpyToQuaternion(rpy, q);
   robot->setOrientation(q);
+
+  if(node_[yaml_tag::MACRO_MANIPULATOR_DOF])
+  {
+    unsigned int dof = node_[yaml_tag::MACRO_MANIPULATOR_DOF].as<double>();
+    robot->setMacroManipulatorDOF(dof);
+  }
 }
 
 void Parser::loadManipulator(const RobotPtr& robot)
@@ -142,6 +148,7 @@ void Parser::loadManipulator(const RobotPtr& robot)
       }
     }
 
+    mnp->macro_manipulator_dof = robot->getMacroManipulatorDOF();
     robot->add(mnp);
   }
 }

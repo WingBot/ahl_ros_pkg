@@ -52,6 +52,8 @@ namespace ahl_ctrl
     virtual bool haveNullSpace() { return true; }
 
   private:
+    ahl_robot::ManipulatorPtr mnp_;
+
     Eigen::VectorXd q_max_;
     Eigen::VectorXd q_min_;
 

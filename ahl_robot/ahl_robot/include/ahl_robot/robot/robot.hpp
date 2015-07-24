@@ -52,7 +52,7 @@ namespace ahl_robot
   {
   public:
     Robot(const std::string& robot_name)
-      : name_(robot_name), world_(frame::WORLD)
+      : name_(robot_name), world_(frame::WORLD), macro_manipulator_dof_(0)
     {
     }
 
@@ -64,6 +64,11 @@ namespace ahl_robot
     void computeBasicJacobian(const std::string& mnp_name);
     void computeMassMatrix(const std::string& mnp_name);
     bool reached(const std::string& mnp_name, const Eigen::VectorXd& qd, double threshold);
+
+    void setMacroManipulatorDOF(unsigned int macro_manipulator_dof)
+    {
+      macro_manipulator_dof_ = macro_manipulator_dof;
+    }
 
     void setPosition(const Eigen::Vector3d& p)
     {
@@ -81,7 +86,6 @@ namespace ahl_robot
     }
 
     void add(const ManipulatorPtr& mnp);
-
     void addMobility(const MobilityPtr& mobility);
 
     const std::string& getName() const
@@ -127,6 +131,10 @@ namespace ahl_robot
     const Eigen::MatrixXd& getMassMatrix(const std::string& mnp_name);
     const Eigen::MatrixXd& getMassMatrixInv(const std::string& mnp_name);
     unsigned int getDOF(const std::string& mnp_name);
+    unsigned int getMacroManipulatorDOF()
+    {
+      return macro_manipulator_dof_;
+    }
 
   private:
     std::string name_;
@@ -136,6 +144,7 @@ namespace ahl_robot
     std::vector<std::string> mnp_name_;
     std::string world_;
     MobilityPtr mobility_;
+    unsigned int macro_manipulator_dof_;
   };
 
   typedef boost::shared_ptr<Robot> RobotPtr;
