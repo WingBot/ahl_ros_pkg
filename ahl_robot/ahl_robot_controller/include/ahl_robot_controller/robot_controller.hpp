@@ -57,7 +57,7 @@ namespace ahl_ctrl
     RobotController();
 
     void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name);
-    void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name, const ParamPtr& param);
+    void init(const ahl_robot::RobotPtr& robot, const std::vector<std::string>& mnp_name);
     void addTask(const TaskPtr& task, int priority);
     void clearTask();
     void updateModel();
@@ -72,9 +72,11 @@ namespace ahl_ctrl
   private:
     ParamPtr param_;
     MultiTaskPtr multi_task_;
-    ahl_robot::ManipulatorPtr mnp_;
+    ahl_robot::RobotPtr robot_;
+    std::vector<ahl_robot::ManipulatorPtr> mnp_;
     MobilityControllerPtr mobility_controller_;
     ahl_robot::MobilityPtr mobility_;
+    unsigned int dof_;
   };
 
   typedef boost::shared_ptr<RobotController> RobotControllerPtr;

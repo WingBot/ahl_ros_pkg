@@ -44,12 +44,14 @@
 using namespace ahl_ctrl;
 
 RobotController::RobotController()
+  : dof_(0)
 {
 }
 
 void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name)
 {
-  mnp_ = robot->getManipulator(mnp_name);
+  robot_ = robot;
+  mnp_.push_back(robot->getManipulator(mnp_name));
   mobility_ = robot->getMobility();
 
   if(mobility_)
@@ -66,31 +68,9 @@ void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& 
     }
   }
 
+  dof_ = robot_->getDOF(mnp_name);
   multi_task_ = MultiTaskPtr(new MultiTask());
-  param_ = ParamPtr(new Param(mnp_->dof));
-}
-
-void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name, const ParamPtr& param)
-{
-  mnp_ = robot->getManipulator(mnp_name);
-  mobility_ = robot->getMobility();
-
-  if(mobility_)
-  {
-    if(mobility_->type == ahl_robot::mobility::type::MECANUM_WHEEL)
-    {
-      mobility_controller_ = MobilityControllerPtr(new MecanumWheel(mobility_, param_));
-    }
-    else
-    {
-      std::stringstream msg;
-      msg << "Mobility type : " << mobility_->type << " is not supported.";
-      throw ahl_ctrl::Exception("RobotController::init", msg.str());
-    }
-  }
-
-  multi_task_ = MultiTaskPtr(new MultiTask());
-  param_ = param;
+  param_ = ParamPtr(new Param(dof_));
 }
 
 void RobotController::addTask(const TaskPtr& task, int priority)
@@ -111,18 +91,41 @@ void RobotController::updateModel()
 
 void RobotController::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  multi_task_->computeGeneralizedForce(mnp_->dof, tau);
+  multi_task_->computeGeneralizedForce(dof_, tau);
 
-  for(unsigned int i = 0; i < tau.rows(); ++i)
+  unsigned int macro_dof = robot_->getMacroManipulatorDOF();
+
+  for(unsigned int i = 0; i < macro_dof; ++i)
   {
-    if(tau[i] > mnp_->link[i]->tau_max)
+    if(tau[i] > (*mnp_.begin())->link[i]->tau_max)
     {
-      tau[i] = mnp_->link[i]->tau_max;
+      tau[i] = (*mnp_.begin())->link[i]->tau_max;
     }
-    else if(tau[i] < -mnp_->link[i]->tau_max)
+    else if(tau[i] < -(*mnp_.begin())->link[i]->tau_max)
     {
-      tau[i] = -mnp_->link[i]->tau_max;
+      tau[i] = -(*mnp_.begin())->link[i]->tau_max;
     }
+  }
+
+  unsigned int idx_offset = macro_dof;
+
+  for(unsigned int i = 0; i < mnp_.size(); ++i)
+  {
+    unsigned int mini_dof = mnp_[i]->dof - macro_dof;
+
+    for(unsigned int j = 0; j < mini_dof; ++j)
+    {
+      if(tau[j + idx_offset] > mnp_[i]->link[j + macro_dof]->tau_max)
+      {
+        tau[j + idx_offset] = mnp_[i]->link[j + macro_dof]->tau_max;
+      }
+      else if(tau[j + idx_offset] < -mnp_[i]->link[j + macro_dof]->tau_max)
+      {
+        tau[j + idx_offset] = -mnp_[i]->link[j + macro_dof]->tau_max;
+      }
+    }
+
+    idx_offset += mini_dof;
   }
 }
 
@@ -133,21 +136,21 @@ void RobotController::computeBaseVelocityFromTorque(
   {
     std::stringstream msg;
     msg << "Mobility controller is NULL." << std::endl
-        << "Please check yaml file of robot including " << mnp_->name;
+        << "Please check yaml file of robot including " << robot_->getName();
     throw ahl_ctrl::Exception("RobotController::computeBaseVelocityFromTorque", msg.str());
   }
 
-  if(mnp_->M.rows() >= mobility_dof && mnp_->M.cols() >= mobility_dof)
+  if((*mnp_.begin())->M.rows() >= mobility_dof && (*mnp_.begin())->M.cols() >= mobility_dof)
   {
-    mobility_controller_->computeBaseVelocityFromTorque(mnp_->M.block(0, 0, mobility_dof, mobility_dof), tau, v_base);
+    mobility_controller_->computeBaseVelocityFromTorque((*mnp_.begin())->M.block(0, 0, mobility_dof, mobility_dof), tau, v_base);
   }
   else
   {
     std::stringstream msg;
     msg << "Invalid combination of mobility dof and size of mass matrix." << std::endl
         << "  mobility_dof : " << mobility_dof << std::endl
-        << "  M.rows : " << mnp_->M.rows() << std::endl
-        << "  M.cols : " << mnp_->M.cols();
+        << "  M.rows : " << (*mnp_.begin())->M.rows() << std::endl
+        << "  M.cols : " << (*mnp_.begin())->M.cols();
     throw ahl_ctrl::Exception("RobotController::computeBaseVelocityFromTorque", msg.str());
   }
 }
@@ -159,7 +162,7 @@ void RobotController::computeWheelVelocityFromBaseVelocity(
   {
     std::stringstream msg;
     msg << "Mobility controller is NULL." << std::endl
-        << "Please check yaml file of robot including " << mnp_->name;
+        << "Please check yaml file of robot including " << robot_->getName();
     throw ahl_ctrl::Exception("RobotController::computeWheelVelocityFromBaseVelocity", msg.str());
   }
 
@@ -173,7 +176,7 @@ void RobotController::computeWheelTorqueFromBaseVelocity(
   {
     std::stringstream msg;
     msg << "Mobility controller is NULL." << std::endl
-        << "Please check yaml file of robot including " << mnp_->name;
+        << "Please check yaml file of robot including " << robot_->getName();
     throw ahl_ctrl::Exception("RobotController::computeWheelTorqueFromBaseVelocity", msg.str());
   }
 
