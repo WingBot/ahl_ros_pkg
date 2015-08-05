@@ -48,6 +48,35 @@ RobotController::RobotController()
 {
 }
 
+void RobotController::init(const ahl_robot::RobotPtr& robot)
+{
+  robot_ = robot;
+
+  for(unsigned int i = 0; i < robot->getManipulatorName().size(); ++i)
+  {
+    mnp_.push_back(robot->getManipulator(robot->getManipulatorName()[i]));
+  }
+  mobility_ = robot->getMobility();
+
+  if(mobility_)
+  {
+    if(mobility_->type == ahl_robot::mobility::type::MECANUM_WHEEL)
+    {
+      mobility_controller_ = MobilityControllerPtr(new MecanumWheel(mobility_, param_));
+    }
+    else
+    {
+      std::stringstream msg;
+      msg << "Mobility type : " << mobility_->type << " is not supported.";
+      throw ahl_ctrl::Exception("RobotController::init", msg.str());
+    }
+  }
+
+  dof_ = robot_->getDOF();
+  multi_task_ = MultiTaskPtr(new MultiTask(robot_));
+  param_ = ParamPtr(new Param(robot_));
+}
+
 void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name)
 {
   robot_ = robot;
@@ -69,8 +98,8 @@ void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& 
   }
 
   dof_ = robot_->getDOF(mnp_name);
-  multi_task_ = MultiTaskPtr(new MultiTask());
-  param_ = ParamPtr(new Param(dof_));
+  multi_task_ = MultiTaskPtr(new MultiTask(robot_));
+  param_ = ParamPtr(new Param(robot_));
 }
 
 void RobotController::addTask(const TaskPtr& task, int priority)
@@ -91,7 +120,7 @@ void RobotController::updateModel()
 
 void RobotController::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  multi_task_->computeGeneralizedForce(dof_, tau);
+  multi_task_->computeGeneralizedForce(tau);
 
   unsigned int macro_dof = robot_->getMacroManipulatorDOF();
 

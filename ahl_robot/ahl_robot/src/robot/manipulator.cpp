@@ -191,6 +191,7 @@ void Manipulator::computeMassMatrix()
   const unsigned int macro_dof = macro_manipulator_dof;
   if(M.rows() > macro_dof && M.cols() > macro_dof)
   {
+    // TODO : Can I really ignore this coupling !?
     M.block(0, 0, macro_dof, macro_dof) = Eigen::MatrixXd::Identity(macro_dof, macro_dof) * M.block(0, 0, macro_dof, macro_dof);
 
     M.block(0, macro_dof, macro_dof, M.cols() - macro_dof) = Eigen::MatrixXd::Zero(macro_dof, M.cols() - macro_dof);
@@ -205,7 +206,6 @@ void Manipulator::computeMassMatrix()
         << "  M.cols    : " << M.cols();
     throw ahl_robot::Exception("Manipulator::computeMassMatrix", msg.str());
   }
-
 
   M_inv = M.inverse();
 }

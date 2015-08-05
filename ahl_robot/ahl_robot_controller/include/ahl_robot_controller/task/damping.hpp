@@ -50,9 +50,6 @@ namespace ahl_ctrl
   public:
     Damping(const ahl_robot::ManipulatorPtr& mnp);
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
-
-  private:
-    ahl_robot::ManipulatorPtr mnp_;
   };
 
 }

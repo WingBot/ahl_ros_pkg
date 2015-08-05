@@ -110,6 +110,7 @@ namespace ahl_robot
     void loadVector3d(const YAML::Node& node, const std::string& tag, Eigen::Vector3d& v);
     void loadMatrix3d(const YAML::Node& node, const std::string& tag, Eigen::Matrix3d& m);
     void setLinkToManipulator(const std::map<std::string, double>& init_q, const ManipulatorPtr& mnp);
+    void computeTotalDOF(const RobotPtr& robot);
 
     void checkTag(const YAML::Node& node, const std::string& tag, const std::string& func);
 

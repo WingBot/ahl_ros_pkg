@@ -45,23 +45,23 @@
 #include <boost/thread.hpp>
 #include <Eigen/Dense>
 #include <ros/ros.h>
+#include <gazebo_msgs/AddJoint.h>
+#include <gazebo_msgs/StartTimer.h>
 #include <gazebo_msgs/LinkStates.h>
-#include <gazebo_msgs/JointStates.h>
-#include <gazebo_msgs/ApplyJointEfforts.h>
+#include <ahl_utils/shared_memory.hpp>
 
 namespace ahl_gazebo_if
 {
 
-  static const std::string TOPIC_PUB_JOINT_EFFORT = "/gazebo/apply_joint_efforts";
-  static const std::string TOPIC_SUB_JOINT_STATES = "/gazebo/joint_states";
   static const std::string TOPIC_SUB_LINK_STATES  = "/gazebo/set_link_states";
 
   class GazeboInterface
   {
   public:
     GazeboInterface();
+    ~GazeboInterface();
 
-    void addJoint(const std::string& name);
+    void addJoint(const std::string& name, double effort_time = 0.01);
     void setDuration(double duration);
     void connect();
     bool subscribed();
@@ -71,14 +71,9 @@ namespace ahl_gazebo_if
     void translateLink(const std::vector<Eigen::Vector3d>& p);
     void rotateLink(const std::vector<Eigen::Quaternion<double> >& q);
 
-    const Eigen::VectorXd& getJointStates() const
-    {
-      return q_;
-    }
+    const Eigen::VectorXd& getJointStates();
 
   private:
-    void subscribeJointStates(const gazebo_msgs::JointStates::ConstPtr& msg);
-
     boost::mutex mutex_;
 
     std::map<std::string, double> joint_map_;
@@ -87,14 +82,16 @@ namespace ahl_gazebo_if
     unsigned int joint_num_;
 
     Eigen::VectorXd q_;
-    gazebo_msgs::ApplyJointEfforts effort_;
     ros::Duration duration_;
-    ros::Publisher pub_effort_;
-    ros::Subscriber sub_joint_states_;
     bool subscribed_joint_states_;
 
     ros::Publisher pub_link_states_;
     gazebo_msgs::LinkStates link_states_;
+
+    ros::ServiceClient client_start_timer_;
+    ros::ServiceClient client_add_joint_;
+    std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_effort_;
+    std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_state_;
   };
 
   typedef boost::shared_ptr<GazeboInterface> GazeboInterfacePtr;

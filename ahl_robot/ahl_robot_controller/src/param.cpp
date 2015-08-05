@@ -40,20 +40,19 @@
 
 using namespace ahl_ctrl;
 
-Param::Param(unsigned int dof)
-  : dof_(dof),
-    kp_(0.0), kv_(0.0), kv_damp_(0.0),
-    kp_limit_(0.0), kv_limit_(0.0),
-    pos_error_max_(100.0), ori_error_max_(100.0),
+Param::Param(const ahl_robot::RobotPtr& robot)
+  : dof_(robot->getDOF()),
+    macro_dof_(robot->getMacroManipulatorDOF()),
+    joint_error_max_(100.0), pos_error_max_(100.0), ori_error_max_(100.0),
     kp_wheel_(0.0), kv_wheel_(0.0)
 {
-  Kp_joint_ = Eigen::MatrixXd::Zero(dof, dof);
-  Kv_joint_ = Eigen::MatrixXd::Zero(dof, dof);
+  Kp_joint_ = Eigen::MatrixXd::Zero(dof_, dof_);
+  Kv_joint_ = Eigen::MatrixXd::Zero(dof_, dof_);
   Kp_task_  = Eigen::MatrixXd::Zero(6, 6);
   Kv_task_  = Eigen::MatrixXd::Zero(6, 6);
-  Kv_damp_  = Eigen::MatrixXd::Zero(dof, dof);
-  Kp_limit_ = Eigen::MatrixXd::Zero(dof, dof);
-  Kv_limit_ = Eigen::MatrixXd::Zero(dof, dof);
+  Kv_damp_  = Eigen::MatrixXd::Zero(dof_, dof_);
+  Kp_limit_ = Eigen::MatrixXd::Zero(dof_, dof_);
+  Kv_limit_ = Eigen::MatrixXd::Zero(dof_, dof_);
 
   g_ << 0.0, 0.0, -9.80665;
   f_ = boost::bind(&Param::update, this, _1, _2);
@@ -66,6 +65,8 @@ void Param::update(ahl_robot_controller::ParamConfig& config, uint32_t level)
 
   Eigen::VectorXd Kp_joint = Eigen::VectorXd::Constant(dof_, config.kp_joint);
   Eigen::VectorXd Kv_joint = Eigen::VectorXd::Constant(dof_, config.kv_joint);
+  Kp_joint.block(0, 0, macro_dof_, 1) = Eigen::VectorXd::Constant(macro_dof_, config.kp_joint_macro);
+  Kv_joint.block(0, 0, macro_dof_, 1) = Eigen::VectorXd::Constant(macro_dof_, config.kv_joint_macro);
   Eigen::VectorXd Kp_task_pos = Eigen::VectorXd::Constant(3, config.kp_task_pos);
   Eigen::VectorXd Kv_task_pos = Eigen::VectorXd::Constant(3, config.kv_task_pos);
   Eigen::VectorXd Kp_task_ori = Eigen::VectorXd::Constant(3, config.kp_task_ori);
@@ -84,6 +85,7 @@ void Param::update(ahl_robot_controller::ParamConfig& config, uint32_t level)
   Kp_limit_ = Kp_limit.asDiagonal();
   Kv_limit_ = Kv_limit.asDiagonal();
 
+  joint_error_max_ = config.joint_error_max;
   pos_error_max_ = config.pos_error_max;
   ori_error_max_ = config.ori_error_max;
 

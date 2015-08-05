@@ -42,6 +42,9 @@ GazeboRosApiPlugin::GazeboRosApiPlugin() :
 
 GazeboRosApiPlugin::~GazeboRosApiPlugin()
 {
+  timer_read_joint_efforts_.stop();
+  timer_write_joint_states_.stop();
+
   ROS_DEBUG_STREAM_NAMED("api_plugin","GazeboRosApiPlugin Deconstructor start");
 
   // Unload the sigint event
@@ -426,14 +429,6 @@ void GazeboRosApiPlugin::advertiseServices()
                                                            ros::VoidPtr(), &gazebo_queue_);
   set_model_state_topic_ = nh_->subscribe(model_state_so);
 
-  // topic callback version for apply_joint_efforts
-  ros::SubscribeOptions apply_joint_efforts_so =
-    ros::SubscribeOptions::create<gazebo_msgs::ApplyJointEfforts>(
-                                                           "apply_joint_efforts",10,
-                                                           boost::bind( &GazeboRosApiPlugin::applyJointEfforts,this,_1),
-                                                           ros::VoidPtr(), &gazebo_queue_);
-  apply_joint_efforts_topic_ = nh_->subscribe(apply_joint_efforts_so);
-
   // Advertise more services on the custom queue
   std::string pause_physics_service_name("pause_physics");
   ros::AdvertiseServiceOptions pause_physics_aso =
@@ -512,6 +507,12 @@ void GazeboRosApiPlugin::advertiseServices()
 
   // todo: contemplate setting environment variable ROBOT=sim here???
 
+  server_start_timer_ = nh_->advertiseService("start_timer", &GazeboRosApiPlugin::startTimerServiceCB, this);
+  server_add_joint_   = nh_->advertiseService("add_joint", &GazeboRosApiPlugin::addJointServiceCB, this);
+  //server_add_link_    = nh_->advertiseService("add_link", &GazeboRosApiPlugin::addLinkServiceCB, this);
+  timer_read_joint_efforts_ = nh_->createTimer(ros::Duration(0.001), &GazeboRosApiPlugin::readJointEffortsTimerCB, this, false, false);
+  timer_write_joint_states_ = nh_->createTimer(ros::Duration(0.001), &GazeboRosApiPlugin::writeJointStatesTimerCB, this, false, false);
+  //timer_update_link_states_ = nh_->createTimer(ros::Duration(0.01), &GazeboRosApiPlugin::updateLinkStatesTimerCB, this, false, false);
 }
 
 void GazeboRosApiPlugin::onLinkStatesConnect()
@@ -1382,39 +1383,6 @@ void GazeboRosApiPlugin::updateModelState(const gazebo_msgs::ModelState::ConstPt
   /*bool success =*/ setModelState(req,res);
 }
 
-void GazeboRosApiPlugin::applyJointEfforts(const gazebo_msgs::ApplyJointEfforts::ConstPtr& effort)
-{
-  gazebo::physics::JointPtr joint;
-
-  for (unsigned int i = 0; i < effort->name.size(); ++i)
-  {
-    bool found = false;
-    for (unsigned int j = 0; j < world_->GetModelCount(); j ++)
-    {
-      joint = world_->GetModel(j)->GetJoint(effort->name[i]);
-      if (joint)
-      {
-        found = true;
-        GazeboRosApiPlugin::ForceJointJob* fjj = new GazeboRosApiPlugin::ForceJointJob;
-        fjj->joint = joint;
-        fjj->force = effort->effort[i];
-        fjj->start_time = effort->start_time;
-        if (fjj->start_time < ros::Time(world_->GetSimTime().Double()))
-          fjj->start_time = ros::Time(world_->GetSimTime().Double());
-        fjj->duration = effort->duration;
-        boost::mutex::scoped_lock lock(lock_);
-        force_joint_jobs_.push_back(fjj);
-      }
-    }
-
-    if (!found)
-    {
-      ROS_ERROR_STREAM("ApplyJointEfforts: " << effort->name[i] << " was not found");
-      return;
-    }
-  }
-}
-
 bool GazeboRosApiPlugin::applyJointEffort(gazebo_msgs::ApplyJointEffort::Request &req,
                                           gazebo_msgs::ApplyJointEffort::Response &res)
 {
@@ -1726,35 +1694,6 @@ void GazeboRosApiPlugin::updateLinkStates(const gazebo_msgs::LinkStates::ConstPt
 
       target_pose[i].pos = frame_pos + frame_rot.RotateVector(target_pos);
       target_pose[i].rot = frame_rot * target_pose[i].rot;
-
-/*
-      gazebo::math::Quaternion rot_trans;
-      rot_trans.x = -target_rot.x;
-      rot_trans.y = -target_rot.y;
-      rot_trans.z = -target_rot.z;
-      rot_trans.w =  target_rot.w;
-
-      target_pose[i].rot = frame_rot * target_rot;
-
-      double rad = 2.0 * acos(target_pose[i].rot.w);
-*/
-      //std::cout << i << ", " << rad << " : " << target_pose[i].rot.y << std::endl;
-
-/*
-      if(target_pose[i].rot.y < 0.0)
-      {
-        target_pose[i].rot.x *= -1.0;
-        target_pose[i].rot.y *= -1.0;
-        target_pose[i].rot.z *= -1.0;
-        rad = rad - 2.0 * M_PI;
-        target_pose[i].rot.w = cos(0.5 * rad);
-
-        // std::cout << "y : " << target_pose[i].rot.y << std::endl;
-        //std::cout << 2.0 * acos(target_pose[i].rot.w) / M_PI * 180.0 << std::endl;
-      }
-*/
-
-
     }
     else if (link_states->reference_frame[i] == "" || link_states->reference_frame[i] == "world" ||
              link_states->reference_frame[i] == "map" || link_states->reference_frame[i] == "/map")
@@ -2530,6 +2469,168 @@ bool GazeboRosApiPlugin::spawnAndConform(TiXmlDocument &gazebo_model_xml, std::s
   return true;
 }
 
+bool GazeboRosApiPlugin::startTimerServiceCB(gazebo_msgs::StartTimer::Request& req,
+                                             gazebo_msgs::StartTimer::Response& res)
+{
+  if(req.duration_read_joint_efforts <= 0.0)
+  {
+    timer_read_joint_efforts_.setPeriod(ros::Duration(0.001));
+  }
+  else
+  {
+    timer_read_joint_efforts_.setPeriod(ros::Duration(req.duration_read_joint_efforts));
+  }
+
+  if(req.duration_write_joint_states <= 0.0)
+  {
+    timer_write_joint_states_.setPeriod(ros::Duration(0.001));
+  }
+  else
+  {
+    timer_write_joint_states_.setPeriod(ros::Duration(req.duration_write_joint_states));
+  }
+/*
+  if(req.duration_update_link_states <= 0.0)
+  {
+    timer_update_link_states_.setPeriod(ros::Duration(0.01));
+  }
+  else
+  {
+    timer_update_link_states_.setPeriod(ros::Duration(req.duration_update_link_states));
+  }
+*/
+  timer_read_joint_efforts_.start();
+  timer_write_joint_states_.start();
+  //timer_update_link_states_.start();
+  return true;
+}
+
+bool GazeboRosApiPlugin::addJointServiceCB(gazebo_msgs::AddJoint::Request& req,
+                                           gazebo_msgs::AddJoint::Response& res)
+{
+  if(joint_effort_.find(req.name) == joint_effort_.end())
+  {
+    std::cout << "Added joint : " << req.name << std::endl;
+    joint_effort_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::effort"));
+    effort_time_[req.name] = ros::Duration(req.effort_time);
+    joint_states_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::state"));
+
+    bool found_joint = false;
+    for (unsigned int i = 0; i < world_->GetModelCount(); ++i)
+    {
+      gazebo::physics::JointPtr joint;
+      joint = world_->GetModel(i)->GetJoint(req.name);
+
+      if(joint)
+      {
+        found_joint = true;
+        joint_[req.name] = joint;
+      }
+    }
+
+    if(!found_joint)
+    {
+      std::stringstream msg;
+      msg << "src : GazeboRosApiPlugin::addJointServiceCB" << std::endl
+          << "msg : Could not find joint : " << req.name << std::endl;
+      ROS_ERROR_STREAM(msg.str());
+      return false;
+    }
+  }
+
+  return true;
+}
+/*
+bool GazeboRosApiPlugin::addLinkServiceCB(gazebo_msgs::AddLink::Request& req,
+                                          gazebo_msgs::AddLink::Response& res)
+{
+  if(link_rotation_.find(req.name) == link_rotation_.end())
+  {
+    std::cout << "Added link : " << req.name << std::endl;
+
+    link_rotation_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::rotation"));
+    link_translation_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::translation"));
+    link_states_[req.name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(req.name + "::state"));
+
+    link_[req.name] = boost::dynamic_pointer_cast<gazebo::physics::Link>(world_->GetEntity(req.name));
+    link_frame_[req.name] = boost::dynamic_pointer_cast<gazebo::physics::Link>(world_->GetEntity(req.reference_frame));
+
+    if(!link_)
+    {
+      std::stringstream msg;
+      msg << "src : GazeboRosApiPlugin::addLinkServiceCB" << std::endl
+          << "msg : Could not find link : " << req.name << std::endl;
+      ROS_ERROR_STREAM(msg.str());
+      return false;
+    }
+
+    if(!link_frame_)
+    {
+      std::stringstream msg;
+      msg << "src : GazeboRosApiPlugin::addLinkServiceCB" << std::endl
+          << "msg : Could not find link frame : " << req.reference_frame << std::endl;
+      ROS_ERROR_STREAM(msg.str());
+      return false;
+    }
+  }
+  else
+  {
+    return false;
+  }
+
+  return true;
+}
+*/
+void GazeboRosApiPlugin::readJointEffortsTimerCB(const ros::TimerEvent& e)
+{
+  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr>::iterator it;
+  double effort = 0.0;
+
+  boost::mutex::scoped_lock lock(lock_);
+  for(it = joint_effort_.begin(); it != joint_effort_.end(); ++it)
+  {
+    it->second->read(effort);
+
+    GazeboRosApiPlugin::ForceJointJob* fjj = new GazeboRosApiPlugin::ForceJointJob;
+    fjj->joint = joint_[it->first];
+    fjj->force = effort;
+    fjj->start_time = ros::Time(world_->GetSimTime().Double());
+    fjj->duration = effort_time_[it->first];
+    force_joint_jobs_.push_back(fjj);
+  }
+}
+
+void GazeboRosApiPlugin::writeJointStatesTimerCB(const ros::TimerEvent& e)
+{
+  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr>::iterator it;
+  double state = 0.0;
+
+  boost::mutex::scoped_lock lock(lock_);
+  for(it = joint_states_.begin(); it != joint_states_.end(); ++it)
+  {
+    state = joint_[it->first]->GetAngle(0).Radian();
+    it->second->write(state);
+  }
+}
+/*
+void GazeboRosApiPlugin::updateLinkStatesTimerCB(const ros::TimerEvent& e)
+{
+  std::map<std::string, gazebo::physics::LinkPtr>::iterator it;
+  for(it = link_.begin(); it != link_.end(); ++it)
+  {
+    // Read current pose
+
+    // Read translation
+
+    // Read rotation
+
+    // Update pose
+
+    // Set translation and rotation to zero
+
+  }
+}
+*/
 // Register this plugin with the simulator
 GZ_REGISTER_SYSTEM_PLUGIN(GazeboRosApiPlugin)
 }

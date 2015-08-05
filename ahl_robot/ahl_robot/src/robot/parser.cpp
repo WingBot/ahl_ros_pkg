@@ -61,6 +61,8 @@ void Parser::load(const std::string& path, const RobotPtr& robot)
     this->loadRobotInfo(robot);
     this->loadMobility(robot);
     this->loadManipulator(robot);
+
+    this->computeTotalDOF(robot);
   }
   catch(YAML::Exception& e)
   {
@@ -451,6 +453,22 @@ void Parser::setLinkToManipulator(const std::map<std::string, double>& init_q, c
   }
   mnp->init(dof, q);
   mnp->update(q);
+}
+
+void Parser::computeTotalDOF(const RobotPtr& robot)
+{
+  unsigned int macro_dof = robot->getMacroManipulatorDOF();
+  unsigned int dof = macro_dof;
+
+  MapManipulatorPtr::iterator it;
+  MapManipulatorPtr mnp = robot->getManipulator();
+
+  for(it = mnp.begin(); it != mnp.end(); ++it)
+  {
+    dof += it->second->dof - macro_dof;
+  }
+
+  robot->setDOF(dof);
 }
 
 void Parser::checkTag(const YAML::Node& node, const std::string& tag, const std::string& func)

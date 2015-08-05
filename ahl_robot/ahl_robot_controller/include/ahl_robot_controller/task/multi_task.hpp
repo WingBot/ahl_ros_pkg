@@ -49,12 +49,21 @@ namespace ahl_ctrl
   class MultiTask
   {
   public:
+    MultiTask(const ahl_robot::RobotPtr& robot);
     void addTask(const TaskPtr& task, int priority);
     void clear();
     void updateModel();
-    void computeGeneralizedForce(int dof, Eigen::VectorXd& tau);
+    void computeGeneralizedForce(Eigen::VectorXd& tau);
 
   private:
+    void assignTorque(const Eigen::VectorXd& src, Eigen::VectorXd& dst, const std::string& mnp_name);
+    void assignNullSpace(const Eigen::MatrixXd& src, Eigen::MatrixXd& dst, const std::string& mnp_name);
+
+    unsigned int dof_;
+    unsigned int macro_dof_;
+    std::map<std::string, unsigned int> name_to_mini_dof_;
+    std::map<std::string, unsigned int> name_to_offset_;
+
     std::map<int, std::vector<TaskPtr> > multi_task_; // key : priority
     Eigen::MatrixXd N_;
   };

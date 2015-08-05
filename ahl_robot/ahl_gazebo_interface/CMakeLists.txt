@@ -3,6 +3,7 @@ project(ahl_gazebo_interface)
 
 find_package(
   catkin REQUIRED COMPONENTS
+    ahl_utils
     gazebo_msgs
     roscpp
 )
@@ -32,6 +33,7 @@ catkin_package(
   LIBRARIES
     ahl_gazebo_interface
   CATKIN_DEPENDS
+    ahl_utils
     gazebo_msgs
     roscpp
   DEPENDS

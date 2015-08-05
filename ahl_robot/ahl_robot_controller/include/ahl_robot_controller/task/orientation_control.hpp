@@ -55,8 +55,6 @@ namespace ahl_ctrl
     virtual bool haveNullSpace() { return true; }
 
   private:
-    ahl_robot::ManipulatorPtr mnp_;
-
     bool updated_;
 
     std::string target_link_;

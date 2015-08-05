@@ -63,7 +63,13 @@ void JointControl::setGoal(const Eigen::MatrixXd& qd)
 
 void JointControl::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  Eigen::VectorXd tau_unit = -param_->getKpJoint() * (mnp_->q - qd_) - param_->getKvJoint() * mnp_->dq;
+  Eigen::VectorXd error = mnp_->q - qd_;
+  if(error.norm() > param_->getJointErrorMax())
+  {
+    error = param_->getJointErrorMax() / error.norm() * error;
+  }
 
+
+  Eigen::VectorXd tau_unit = -param_->getKpJoint() * error - param_->getKvJoint() * mnp_->dq;
   tau = mnp_->M * tau_unit;
 }

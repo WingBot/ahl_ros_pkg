@@ -53,7 +53,6 @@ namespace ahl_ctrl
     void computeGeneralizedForce(Eigen::VectorXd& tau);
 
   private:
-    ahl_robot::ManipulatorPtr mnp_;
     Eigen::VectorXd qd_;
   };
 

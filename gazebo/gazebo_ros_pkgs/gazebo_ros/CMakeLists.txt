@@ -3,6 +3,7 @@ project(gazebo_ros)
 
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
+  ahl_utils
   ahl_robot_msgs
   roslib
   roscpp
@@ -40,6 +41,7 @@ catkin_package(
   gazebo_ros_paths_plugin
 
   CATKIN_DEPENDS
+  ahl_utils
   ahl_robot_msgs
   roslib
   roscpp

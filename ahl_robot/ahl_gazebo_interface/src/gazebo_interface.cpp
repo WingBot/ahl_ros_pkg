@@ -43,18 +43,45 @@ using namespace ahl_gazebo_if;
 
 GazeboInterface::GazeboInterface()
   : duration_(ros::Duration(0.1)),
-    subscribed_joint_states_(false)
+    subscribed_joint_states_(true)
 {
+  ros::NodeHandle local_nh("~");
+  std::string name;
+
+  local_nh.param<std::string>("gazebo_joint_effort", name, "joint_effort");
+
+  ros::NodeHandle nh;
+  client_start_timer_ = nh.serviceClient<gazebo_msgs::StartTimer>("/gazebo/start_timer");
+  client_add_joint_   = nh.serviceClient<gazebo_msgs::AddJoint>("/gazebo/add_joint");
 }
 
-void GazeboInterface::addJoint(const std::string& name)
+GazeboInterface::~GazeboInterface()
+{
+  this->applyJointEfforts(Eigen::VectorXd::Zero(joint_list_.size()));
+}
+
+void GazeboInterface::addJoint(const std::string& name, double effort_time)
 {
   joint_map_[name] = 0.0;
+
   if(joint_to_idx_.find(name) == joint_to_idx_.end())
   {
     unsigned int size = joint_to_idx_.size();
     joint_to_idx_[name] = size;
     joint_list_.push_back(name);
+
+    joint_effort_[name] = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(name + "::effort"));
+    joint_state_[name]  = ahl_utils::SharedMemory<double>::Ptr(new ahl_utils::SharedMemory<double>(name + "::state"));
+
+    gazebo_msgs::AddJoint srv;
+    srv.request.name = name;
+    srv.request.effort_time = effort_time;
+    if(!client_add_joint_.call(srv))
+    {
+      std::stringstream msg;
+      msg << "Could not add joint : " << name;
+      throw ahl_gazebo_if::Exception("GazeboInterface::addJoint", msg.str());
+    }
   }
 }
 
@@ -67,21 +94,14 @@ void GazeboInterface::connect()
 {
   joint_num_ = joint_map_.size();
   q_ = Eigen::VectorXd::Zero(joint_num_);
-  effort_.start_time = ros::Time(0);
-  effort_.duration = duration_;
-  effort_.effort.resize(joint_map_.size());
-  effort_.name.resize(joint_map_.size());
-  std::map<std::string, int>::iterator it;
-  for(it = joint_to_idx_.begin(); it != joint_to_idx_.end(); ++it)
+
+  gazebo_msgs::StartTimer srv;
+  if(!client_start_timer_.call(srv))
   {
-    effort_.name[it->second] = it->first;
+    throw ahl_gazebo_if::Exception("GazeboInterface::connect", "Could not start timer.");
   }
 
   ros::NodeHandle nh;
-  pub_effort_ = nh.advertise<gazebo_msgs::ApplyJointEfforts>(
-    TOPIC_PUB_JOINT_EFFORT, 1);
-  sub_joint_states_ = nh.subscribe(
-    TOPIC_SUB_JOINT_STATES, 1, &GazeboInterface::subscribeJointStates, this);
   pub_link_states_ = nh.advertise<gazebo_msgs::LinkStates>("/gazebo/set_link_states", 1);
 }
 
@@ -112,30 +132,8 @@ void GazeboInterface::applyJointEfforts(const Eigen::VectorXd& tau)
       throw ahl_gazebo_if::Exception("ahl_gazebo_if::GazeboInterface::applyJointEffots", msg.str());
     }
 
-    effort_.effort[joint_to_idx_[joint_list_[i]]] = tau.coeff(i);// + joint_idx_offset_);
+    joint_effort_[joint_list_[i]]->write(tau[i]);
   }
-
-  pub_effort_.publish(effort_);
-}
-
-void GazeboInterface::subscribeJointStates(const gazebo_msgs::JointStates::ConstPtr& msg)
-{
-  boost::mutex::scoped_lock lock(mutex_);
-
-  for(unsigned int i = 0; i < msg->name.size(); ++i)
-  {
-    joint_map_[msg->name[i]]  = msg->q[i];
-  }
-
-  for(unsigned int i = 0; i < joint_list_.size(); ++i)
-  {
-    if(joint_map_.find(joint_list_[i]) != joint_map_.end())
-    {
-      q_.coeffRef(i) = joint_map_[joint_list_[i]];
-    }
-  }
-
-  subscribed_joint_states_ = true;
 }
 
 void GazeboInterface::addLink(const std::string& robot, const std::string& link)
@@ -215,4 +213,22 @@ void GazeboInterface::rotateLink(const std::vector<Eigen::Quaternion<double> >& 
   }
 
   pub_link_states_.publish(link_states_);
+}
+
+const Eigen::VectorXd& GazeboInterface::getJointStates()
+{
+  for(unsigned int i = 0; i < joint_list_.size(); ++i)
+  {
+    if(joint_to_idx_.find(joint_list_[i]) == joint_to_idx_.end())
+    {
+      std::stringstream msg;
+      msg << joint_list_[i] << " was not found in joint_to_idx_.";
+      throw ahl_gazebo_if::Exception("ahl_gazebo_if::GazeboInterface::getJointStates", msg.str());
+    }
+
+    joint_state_[joint_list_[i]]->read(q_[i]);
+  }
+
+  boost::mutex::scoped_lock lock(mutex_);
+  return q_;
 }

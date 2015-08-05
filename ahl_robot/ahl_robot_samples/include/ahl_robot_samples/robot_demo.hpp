@@ -23,7 +23,7 @@ namespace ahl_sample
   class RobotDemo
   {
   public:
-    RobotDemo() : updated_(false) {}
+    RobotDemo() : joint_updated_(false), model_updated_(false) {}
     virtual ~RobotDemo() {}
     virtual void init() = 0;
     virtual void run()  = 0;
@@ -42,7 +42,8 @@ namespace ahl_sample
     boost::mutex mutex_;
     RobotPtr robot_;
     RobotControllerPtr controller_;
-    bool updated_;
+    bool joint_updated_;
+    bool model_updated_;
     ros::Timer timer_update_model_;
     ros::Timer timer_control_;
     TfPublisherPtr tf_pub_;

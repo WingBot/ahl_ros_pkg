@@ -227,3 +227,73 @@ unsigned int Robot::getDOF(const std::string& mnp_name)
 
   return mnp_[mnp_name]->dof;
 }
+
+void Robot::update(const Eigen::VectorXd& q)
+{
+  if(q.rows() != dof_)
+  {
+    std::stringstream msg;
+    msg << "q.rows() != dof_" << std::endl
+        << "  q.rows : " << q.rows() << std::endl
+        << "  dof    : " << dof_;
+    throw ahl_robot::Exception("ahl_robot::Robot::update", msg.str());
+  }
+
+  unsigned int macro_dof = macro_manipulator_dof_;
+
+  Eigen::VectorXd q_macro = q.block(0, 0, macro_dof, 1);
+  int idx_offset = macro_dof;
+
+  for(unsigned int i = 0; i < mnp_name_.size(); ++i)
+  {
+    if(mnp_.find(mnp_name_[i]) == mnp_.end())
+    {
+      std::stringstream msg;
+      msg << "Could not find manipulator : " << mnp_name_[i];
+      throw ahl_robot::Exception("ahl_robot::Robot::update", msg.str());
+    }
+
+    ManipulatorPtr mnp = mnp_[mnp_name_[i]];
+
+    Eigen::VectorXd q_mnp = Eigen::VectorXd::Zero(mnp->dof);
+    unsigned int mini_dof = mnp->dof - macro_dof;
+
+    q_mnp.block(0, 0, macro_dof, 1) = q_macro;
+    q_mnp.block(macro_dof, 0, mini_dof, 1) = q.block(idx_offset, 0, mini_dof, 1);
+
+    idx_offset += mini_dof;
+
+    mnp->update(q_mnp);
+  }
+}
+
+void Robot::computeBasicJacobian()
+{
+  for(unsigned int i = 0; i < mnp_name_.size(); ++i)
+  {
+    if(mnp_.find(mnp_name_[i]) == mnp_.end())
+    {
+      std::stringstream msg;
+      msg << "Could not find manipulator : " << mnp_name_[i];
+      throw ahl_robot::Exception("ahl_robot::Robot::BasicJacobian", msg.str());
+    }
+
+    mnp_[mnp_name_[i]]->computeBasicJacobian();
+  }
+}
+
+void Robot::computeMassMatrix()
+{
+  for(unsigned int i = 0; i < mnp_name_.size(); ++i)
+  {
+    if(mnp_.find(mnp_name_[i]) == mnp_.end())
+    {
+      std::stringstream msg;
+      msg << "Could not find manipulator : " << mnp_name_[i];
+      throw ahl_robot::Exception("ahl_robot::Robot::computeMassMatrix", msg.str());
+    }
+
+    mnp_[mnp_name_[i]]->computeMassMatrix();
+  }
+}
+

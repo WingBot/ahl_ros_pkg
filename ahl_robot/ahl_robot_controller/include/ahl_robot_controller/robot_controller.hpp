@@ -56,8 +56,8 @@ namespace ahl_ctrl
   public:
     RobotController();
 
+    void init(const ahl_robot::RobotPtr& robot);
     void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name);
-    void init(const ahl_robot::RobotPtr& robot, const std::vector<std::string>& mnp_name);
     void addTask(const TaskPtr& task, int priority);
     void clearTask();
     void updateModel();

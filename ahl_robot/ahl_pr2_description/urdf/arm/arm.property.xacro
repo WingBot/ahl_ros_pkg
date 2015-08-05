@@ -13,7 +13,7 @@
       <inertia ixx="0.866179" ixy="0" ixz="0" iyy="0.874217" iyz="0" izz="0.273538"/>
     </inertial>
   </xacro:macro>
-  <property name="shoulder_pan_damping" value="0.7"/>
+  <property name="shoulder_pan_damping" value="10.0"/>
   <property name="shoulder_pan_friction" value="0"/>
   <property name="shoulder_pan_effort" value="10000"/>
   <property name="shoulder_pan_velocity" value="10000"/>
@@ -30,7 +30,7 @@
       <inertia ixx="0.021056" ixy="0" ixz="0" iyy="0.021272" iyz="0" izz="0.019758"/>
     </inertial>
   </xacro:macro>
-  <property name="shoulder_lift_damping" value="0.7"/>
+  <property name="shoulder_lift_damping" value="10.0"/>
   <property name="shoulder_lift_friction" value="0"/>
   <property name="shoulder_lift_effort" value="10000"/>
   <property name="shoulder_lift_velocity" value="10000"/>
@@ -47,7 +47,7 @@
       <inertia ixx="0.025306" ixy="0" ixz="0" iyy="0.084737" iyz="0" izz="0.086016"/>
     </inertial>
   </xacro:macro>
-  <property name="upper_arm_damping" value="0.4"/>
+  <property name="upper_arm_damping" value="0.1"/>
   <property name="upper_arm_friction" value="0"/>
   <property name="upper_arm_effort" value="10000"/>
   <property name="upper_arm_velocity" value="10000"/>
@@ -64,7 +64,7 @@
       <inertia ixx="0.003465" ixy="0" ixz="0" iyy="0.004416" iyz="0" izz="0.003592"/>
     </inertial>
   </xacro:macro>
-  <property name="elbow_damping" value="0.7"/>
+  <property name="elbow_damping" value="1.0"/>
   <property name="elbow_friction" value="0"/>
   <property name="elbow_effort" value="10000"/>
   <property name="elbow_velocity" value="10000"/>
@@ -81,7 +81,7 @@
       <inertia ixx="0.014668" ixy="0" ixz="0" iyy="0.026279" iyz="0" izz="0.027775"/>
     </inertial>
   </xacro:macro>
-  <property name="forearm_damping" value="0.4"/>
+  <property name="forearm_damping" value="0.1"/>
   <property name="forearm_friction" value="0"/>
   <property name="forearm_effort" value="10000"/>
   <property name="forearm_velocity" value="10000"/>
@@ -98,7 +98,7 @@
       <inertia ixx="0.000652" ixy="0" ixz="0" iyy="0.000198" iyz="0" izz="0.000645"/>
     </inertial>
   </xacro:macro>
-  <property name="wrist_flex_damping" value="0.4"/>
+  <property name="wrist_flex_damping" value="0.1"/>
   <property name="wrist_flex_friction" value="0"/>
   <property name="wrist_flex_effort" value="10000"/>
   <property name="wrist_flex_velocity" value="10000"/>
@@ -115,7 +115,7 @@
       <inertia ixx="0.011352" ixy="0" ixz="0" iyy="0.011677" iyz="0" izz="0.011866"/>
     </inertial>
   </xacro:macro>
-  <property name="wrist_roll_damping" value="0.4"/>
+  <property name="wrist_roll_damping" value="0.1"/>
   <property name="wrist_roll_friction" value="0"/>
   <property name="wrist_roll_effort" value="10000"/>
   <property name="wrist_roll_velocity" value="10000"/>

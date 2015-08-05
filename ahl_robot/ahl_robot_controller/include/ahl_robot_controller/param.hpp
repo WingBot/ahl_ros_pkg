@@ -44,6 +44,7 @@
 #include <Eigen/Dense>
 #include <dynamic_reconfigure/server.h>
 //#include "ahl_robot_controller/param_base.hpp"
+#include <ahl_robot/robot/robot.hpp>
 #include "ahl_robot_controller/ParamConfig.h"
 
 namespace ahl_ctrl
@@ -52,7 +53,7 @@ namespace ahl_ctrl
   class Param// : public ParamBase
   {
   public:
-    Param(unsigned int dof);
+    Param(const ahl_robot::RobotPtr& robot);
 
     const Eigen::MatrixXd& getKpJoint()
     {
@@ -96,6 +97,12 @@ namespace ahl_ctrl
       return Kv_limit_;
     }
 
+    double getJointErrorMax()
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      return joint_error_max_;
+    }
+
     double getPosErrorMax()
     {
       boost::mutex::scoped_lock lock(mutex_);
@@ -134,12 +141,7 @@ namespace ahl_ctrl
     dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig>::CallbackType f_;
 
     unsigned int dof_;
-
-    double kp_;
-    double kv_;
-    double kv_damp_;
-    double kp_limit_;
-    double kv_limit_;
+    unsigned int macro_dof_;
 
     Eigen::MatrixXd Kp_joint_;
     Eigen::MatrixXd Kv_joint_;
@@ -148,6 +150,7 @@ namespace ahl_ctrl
     Eigen::MatrixXd Kv_damp_;
     Eigen::MatrixXd Kp_limit_;
     Eigen::MatrixXd Kv_limit_;
+    double joint_error_max_;
     double pos_error_max_;
     double ori_error_max_;
     double kp_wheel_;

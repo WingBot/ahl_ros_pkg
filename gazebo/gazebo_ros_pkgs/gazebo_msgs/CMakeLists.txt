@@ -27,6 +27,8 @@ add_message_files(
   )
 
 add_service_files(DIRECTORY srv FILES
+  AddJoint.srv
+  AddLink.srv
   ApplyBodyWrench.srv
   DeleteModel.srv
   GetLinkState.srv
@@ -38,6 +40,7 @@ add_service_files(DIRECTORY srv FILES
   GetJointProperties.srv
   GetModelProperties.srv
   GetWorldProperties.srv
+  StartTimer.srv
   SetLinkProperties.srv
   SetModelState.srv
   BodyRequest.srv

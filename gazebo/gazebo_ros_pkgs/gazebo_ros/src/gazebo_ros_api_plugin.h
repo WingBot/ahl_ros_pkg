@@ -97,8 +97,13 @@
 #include <gazebo_ros/PhysicsConfig.h>
 #include "gazebo_msgs/SetPhysicsProperties.h"
 #include "gazebo_msgs/GetPhysicsProperties.h"
+#include "gazebo_msgs/AddJoint.h"
+#include "gazebo_msgs/AddLink.h"
+#include "gazebo_msgs/StartTimer.h"
 
 #include <boost/algorithm/string.hpp>
+
+#include <ahl_utils/shared_memory.hpp>
 
 namespace gazebo
 {
@@ -369,7 +374,6 @@ private:
   ros::Subscriber    set_link_state_topic_;
   ros::Subscriber    set_link_states_topic_;
   ros::Subscriber    set_model_state_topic_;
-  ros::Subscriber    apply_joint_efforts_topic_;
   ros::Publisher     pub_link_states_;
   ros::Publisher     pub_joint_states_;
   ros::Publisher     pub_model_states_;
@@ -416,6 +420,36 @@ private:
 
   std::vector<GazeboRosApiPlugin::WrenchBodyJob*> wrench_body_jobs_;
   std::vector<GazeboRosApiPlugin::ForceJointJob*> force_joint_jobs_;
+
+  // Daichi added the follows
+  ros::ServiceServer server_start_timer_;
+  bool startTimerServiceCB(gazebo_msgs::StartTimer::Request& req,
+                           gazebo_msgs::StartTimer::Response& res);
+
+  ros::ServiceServer server_add_joint_;
+  bool addJointServiceCB(gazebo_msgs::AddJoint::Request& req,
+                         gazebo_msgs::AddJoint::Response& res);
+
+  //ros::ServiceServer server_add_link_;
+  //bool addLinkServiceCB(gazebo_msgs::AddLink::Request& req,
+  //                      gazebo_msgs::AddLink::Response& res);
+
+  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_effort_;
+  std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > joint_states_;
+  //std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > link_rotation_;
+  //std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > link_translation_;
+  //std::map<std::string, ahl_utils::SharedMemory<double>::Ptr > link_states_;
+  std::map<std::string, ros::Duration> effort_time_;
+  std::map<std::string, gazebo::physics::JointPtr> joint_;
+  //std::map<std::string, gazebo::physics::LinkPtr> link_;
+  //std::map<std::string, gazebo::physics::LinkPtr> link_frame_;
+  //std::map<std::string, geometry_msgs::Pose> link_pose_;
+  ros::Timer timer_read_joint_efforts_;
+  ros::Timer timer_write_joint_states_;
+  //ros::Timer timer_update_link_states_;
+  void readJointEffortsTimerCB(const ros::TimerEvent& e);
+  void writeJointStatesTimerCB(const ros::TimerEvent& e);
+  //void updateLinkStatesTimerCB(const ros::TimerEvent& e);
 };
 }
 #endif

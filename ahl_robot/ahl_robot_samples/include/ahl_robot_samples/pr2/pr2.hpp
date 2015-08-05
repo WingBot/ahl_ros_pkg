@@ -16,6 +16,19 @@ namespace ahl_sample
   private:
     virtual void updateModel(const ros::TimerEvent&);
     virtual void control(const ros::TimerEvent&);
+
+    TaskPtr gravity_compensation_l_;
+    TaskPtr gravity_compensation_r_;
+    TaskPtr joint_control_l_;
+    TaskPtr joint_control_r_;
+    TaskPtr joint_limit_l_;
+    TaskPtr joint_limit_r_;
+    TaskPtr position_control_l_;
+    TaskPtr position_control_r_;
+    TaskPtr position_control_base_;
+    TaskPtr orientation_control_l_;
+    TaskPtr orientation_control_r_;
+    TaskPtr orientation_control_base_;
   };
 
   typedef boost::shared_ptr<PR2> PR2Ptr;

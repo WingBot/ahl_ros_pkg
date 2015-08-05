@@ -105,8 +105,8 @@ manipulators:
 
       q_min: 0
       q_max: 0.33
-      dq_max: 10000
-      tau_max: 10000
+      dq_max: 50
+      tau_max: 50
       init_q: 0
 
     - name: shoulder_pan_l_link
@@ -348,8 +348,8 @@ manipulators:
 
       q_min: 0
       q_max: 0.33
-      dq_max: 10000
-      tau_max: 10000
+      dq_max: 50
+      tau_max: 50
       init_q: 0
 
     - name: shoulder_pan_r_link

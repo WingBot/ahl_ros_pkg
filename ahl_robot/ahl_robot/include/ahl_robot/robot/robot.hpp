@@ -52,7 +52,7 @@ namespace ahl_robot
   {
   public:
     Robot(const std::string& robot_name)
-      : name_(robot_name), world_(frame::WORLD), macro_manipulator_dof_(0)
+      : name_(robot_name), world_(frame::WORLD), dof_(0), macro_manipulator_dof_(0)
     {
     }
 
@@ -65,6 +65,11 @@ namespace ahl_robot
     void computeMassMatrix(const std::string& mnp_name);
     bool reached(const std::string& mnp_name, const Eigen::VectorXd& qd, double threshold);
 
+    void setDOF(unsigned int dof)
+    {
+      dof_ = dof;
+    }
+
     void setMacroManipulatorDOF(unsigned int macro_manipulator_dof)
     {
       macro_manipulator_dof_ = macro_manipulator_dof;
@@ -72,12 +77,12 @@ namespace ahl_robot
 
     void setPosition(const Eigen::Vector3d& p)
     {
-      p_ = p;
+      pos_ = p;
     }
 
     void setOrientation(const Eigen::Quaternion<double>& q)
     {
-      q_ = q;
+      ori_ = q;
     }
 
     void setWorldFrame(const std::string& world)
@@ -95,12 +100,12 @@ namespace ahl_robot
 
     const Eigen::Vector3d& getPosition() const
     {
-      return p_;
+      return pos_;
     }
 
     const Eigen::Quaternion<double>& getOrientation() const
     {
-      return q_;
+      return ori_;
     }
 
     const std::string& getWorldFrame() const
@@ -111,6 +116,11 @@ namespace ahl_robot
     const ManipulatorPtr& getManipulator(const std::string& name)
     {
       return mnp_[name];
+    }
+
+    const MapManipulatorPtr& getManipulator()
+    {
+      return mnp_;
     }
 
     const MobilityPtr& getMobility()
@@ -128,9 +138,21 @@ namespace ahl_robot
 
     const Eigen::VectorXd& getJointPosition(const std::string& mnp_name);
     const Eigen::VectorXd& getJointVelocity(const std::string& mnp_name);
+
     const Eigen::MatrixXd& getMassMatrix(const std::string& mnp_name);
     const Eigen::MatrixXd& getMassMatrixInv(const std::string& mnp_name);
+
     unsigned int getDOF(const std::string& mnp_name);
+
+    // API for whole body control
+    void update(const Eigen::VectorXd& q);
+    void computeBasicJacobian();
+    void computeMassMatrix();
+
+    unsigned int getDOF()
+    {
+      return dof_;
+    }
     unsigned int getMacroManipulatorDOF()
     {
       return macro_manipulator_dof_;
@@ -138,12 +160,13 @@ namespace ahl_robot
 
   private:
     std::string name_;
-    Eigen::Vector3d p_;
-    Eigen::Quaternion<double> q_;
+    Eigen::Vector3d pos_;
+    Eigen::Quaternion<double> ori_;
     MapManipulatorPtr mnp_;
     std::vector<std::string> mnp_name_;
     std::string world_;
     MobilityPtr mobility_;
+    unsigned int dof_;
     unsigned int macro_manipulator_dof_;
   };
 
