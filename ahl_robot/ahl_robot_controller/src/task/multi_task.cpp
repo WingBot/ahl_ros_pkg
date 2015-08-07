@@ -61,6 +61,9 @@ MultiTask::MultiTask(const ahl_robot::RobotPtr& robot)
       name_to_offset_[name[i]] = 0;
     }
   }
+
+  name_to_mini_dof_[robot->getName()] = dof_ - macro_dof_;
+  name_to_offset_[robot->getName()] = 0;
 }
 
 void MultiTask::addTask(const TaskPtr& task, int priority)
@@ -120,63 +123,37 @@ void MultiTask::computeGeneralizedForce(Eigen::VectorXd& tau)
       it->second[i]->computeGeneralizedForce(tau_task);
 
       Eigen::VectorXd extended_tau_task = Eigen::VectorXd::Zero(dof_);
-      this->assignTorque(tau_task, extended_tau_task, it->second[i]->getManipulatorName());
+      this->assignTorque(tau_task, extended_tau_task, it->second[i]->getTargetName());
       tau_sum += extended_tau_task;
 
       if(it->second[i]->haveNullSpace())
       {
         Eigen::MatrixXd N = it->second[i]->getNullSpace();
-        this->assignNullSpace(N, N_, it->second[i]->getManipulatorName());
+        this->assignNullSpace(N, N_, it->second[i]->getTargetName());
       }
     }
+
+    //std::cout << it->first << std::endl;
+    //std::cout << N_ << std::endl << std::endl;
 
     tau = N_ * tau;
     tau += tau_sum;
   }
 }
 
-void MultiTask::assignTorque(const Eigen::VectorXd& src, Eigen::VectorXd& dst, const std::string& mnp_name)
+void MultiTask::assignTorque(const Eigen::VectorXd& src, Eigen::VectorXd& dst, const std::string& name)
 {
   dst.block(0, 0, macro_dof_, 1) = src.block(0, 0, macro_dof_, 1);
-  dst.block(macro_dof_ + name_to_offset_[mnp_name], 0, name_to_mini_dof_[mnp_name], 1) = src.block(macro_dof_, 0, name_to_mini_dof_[mnp_name], 1);
+  dst.block(macro_dof_ + name_to_offset_[name], 0, name_to_mini_dof_[name], 1) = src.block(macro_dof_, 0, name_to_mini_dof_[name], 1);
 }
 
-void MultiTask::assignNullSpace(const Eigen::MatrixXd& src, Eigen::MatrixXd& dst, const std::string& mnp_name)
+void MultiTask::assignNullSpace(const Eigen::MatrixXd& src, Eigen::MatrixXd& dst, const std::string& name)
 {
-  unsigned int offset   = macro_dof_ + name_to_offset_[mnp_name];
-  unsigned int mini_dof = name_to_mini_dof_[mnp_name];
+  unsigned int offset   = macro_dof_ + name_to_offset_[name];
+  unsigned int mini_dof = name_to_mini_dof_[name];
 
   dst.block(0, 0, macro_dof_, macro_dof_) = src.block(0, 0, macro_dof_, macro_dof_);
   dst.block(offset, 0, mini_dof, macro_dof_) = src.block(macro_dof_, 0, mini_dof, macro_dof_);
   dst.block(0, offset, macro_dof_, mini_dof) = src.block(0, macro_dof_, macro_dof_, mini_dof);
   dst.block(offset, offset, mini_dof, mini_dof) = src.block(macro_dof_, macro_dof_, mini_dof, mini_dof);
 }
-
-/*
-void MultiTask::computeGeneralizedForce(Eigen::VectorXd& tau)
-{
-  tau = Eigen::VectorXd::Zero(dof_);
-
-  std::map<int, std::vector<TaskPtr> >::iterator it = multi_task_.begin();
-  for(it = multi_task_.begin(); it != multi_task_.end(); ++it)
-  {
-    N_ = Eigen::MatrixXd::Identity(dof_, dof_);
-    Eigen::VectorXd tau_sum = Eigen::VectorXd::Zero(dof_);
-
-    for(unsigned int i = 0; i < it->second.size(); ++i)
-    {
-      Eigen::VectorXd tau_task;
-      it->second[i]->computeGeneralizedForce(tau_task);
-      tau_sum += tau_task;
-
-      if(it->second[i]->haveNullSpace())
-      {
-        N_ = it->second[i]->getNullSpace();
-      }
-    }
-
-    tau = N_ * tau;
-    tau += tau_sum;
-  }
-}
-*/

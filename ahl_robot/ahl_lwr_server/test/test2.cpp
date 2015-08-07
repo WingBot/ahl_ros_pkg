@@ -214,7 +214,7 @@ int main(int argc, char** argv)
 
   ManipulatorPtr mnp = robot->getManipulator("mnp");
 
-  gravity_compensation = TaskPtr(new GravityCompensation(mnp));
+  gravity_compensation = TaskPtr(new GravityCompensation(robot));
   damping = TaskPtr(new Damping(mnp));
   joint_control = TaskPtr(new JointControl(mnp));
   joint_limit = TaskPtr(new JointLimit(mnp, 0.087));

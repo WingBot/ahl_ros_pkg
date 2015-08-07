@@ -13,6 +13,8 @@
 #include <ahl_robot_controller/robot_controller.hpp>
 #include <ahl_robot_controller/tasks.hpp>
 
+#include "ahl_robot_samples/marker/markers.hpp"
+
 using namespace ahl_gazebo_if;
 using namespace ahl_robot;
 using namespace ahl_ctrl;
@@ -48,6 +50,7 @@ namespace ahl_sample
     ros::Timer timer_control_;
     TfPublisherPtr tf_pub_;
     ahl_gazebo_if::GazeboInterfacePtr gazebo_interface_;
+    MarkersPtr markers_;
   };
 
 }

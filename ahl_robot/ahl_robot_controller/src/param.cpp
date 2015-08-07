@@ -55,8 +55,10 @@ Param::Param(const ahl_robot::RobotPtr& robot)
   Kv_limit_ = Eigen::MatrixXd::Zero(dof_, dof_);
 
   g_ << 0.0, 0.0, -9.80665;
+  ros::NodeHandle local_nh("~/ahl_robot_controller");
   f_ = boost::bind(&Param::update, this, _1, _2);
-  server_.setCallback(f_);
+  server_ = ParamConfigServerPtr(new ParamConfigServer(local_nh));
+  server_->setCallback(f_);
 }
 
 void Param::update(ahl_robot_controller::ParamConfig& config, uint32_t level)

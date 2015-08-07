@@ -61,7 +61,7 @@ namespace ahl_gazebo_if
     GazeboInterface();
     ~GazeboInterface();
 
-    void addJoint(const std::string& name, double effort_time = 0.01);
+    void addJoint(const std::string& name, double effort_time = 0.010);
     void setDuration(double duration);
     void connect();
     bool subscribed();

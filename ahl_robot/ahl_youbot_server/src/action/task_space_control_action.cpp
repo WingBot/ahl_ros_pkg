@@ -52,7 +52,7 @@ TaskSpaceControlAction::TaskSpaceControlAction(const std::string& action_name, c
   task_[EE_ORIENTATION_CONTROL] = ahl_ctrl::TaskPtr(
     new ahl_ctrl::OrientationControl(robot_->getManipulator("mnp"), "gripper"));
   task_[GRAVITY_COMPENSATION] = ahl_ctrl::TaskPtr(
-    new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
+    new ahl_ctrl::GravityCompensation(robot_));
   task_[JOINT_CONTROL] = ahl_ctrl::TaskPtr(
     new ahl_ctrl::JointControl(robot_->getManipulator("mnp")));
 }

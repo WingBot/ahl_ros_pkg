@@ -137,7 +137,11 @@ namespace ahl_ctrl
     void update(ahl_robot_controller::ParamConfig& config, uint32_t level);
     boost::mutex mutex_;
 
-    dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig> server_;
+    typedef dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig> ParamConfigServer;
+    typedef boost::shared_ptr<ParamConfigServer> ParamConfigServerPtr;
+
+    ParamConfigServerPtr server_;
+    //dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig> server_;
     dynamic_reconfigure::Server<ahl_robot_controller::ParamConfig>::CallbackType f_;
 
     unsigned int dof_;

@@ -40,17 +40,36 @@
 
 using namespace ahl_ctrl;
 
-GravityCompensation::GravityCompensation(const ahl_robot::ManipulatorPtr& mnp)
+GravityCompensation::GravityCompensation(const ahl_robot::RobotPtr& robot)
 {
-  mnp_ = mnp;
-  N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
+  robot_ = robot;
+  mnp_name_ = robot_->getManipulatorName();
+  N_ = Eigen::MatrixXd::Identity(robot->getDOF(), robot->getDOF());
 }
 
 void GravityCompensation::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
-  tau = Eigen::VectorXd::Zero(mnp_->dof);
-  for(unsigned int i = 0; i < mnp_->link.size(); ++i)
+  tau = Eigen::VectorXd::Zero(robot_->getDOF());
+  unsigned int macro_dof = robot_->getMacroManipulatorDOF();
+
+  mnp_ = robot_->getManipulator().begin()->second;
+  for(unsigned int i = 0; i < macro_dof; ++i)
   {
-    tau -= mnp_->link[i]->m * mnp_->J0[i].block(0, 0, 3, mnp_->J0[i].cols()).transpose() * param_->getG();
+    tau.block(0, 0, macro_dof, 1) -= mnp_->link[i]->m * mnp_->J0[i].block(0, 0, 3, macro_dof).transpose() * param_->getG();
+  }
+
+  unsigned int offset = 0;
+
+  for(unsigned int i = 0; i < mnp_name_.size(); ++i)
+  {
+    mnp_ = robot_->getManipulator(mnp_name_[i]);
+    unsigned int mini_dof = mnp_->dof - macro_dof;
+
+    for(unsigned int j = 0; j < mini_dof; ++j)
+    {
+      tau.block(macro_dof + offset, 0, mini_dof, 1) -= mnp_->link[j + macro_dof]->m * mnp_->J0[j + macro_dof].block(0, macro_dof, 3, mini_dof).transpose() * param_->getG();
+    }
+
+    offset += mini_dof;
   }
 }

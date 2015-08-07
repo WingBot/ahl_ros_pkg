@@ -256,7 +256,7 @@ manipulators:
       xyz_in_parent: [0.05, 0, 0]
       rpy_in_parent: [0, 0, 0]
 
-      mass: 0.430
+      mass: 1.6
       inertia_matrix_in_com:
         [0.000110,        0,        0,
                 0, 0.000207,        0,
@@ -499,7 +499,7 @@ manipulators:
       xyz_in_parent: [0.05, 0, 0]
       rpy_in_parent: [0, 0, 0]
 
-      mass: 0.430
+      mass: 1.6
       inertia_matrix_in_com:
         [0.000110,        0,        0,
                 0, 0.000207,        0,

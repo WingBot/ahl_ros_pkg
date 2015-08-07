@@ -48,7 +48,7 @@ JointSpaceControlAction::JointSpaceControlAction(const std::string& action_name,
   req_ = JointSpaceRequestPtr(new JointSpaceRequest());
 
   task_[GRAVITY_COMPENSATION] = ahl_ctrl::TaskPtr(
-    new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
+    new ahl_ctrl::GravityCompensation(robot_));
   task_[JOINT_CONTROL] = ahl_ctrl::TaskPtr(
     new ahl_ctrl::JointControl(robot_->getManipulator("mnp")));
 }

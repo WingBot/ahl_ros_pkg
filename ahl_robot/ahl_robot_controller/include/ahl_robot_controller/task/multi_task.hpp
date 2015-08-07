@@ -56,8 +56,8 @@ namespace ahl_ctrl
     void computeGeneralizedForce(Eigen::VectorXd& tau);
 
   private:
-    void assignTorque(const Eigen::VectorXd& src, Eigen::VectorXd& dst, const std::string& mnp_name);
-    void assignNullSpace(const Eigen::MatrixXd& src, Eigen::MatrixXd& dst, const std::string& mnp_name);
+    void assignTorque(const Eigen::VectorXd& src, Eigen::VectorXd& dst, const std::string& name);
+    void assignNullSpace(const Eigen::MatrixXd& src, Eigen::MatrixXd& dst, const std::string& name);
 
     unsigned int dof_;
     unsigned int macro_dof_;

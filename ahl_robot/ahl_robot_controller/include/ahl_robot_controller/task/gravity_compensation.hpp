@@ -47,8 +47,13 @@ namespace ahl_ctrl
   class GravityCompensation : public Task
   {
   public:
-    GravityCompensation(const ahl_robot::ManipulatorPtr& mnp);
+    GravityCompensation(const ahl_robot::RobotPtr& robot);
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
+    virtual const std::string& getTargetName() { return robot_->getName(); }
+
+  private:
+    ahl_robot::RobotPtr robot_;
+    std::vector<std::string> mnp_name_;
   };
 
 }

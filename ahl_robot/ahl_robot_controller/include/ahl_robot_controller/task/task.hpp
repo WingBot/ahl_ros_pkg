@@ -55,8 +55,8 @@ namespace ahl_ctrl
     virtual void updateModel() {}
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau) {}
     virtual bool haveNullSpace() { return false; }
-    const Eigen::MatrixXd getNullSpace() const { return N_; }
-    virtual std::string& getManipulatorName() { return mnp_->name; }
+    virtual const Eigen::MatrixXd getNullSpace() const { return N_; }
+    virtual const std::string& getTargetName() { return mnp_->name; }
 
   protected:
     ahl_robot::ManipulatorPtr mnp_;

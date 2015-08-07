@@ -48,7 +48,7 @@ using namespace ahl_robot;
 FloatAction::FloatAction(const std::string& action_name, const ahl_robot::RobotPtr& robot, const ahl_ctrl::RobotControllerPtr& controller, const ahl_youbot::InterfacePtr& interface)
   : Action(action_name), robot_(robot), controller_(controller), interface_(interface)
 {
-  task_ = ahl_ctrl::TaskPtr(new ahl_ctrl::GravityCompensation(robot_->getManipulator("mnp")));
+  task_ = ahl_ctrl::TaskPtr(new ahl_ctrl::GravityCompensation(robot_));
 }
 
 void FloatAction::init()

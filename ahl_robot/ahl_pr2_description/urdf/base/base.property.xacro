@@ -132,7 +132,7 @@
       <inertia ixx="2.792330" ixy="0" ixz="0" iyy="2.521060" iyz="0" izz="0.536551"/>
     </inertial>
   </xacro:macro>
-  <property name="torso_damping" value="10.0"/>
+  <property name="torso_damping" value="30.0"/>
   <property name="torso_friction" value="0.1"/>
   <property name="torso_effort" value="10000"/>
   <property name="torso_velocity" value="4.0"/>
