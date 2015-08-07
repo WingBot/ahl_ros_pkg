@@ -6,6 +6,7 @@ ahl_ros_pkg, which is a ROS package developed by Daichi Yoshikawa At Home Lab. I
 How does it work ?
 
 Task space control of PR2.
+
 [![](http://img.youtube.com/vi/7pHPHKFTwZs/0.jpg)](https://www.youtube.com/watch?v=7pHPHKFTwZs)
 
 Task space control of mobile manipulator(Kuka YouBot).
