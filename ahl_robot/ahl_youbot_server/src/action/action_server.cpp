@@ -62,7 +62,7 @@ ActionServer::ActionServer(
 
   // Initialize robot controller
   controller_ = ahl_ctrl::RobotControllerPtr(new ahl_ctrl::RobotController());
-  controller_->init(robot_, mnp_name);
+  controller_->init(robot_);
 
   // Initialize TfPublisher
   tf_pub_ = ahl_robot::TfPublisherPtr(new ahl_robot::TfPublisher());
@@ -292,7 +292,7 @@ void ActionServer::highRateTimerCB(const ros::TimerEvent&)
     this->updateMobility(odom);
 
     // update joint angle
-    Eigen::VectorXd q = Eigen::VectorXd::Zero(robot_->getDOF(mnp_name_));;
+    Eigen::VectorXd q = Eigen::VectorXd::Zero(robot_->getDOF(mnp_name_));
     interface_->getJointStates(q);
     q.block(0, 0, 3, 1) = odom;
     robot_->update(mnp_name_, q);

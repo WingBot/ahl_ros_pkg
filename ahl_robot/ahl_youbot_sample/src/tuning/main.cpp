@@ -71,13 +71,17 @@ void recordJointEffort(int idx, double t, double tau_ref)
 
 void applyJointEffort(int joint_idx, double tau, double sec)
 {
-  boost::timer t;
+  //boost::timer t;
   bool applied = false;
 
   std::vector<youbot::JointTorqueSetpoint> tau_v(DOF);
 
   std::cout << "Start to apply joint effort ... ";
-  t.restart();
+  //t.restart();
+
+  ros::Rate r(100);
+
+  double start = ros::Time::now().toNSec() * 0.001 * 0.001 * 0.001;
 
   while(true)
   {
@@ -94,7 +98,8 @@ void applyJointEffort(int joint_idx, double tau, double sec)
       applied = true;
     }
 
-    double time = t.elapsed();
+    //double time = t.elapsed();
+    double time = ros::Time::now().toNSec() * 0.001 * 0.001 * 0.001 - start;
     recordJointEffort(joint_idx, time, tau);
 
     if(time > sec)
@@ -102,6 +107,8 @@ void applyJointEffort(int joint_idx, double tau, double sec)
       break;
     }
 
+    std::cout << time << std::endl;
+    ros::Duration(0.001).sleep();
   }
 
   std::cout << "Finish" << std::endl;
@@ -120,21 +127,21 @@ int main(int argc, char** argv)
 
   readPIDGains();
 
-  int joint_idx = 4;
-  double current = 1.0;
-  double sec = 3.0;
+  int joint_idx = 2;
+  double current = -5.0;
+  double sec = 1.0;
 
-  Kp[0] = 1200;
-  Kp[1] = 1200;
-  Kp[2] = 1200;
-  Kp[3] = 2000;
-  Kp[4] = 4000;
+  Kp[0] = 1800; // 2200 was the best -> 1800
+  Kp[1] = 1600; // 1600 was the best -> 1600
+  Kp[2] = 1600; // 1600 was the best -> 1600
+  Kp[3] = 1900; // 1900 was the best -> 1900
+  Kp[4] = 5000; // 10000 was the best -> 5000
 
-  Ki[0] = 3000;
-  Ki[1] = 3000;
-  Ki[2] = 3000;
-  Ki[3] = 4000;
-  Ki[4] = 4000;
+  Ki[0] = 6000; // 6000 was the best
+  Ki[1] = 5000; // 5000 was the best
+  Ki[2] = 5500; // 5500 was the best
+  Ki[3] = 6000; // 6000 was the best
+  Ki[4] = 8000; // 8000 was the best
 
   Kd[0] = 0;
   Kd[1] = 0;
@@ -146,9 +153,13 @@ int main(int argc, char** argv)
   readPIDGains();
 
   std::cout << joint_idx << ", " << current << ", " << sec << std::endl;
-  applyJointEffort(joint_idx, current, sec);
-
-  applyJointEffort(joint_idx, 0.0, sec);
+  applyJointEffort(joint_idx, 0.0, 1.0);
+  //applyJointEffort(joint_idx, 0.2, sec);
+  //applyJointEffort(joint_idx, 0.0, 1.0);
+  applyJointEffort(joint_idx, 5.0, 10.0);
+  applyJointEffort(joint_idx, 0.0, 1.0);
+  applyJointEffort(joint_idx, -5.0, 10.0);
+  applyJointEffort(joint_idx, 0.0, 10.0);
 
   return 0;
 }

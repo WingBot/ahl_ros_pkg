@@ -296,7 +296,7 @@ int main(int argc, char** argv)
     parser->load(path, robot);
 
     controller = RobotControllerPtr(new RobotController());
-    controller->init(robot, "mnp");
+    controller->init(robot);
 
     using namespace ahl_gazebo_if;
     gazebo_interface = GazeboInterfacePtr(new GazeboInterface());
