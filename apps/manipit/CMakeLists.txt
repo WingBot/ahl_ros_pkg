@@ -28,6 +28,10 @@ find_package(
   Eigen REQUIRED
 )
 
+find_package(
+  OpenCV REQUIRED
+)
+
 link_directories(
   ${catkin_LIBRARY_DIRS}
   ${EIGEN_LIBRARY_DIRS}
@@ -37,6 +41,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN_LIBRARY_DIRS}
+  ${OpenCV_LIBRARY_DIRS}
 )
 
 ##############################################################################
@@ -84,6 +89,7 @@ add_library(
 target_link_libraries(
   manipit
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 add_executable(

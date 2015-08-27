@@ -14,9 +14,14 @@ find_package(
     std_srvs
 )
 
+find_package(
+  OpenCV REQUIRED
+)
+
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ##############################################################################
@@ -51,18 +56,19 @@ add_library(
 target_link_libraries(
   cv_wrapper
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
-add_executable(
-  cv_wrapper_test
-    test/test.cpp
-)
+#add_executable(
+#  cv_wrapper_test
+#    test/test.cpp
+#)
 
-target_link_libraries(
-  cv_wrapper_test
-    ${catkin_LIBRARIES}
-    cv_wrapper
-)
+#target_link_libraries(
+#  cv_wrapper_test
+#    ${catkin_LIBRARIES}
+#    cv_wrapper
+#)
 
 ##############################################################################
 # Install
@@ -71,7 +77,7 @@ target_link_libraries(
 install(
   TARGETS
     cv_wrapper
-    cv_wrapper_test
+#    cv_wrapper_test
   ARCHIVE DESTINATION
     ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION

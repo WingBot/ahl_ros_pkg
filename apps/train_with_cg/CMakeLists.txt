@@ -24,6 +24,10 @@ find_package(
   Eigen REQUIRED
 )
 
+find_package(
+  OpenCV REQUIRED
+)
+
 link_directories(
   ${catkin_LIBRARY_DIRS}
   ${Eigen_LIBRARY_DIRS}
@@ -33,6 +37,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ##############################################################################
@@ -75,6 +80,7 @@ add_executable(
 target_link_libraries(
   image_collector
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 add_executable(
@@ -86,6 +92,7 @@ add_executable(
 target_link_libraries(
   auto_encoder
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 add_executable(
@@ -96,6 +103,7 @@ add_executable(
 target_link_libraries(
   filter_checker
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 add_executable(
@@ -106,6 +114,7 @@ add_executable(
 target_link_libraries(
   decoder
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 add_executable(
@@ -117,6 +126,7 @@ add_executable(
 target_link_libraries(
   train_with_cg
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 
