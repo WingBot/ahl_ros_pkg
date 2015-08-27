@@ -82,7 +82,7 @@ namespace youbot {
   class SortTreeVector {
   protected:
     string myKey;
-    vector<string> mySortVector;
+    std::vector<string> mySortVector;
 
   public:
 
@@ -380,7 +380,7 @@ namespace youbot {
     //Write SectionKey  with values if no section found
     if (sp == mySectionRelatedContents.end()) {
       SortTreeVector vsort;
-      vector<string> vNewVal;
+      std::vector<string> vNewVal;
       map<string, string> newMap;
       newMap[key] = v;
       vsort.setKey(sectionKey);
@@ -405,7 +405,7 @@ namespace youbot {
     for (unsigned int i = 0; i < mySortVector.size(); i++) {
 
       if (mySortVector[i].getKey() == sectionKey) {
-        vector<string> sortVec = mySortVector[i].getVector();
+        std::vector<string> sortVec = mySortVector[i].getVector();
         sortVec.push_back(key);
         mySortVector[i].setVector(sortVec);
 
