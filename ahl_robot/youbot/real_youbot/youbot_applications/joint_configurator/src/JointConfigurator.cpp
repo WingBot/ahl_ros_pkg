@@ -50,7 +50,7 @@
  ****************************************************************/
 
 
-#include "JointConfigurator.hpp"
+#include "joint_configurator/JointConfigurator.hpp"
 
 JointConfigurator::JointConfigurator(YouBotJoint* youbotjoint, std::string configpath, std::string configname, std::string configNameProtected) {
 
