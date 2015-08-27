@@ -40,6 +40,7 @@
 #include "ahl_robot_controller/exception.hpp"
 #include "ahl_robot_controller/robot_controller.hpp"
 #include "ahl_robot_controller/mobility/mecanum_wheel.hpp"
+#include "ahl_robot_controller/param.hpp"
 
 using namespace ahl_ctrl;
 
@@ -51,6 +52,7 @@ RobotController::RobotController()
 void RobotController::init(const ahl_robot::RobotPtr& robot)
 {
   robot_ = robot;
+  param_ = ParamBasePtr(new Param(robot_));
 
   for(unsigned int i = 0; i < robot->getManipulatorName().size(); ++i)
   {
@@ -74,20 +76,24 @@ void RobotController::init(const ahl_robot::RobotPtr& robot)
 
   dof_ = robot_->getDOF();
   multi_task_ = MultiTaskPtr(new MultiTask(robot_));
-  param_ = ParamPtr(new Param(robot_));
 }
 
-void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name)
+void RobotController::init(const ahl_robot::RobotPtr& robot, const ParamBasePtr& param)
 {
   robot_ = robot;
-  mnp_.push_back(robot->getManipulator(mnp_name));
+  param_ = param;
+
+  for(unsigned int i = 0; i < robot->getManipulatorName().size(); ++i)
+  {
+    mnp_.push_back(robot->getManipulator(robot->getManipulatorName()[i]));
+  }
   mobility_ = robot->getMobility();
 
   if(mobility_)
   {
     if(mobility_->type == ahl_robot::mobility::type::MECANUM_WHEEL)
     {
-      mobility_controller_ = MobilityControllerPtr(new MecanumWheel(mobility_, param_));
+      mobility_controller_ = MobilityControllerPtr(new MecanumWheel(mobility_, param));
     }
     else
     {
@@ -97,9 +103,8 @@ void RobotController::init(const ahl_robot::RobotPtr& robot, const std::string& 
     }
   }
 
-  dof_ = robot_->getDOF(mnp_name);
+  dof_ = robot_->getDOF();
   multi_task_ = MultiTaskPtr(new MultiTask(robot_));
-  param_ = ParamPtr(new Param(robot_));
 }
 
 void RobotController::addTask(const TaskPtr& task, int priority)

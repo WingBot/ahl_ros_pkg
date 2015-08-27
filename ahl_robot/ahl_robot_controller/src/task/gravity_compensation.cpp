@@ -72,4 +72,6 @@ void GravityCompensation::computeGeneralizedForce(Eigen::VectorXd& tau)
 
     offset += mini_dof;
   }
+
+  tau_ = tau;
 }

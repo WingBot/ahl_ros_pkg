@@ -133,9 +133,6 @@ void MultiTask::computeGeneralizedForce(Eigen::VectorXd& tau)
       }
     }
 
-    //std::cout << it->first << std::endl;
-    //std::cout << N_ << std::endl << std::endl;
-
     tau = N_ * tau;
     tau += tau_sum;
   }

@@ -62,11 +62,12 @@ add_library(
     src/mobility/mecanum_wheel.cpp
     src/task/multi_task.cpp
     src/task/damping.cpp
+    src/task/friction_compensation.cpp
+    src/task/gravity_compensation.cpp
     src/task/joint_limit.cpp
     src/task/joint_control.cpp
-    src/task/gravity_compensation.cpp
-    src/task/position_control.cpp
     src/task/orientation_control.cpp
+    src/task/position_control.cpp
 )
 
 add_dependencies(

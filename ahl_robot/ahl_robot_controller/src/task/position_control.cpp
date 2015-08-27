@@ -42,7 +42,7 @@
 
 using namespace ahl_ctrl;
 
-PositionControl::PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh)
+PositionControl::PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh, double dt)
   : updated_(false), target_link_(target_link), eigen_thresh_(eigen_thresh)
 {
   mnp_ = mnp;
@@ -57,6 +57,8 @@ PositionControl::PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std
   idx_ = mnp_->name_to_idx[target_link];
   I_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
   N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
+  error_sum_ = Eigen::Vector3d::Zero();
+  dt_ = dt;
 }
 
 void PositionControl::setGoal(const Eigen::MatrixXd& xd)
@@ -91,14 +93,31 @@ void PositionControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   }
 
   Eigen::Vector3d x = mnp_->T_abs[idx_].block(0, 3, 3, 1);
-  Eigen::VectorXd error = x - xd_;
-  if(error.norm() > param_->getPosErrorMax())
+  Eigen::Vector3d error = xd_ - x;
+  Eigen::Matrix3d Kpv = param_->getKpTask().block(0, 0, 3, 3);
+
+  for(unsigned int i = 0; i < Kpv.rows(); ++i)
   {
-    error = param_->getPosErrorMax() / error.norm() * error;
+    Kpv.coeffRef(i, i) /= param_->getKvTask().block(0, 0, 3, 3).coeff(i, i);
   }
 
-  Eigen::VectorXd F_unit = -param_->getKpTask().block(0, 0, 3, 3) * error - param_->getKvTask().block(0, 0, 3, 3) * Jv_ * mnp_->dq;
-  Eigen::VectorXd F = lambda_ * F_unit;
+  error_sum_ += error;
+  for(unsigned int i = 0; i < error_sum_.rows(); ++i)
+  {
+    if(error_sum_[i] > param_->getIClippingTaskPos()[i])
+      error_sum_[i] = param_->getIClippingTaskPos()[i];
+    else if(error_sum_[i] < -param_->getIClippingTaskPos()[i])
+      error_sum_[i] = -param_->getIClippingTaskPos()[i];
+  }
 
-  tau = Jv_.transpose() * F;
+  Eigen::Vector3d dxd = Kpv * error + param_->getKiTask().block(0, 0, 3, 3) * error_sum_;
+
+  if(dxd.norm() > param_->getVxMax())
+  {
+    dxd = param_->getVxMax() / dxd.norm() * dxd;
+  }
+
+  Eigen::VectorXd F_unit = -param_->getKvTask().block(0, 0, 3, 3) * (Jv_ * mnp_->dq - dxd);
+  Eigen::VectorXd F = lambda_ * F_unit;
+  tau = tau_ = Jv_.transpose() * F;
 }

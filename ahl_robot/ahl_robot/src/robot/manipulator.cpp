@@ -126,6 +126,7 @@ void Manipulator::update(const Eigen::VectorXd& q_msr)
 
   q = q_msr;
   this->computeForwardKinematics();
+  this->computeVelocity();
   updated_joint_ = true;
 }
 
@@ -154,8 +155,6 @@ void Manipulator::update(const Eigen::VectorXd& q_msr, const Eigen::VectorXd& dq
   q = q_msr;
   dq = dq_msr;
   this->computeForwardKinematics();
-  this->computeVelocity();
-  dq = dq_msr;
   updated_joint_ = true;
 }
 
@@ -192,7 +191,13 @@ void Manipulator::computeMassMatrix()
   if(M.rows() > macro_dof && M.cols() > macro_dof)
   {
     // TODO : Can I really ignore this coupling !?
-    M.block(0, 0, macro_dof, macro_dof) = Eigen::MatrixXd::Identity(macro_dof, macro_dof) * M.block(0, 0, macro_dof, macro_dof);
+    Eigen::MatrixXd M_macro = Eigen::MatrixXd::Zero(macro_dof, macro_dof);
+
+    for(unsigned int i = 0; i < macro_dof; ++i)
+    {
+      M_macro.coeffRef(i, i) = M.coeff(i, i);
+    }
+    M.block(0, 0, macro_dof, macro_dof) = M_macro;
 
     M.block(0, macro_dof, macro_dof, M.cols() - macro_dof) = Eigen::MatrixXd::Zero(macro_dof, M.cols() - macro_dof);
     M.block(macro_dof, 0, M.rows() - macro_dof, macro_dof) = Eigen::MatrixXd::Zero(M.rows() - macro_dof, macro_dof);
@@ -316,9 +321,6 @@ void Manipulator::computeForwardKinematics()
   xp = T_abs[T_abs.size() - 1].block(0, 3, 3, 1);
   Eigen::Matrix3d R = T_abs[T_abs.size() - 1].block(0, 0, 3, 3);
   xr = R;
-
-  // Compute velocity of generalized coordinates
-  this->computeVelocity();
 }
 
 void Manipulator::computeTabs()

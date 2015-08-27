@@ -89,6 +89,15 @@ void Mobility::updateBase(const Eigen::Vector3d& p_msr, const Eigen::Quaternion<
   last_ori_update_time_ = ros::Time::now();
 }
 
+void Mobility::updateBase(const Eigen::Vector3d& p_msr, const Eigen::Quaternion<double>& r_msr,
+                          const Eigen::Vector3d& v_msr, const Eigen::Vector3d& w_msr)
+{
+  p = p_msr;
+  v = v_msr;
+  r = r_msr;
+  w = w_msr;
+}
+
 void Mobility::updateWheel(const Eigen::VectorXd& q_msr)
 {
   if(q.rows() != q_msr.rows())

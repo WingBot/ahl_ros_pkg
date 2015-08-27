@@ -48,7 +48,7 @@ namespace ahl_ctrl
   class PositionControl : public Task
   {
   public:
-    PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh = 0.001);
+    PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh = 0.001, double dt = 0.001);
     virtual void setGoal(const Eigen::MatrixXd& xd);
     virtual void updateModel();
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
@@ -68,6 +68,9 @@ namespace ahl_ctrl
     Eigen::MatrixXd I_;
 
     double eigen_thresh_;
+
+    Eigen::Vector3d error_sum_;
+    double dt_;
   };
 
 }

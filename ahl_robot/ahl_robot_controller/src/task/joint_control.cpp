@@ -65,12 +65,30 @@ void JointControl::computeGeneralizedForce(Eigen::VectorXd& tau)
 {
   tau = Eigen::VectorXd::Zero(mnp_->dof);
 
-  Eigen::VectorXd error = mnp_->q - qd_;
-  if(error.norm() > param_->getJointErrorMax())
+  Eigen::VectorXd error = qd_ - mnp_->q;
+  Eigen::MatrixXd Kpv = param_->getKpJoint().block(0, 0, mnp_->dof, mnp_->dof);
+
+  for(unsigned int i = 0; i < Kpv.rows(); ++i)
   {
-    error = param_->getJointErrorMax() / error.norm() * error;
+    Kpv.coeffRef(i, i) /= param_->getKvJoint().block(0, 0, mnp_->dof, mnp_->dof).coeff(i, i);
+  }
+  Eigen::VectorXd dqd = Kpv * error;
+
+  //const double dq_max = 25.0;
+
+  for(unsigned int i = 0; i < dqd.rows(); ++i)
+  {
+    if(dqd[i] < -param_->getDqMax())
+    {
+      dqd[i] = -param_->getDqMax();
+    }
+    else if(dqd[i] > param_->getDqMax())
+    {
+      dqd[i] = param_->getDqMax();
+    }
   }
 
-  Eigen::VectorXd tau_unit = -param_->getKpJoint().block(0, 0, mnp_->dof, mnp_->dof) * error - param_->getKvJoint().block(0, 0, mnp_->dof, mnp_->dof) * mnp_->dq;
-  tau = mnp_->M * tau_unit;
+  Eigen::VectorXd tau_unit = -param_->getKvJoint().block(0, 0, mnp_->dof, mnp_->dof) * (mnp_->dq - dqd);
+
+  tau = tau_ = mnp_->M * tau_unit;
 }

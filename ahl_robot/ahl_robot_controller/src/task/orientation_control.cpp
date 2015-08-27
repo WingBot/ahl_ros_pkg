@@ -117,6 +117,6 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
 
   Eigen::VectorXd M_unit = -param_->getKpTask().block(3, 3, 3, 3) * del_phi -param_->getKvTask().block(3, 3, 3, 3) * Jw_ * mnp_->dq;
   Eigen::VectorXd M = lambda_ * M_unit;
-  tau = Jw_.transpose() * M;
+  tau = tau_ = Jw_.transpose() * M;
 }
 

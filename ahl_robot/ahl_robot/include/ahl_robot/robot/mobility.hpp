@@ -41,6 +41,8 @@ namespace ahl_robot
 
     void init();
     void updateBase(const Eigen::Vector3d& p_msr, const Eigen::Quaternion<double>& r_msr);
+    void updateBase(const Eigen::Vector3d& p_msr, const Eigen::Quaternion<double>& r_msr,
+                    const Eigen::Vector3d& v_msr, const Eigen::Vector3d& w_msr);
     void updateWheel(const Eigen::VectorXd& q_msr);
 
     Eigen::VectorXd p;

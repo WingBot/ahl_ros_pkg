@@ -128,9 +128,6 @@ void PR2::updateModel(const ros::TimerEvent&)
     robot_->computeMassMatrix();
     controller_->updateModel();
 
-    Eigen::MatrixXd J = robot_->getBasicJacobian("right_mnp");
-    Eigen::MatrixXd M = robot_->getMassMatrix("right_mnp");
-
     model_updated_ = true;
 
     if(param_->show_target)

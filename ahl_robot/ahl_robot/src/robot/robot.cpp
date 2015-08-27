@@ -75,6 +75,17 @@ void Robot::updateBase(const Eigen::VectorXd& p, const Eigen::Quaternion<double>
   mobility_->updateBase(p, r);
 }
 
+void Robot::updateBase(const Eigen::VectorXd& p, const Eigen::Quaternion<double>& r,
+                       const Eigen::VectorXd& v, const Eigen::VectorXd& w)
+{
+  if(!mobility_)
+  {
+    throw ahl_robot::Exception("Robot::updateBase", "Mobility pointer is null.");
+  }
+
+  mobility_->updateBase(p, r, v, w);
+}
+
 void Robot::updateWheel(const Eigen::VectorXd& q)
 {
   if(!mobility_)

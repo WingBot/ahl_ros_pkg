@@ -15,6 +15,7 @@ find_package(
 
 generate_dynamic_reconfigure_options(
   cfg/Pr2Param.cfg
+  cfg/YouBotParam.cfg
 )
 
 catkin_package(
@@ -58,6 +59,8 @@ add_executable(
   youbot_sample
     src/youbot/main.cpp
     src/youbot/youbot.cpp
+    src/marker/marker.cpp
+    src/marker/markers.cpp
 )
 
 add_dependencies(

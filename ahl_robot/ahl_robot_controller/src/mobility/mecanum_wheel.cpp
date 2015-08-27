@@ -3,7 +3,7 @@
 
 using namespace ahl_ctrl;
 
-MecanumWheel::MecanumWheel(const ahl_robot::MobilityPtr& mobility, const ParamPtr& param)
+MecanumWheel::MecanumWheel(const ahl_robot::MobilityPtr& mobility, const ParamBasePtr& param)
   : mobility_(mobility), param_(param)
 {
   double l1 = 0.5 * mobility_->tread_width;

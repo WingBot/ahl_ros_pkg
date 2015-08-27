@@ -43,7 +43,7 @@
 #include <list>
 #include <boost/shared_ptr.hpp>
 #include <ahl_robot/ahl_robot.hpp>
-#include "ahl_robot_controller/param.hpp"
+#include "ahl_robot_controller/param_base.hpp"
 #include "ahl_robot_controller/mobility/mobility_controller.hpp"
 #include "ahl_robot_controller/task/task.hpp"
 #include "ahl_robot_controller/task/multi_task.hpp"
@@ -57,7 +57,7 @@ namespace ahl_ctrl
     RobotController();
 
     void init(const ahl_robot::RobotPtr& robot);
-    void init(const ahl_robot::RobotPtr& robot, const std::string& mnp_name);
+    void init(const ahl_robot::RobotPtr& robot, const ParamBasePtr& param);
     void addTask(const TaskPtr& task, int priority);
     void clearTask();
     void updateModel();
@@ -70,7 +70,7 @@ namespace ahl_ctrl
       const Eigen::VectorXd& v_base, Eigen::VectorXd& tau_wheel);
 
   private:
-    ParamPtr param_;
+    ParamBasePtr param_;
     MultiTaskPtr multi_task_;
     ahl_robot::RobotPtr robot_;
     std::vector<ahl_robot::ManipulatorPtr> mnp_;

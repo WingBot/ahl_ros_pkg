@@ -3,7 +3,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <Eigen/Dense>
-#include "ahl_robot_controller/param.hpp"
+#include "ahl_robot_controller/param_base.hpp"
 #include "ahl_robot_controller/mobility/mobility_controller.hpp"
 
 namespace ahl_ctrl
@@ -16,7 +16,7 @@ namespace ahl_ctrl
   class MecanumWheel : public MobilityController
   {
   public:
-    MecanumWheel(const ahl_robot::MobilityPtr& mobility, const ParamPtr& param);
+    MecanumWheel(const ahl_robot::MobilityPtr& mobility, const ParamBasePtr& param);
 
     void computeBaseVelocityFromTorque(
       const Eigen::MatrixXd& M, const Eigen::VectorXd& tau, Eigen::VectorXd& v_base);
@@ -27,7 +27,7 @@ namespace ahl_ctrl
 
   private:
     ahl_robot::MobilityPtr mobility_;
-    ParamPtr param_;
+    ParamBasePtr param_;
     Eigen::MatrixXd decomposer_;
   };
 
