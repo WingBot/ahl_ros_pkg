@@ -6,14 +6,10 @@ find_package(
     roscpp
 )
 
-find_package(
-  cmake_modules REQUIRED
-)
-
-link_directories(
-  ${catkin_LIBRARY_DIRS}
-  rt
-)
+#link_directories(
+#  ${catkin_LIBRARY_DIRS}
+#  rt
+#)
 
 include_directories(
   include
@@ -30,14 +26,14 @@ catkin_package(
 )
 
 add_library(
-  shm_utils
+  ahl_utils
     src/shared_memory.cpp
 )
 
 target_link_libraries(
-  shm_utils
-   ${catkin_LIBRARIES}
-   rt
+  ahl_utils
+    ${catkin_LIBRARIES}
+    rt
 )
 
 add_executable(
@@ -47,7 +43,7 @@ add_executable(
 
 target_link_libraries(
   shm_writer
-    shm_utils
+    ahl_utils
 )
 
 add_executable(
@@ -57,5 +53,5 @@ add_executable(
 
 target_link_libraries(
   shm_reader
-    shm_utils
+    ahl_utils
 )
