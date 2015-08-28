@@ -8,7 +8,7 @@ ahl_ros_pkg, which is a ROS package developed by Daichi Yoshikawa At Home Lab.
 
 How does it work ?
 ==================
-The remarkable packages are _"ahl_robot_controller"_, which contains [task space control (operational space control)](http://cs.stanford.edu/groups/manips/publications/pdfs/Khatib_1993_JSME.pdf) and _"neural_network"_.
+The remarkable packages are **"ahl_robot_controller"**, which contains [task space control (operational space control)](http://cs.stanford.edu/groups/manips/publications/pdfs/Khatib_1993_JSME.pdf) and **"neural_network"**.
   The following videos show how it works.
 
 * Task space control of PR2.                   
