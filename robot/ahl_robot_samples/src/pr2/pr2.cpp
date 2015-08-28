@@ -9,7 +9,12 @@ PR2::PR2()
 
 void PR2::init()
 {
-  initRobot("pr2", "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/ahl_robot/ahl_robot_samples/yaml/pr2.yaml");
+  ros::NodeHandle local_nh("~");
+
+  std::string yaml;
+  local_nh.param<std::string>("pr2/yaml", yaml, "");
+
+  initRobot("pr2", yaml);
 
   controller_ = RobotControllerPtr(new RobotController());
   controller_->init(robot_);
