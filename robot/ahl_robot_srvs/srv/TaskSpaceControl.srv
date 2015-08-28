@@ -1,7 +1,0 @@
-geometry_msgs/Point xd
-float64[] Rd
-string target_link
-float64[] qd
----
-geometry_msgs/Point x
-float64[] R
