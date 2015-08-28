@@ -1,13 +1,16 @@
 ahl_ros_pkg
 ===========
 ahl_ros_pkg, which is a ROS package developed by Daichi Yoshikawa At Home Lab.
-It mainly composes of he following 3 things.
-* Robotics
+  It mainly composes of the following 3 things.
+* Kinematics, Dynamics and Control of Robot
 * Hand tracking system "[Manipit](http://www.instructables.com/id/Manipit-Hand-motion-tracking-with-painted-gloves/)"
-* Others
+* Others (utility, wrapper of OpenCV and OpenGL, digital filter and so on)
 
 How does it work ?
 ==================
+The remarkable packages are _"ahl_robot_controller"_, which contains [task space control (operational space control)](http://cs.stanford.edu/groups/manips/publications/pdfs/Khatib_1993_JSME.pdf) and _"neural_network"_.
+  The following videos show how it works.
+
 * Task space control of PR2.                   
 [![](http://img.youtube.com/vi/7pHPHKFTwZs/0.jpg)](https://www.youtube.com/watch?v=7pHPHKFTwZs)
 
@@ -18,7 +21,7 @@ Contents
 ========
 ### Packages for robotics (robot, utils, filter, motion_planner)
 ----------------------------------------------------------------
-* ahl_robot : Define robot with mobility and multiple arms.
+* ahl_robot : Define robot with mobility and multiple arms, and compute Jacobian and Mass matrix 
 * ahl_robot_controller : Control robot based on torque in joint space or operational space (task space)
 * ahl_gazebo_interface : Enable to get joint angles from gazebo and apply torques to gazebo robot model through shared memory
 * ahl_pr2_description : URDF description of PR2
