@@ -36,73 +36,99 @@
  *
  *********************************************************************/
 
-#ifndef __STD_UTILS_YAML_LOADER_HPP
-#define __STD_UTILS_YAML_LOADER_HPP
 
-#include <string>
+#ifndef __AHL_UTILS_IO_UTILS_HPP
+#define __AHL_UTILS_IO_UTILS_HPP
+
+#include <iostream>
 #include <fstream>
-#include <boost/shared_ptr.hpp>
-#include <yaml-cpp/yaml.h>
+#include <vector>
+#include <limits>
 #include <Eigen/Dense>
-#include "std_utils/exceptions.hpp"
+#include "ahl_utils/str_utils.hpp"
 
-namespace std_utils
+namespace ahl_utils
 {
 
-  class YAMLLoader
+  class IOUtils
   {
   public:
-    YAMLLoader(const std::string& yaml);
+    static void print(const Eigen::MatrixXd& m);
 
     template<class T>
-    bool loadValue(const std::string& tag, T& dst)
+    static void print(const std::vector<T>& v)
     {
-      if(!doc_[tag])
-        return false;
-
-      try
+      std::cout << "[ ";
+      for(unsigned int i = 0; i < v.size(); ++i)
       {
-        dst = doc_[tag].as<T>();
-      }
-      catch(YAML::Exception& e)
-      {
-        throw std_utils::Exception("YAMLLoader::loadValue", e.what());
-      }
-
-      return true;
-    }
-
-    template<class T>
-    bool loadVector(const std::string& tag, std::vector<T>& dst)
-    {
-      if(!doc_[tag])
-        return false;
-
-      try
-      {
-        dst.resize(doc_[tag].size());
-        for(unsigned int i = 0; i < doc_[tag].size(); ++i)
+        std::cout << v[i];
+        if(i < v.size() - 1)
         {
-          dst[i] = doc_[tag][i].as<T>();
+          std::cout << ", ";
         }
       }
-      catch(YAML::Exception& e)
+      std::cout << " ]" << std::endl;
+    }
+
+    template<class T>
+    static void print(const std::vector< std::vector<T> >& m)
+    {
+      std::cout << "[ ";
+      for(unsigned int i = 0; i < m.size(); ++i)
       {
-        throw std_utils::Exception("YAMLLoader::loadVector", e.what());
+        for(unsigned int j = 0; j < m[i].size(); ++j)
+        {
+          std::cout << m[i][j];
+          if(j < m[i].size() - 1)
+            std::cout << ", ";
+        }
+        if(i < m.size() - 1)
+          std::cout << std::endl;
       }
+      std::cout << " ]" << std::endl;
+    }
+
+    static bool getValues(std::ifstream& ifs, Eigen::MatrixXd& dst);
+    static bool getValues(std::ifstream& ifs, std::vector<Eigen::MatrixXd>& dst);
+
+    template<class T>
+    static bool getValues(std::ifstream& ifs, std::vector<T>& dst)
+    {
+      if(!ifs)
+        return false;
+
+      std::string str;
+      if(!std::getline(ifs, str))
+        return false;
+
+      return StrUtils::convertToVector(str, dst, ",;: \t");
+    }
+
+    template<class T>
+    static bool getValues(std::ifstream& ifs, std::vector< std::vector<T> >& dst)
+    {
+      dst.clear();
+
+      std::vector<T> tmp;
+      while(IOUtils::getValues(ifs, tmp))
+      {
+        dst.push_back(tmp);
+      }
+
+      if(dst.size() == 0)
+        return false;
 
       return true;
     }
 
-    bool loadVector(const std::string& tag, Eigen::MatrixXd& dst);
-    bool loadMatrix(const std::string& tag, Eigen::MatrixXd& dst);
+    static unsigned long getLineNum(std::ifstream& ifs);
+
+
 
   private:
-    std::ifstream ifs_;
-    YAML::Node doc_;
+
   };
 
-  typedef boost::shared_ptr<YAMLLoader> YAMLLoaderPtr;
 }
 
-#endif /* __STD_UTILS_YAML_LOADER_HPP */
+#endif /* __AHl_UTILS_IO_UTILS_HPP */

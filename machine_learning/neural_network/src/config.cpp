@@ -37,7 +37,7 @@
  *********************************************************************/
 
 #include <fstream>
-#include "std_utils/yaml_loader.hpp"
+#include "ahl_utils/yaml_loader.hpp"
 #include "neural_network/config.hpp"
 #include "neural_network/exceptions.hpp"
 #include "neural_network/warning.hpp"
@@ -65,7 +65,7 @@ void Config::init(const std::string& yaml_name)
 
   try
   {
-    std_utils::YAMLLoader yaml_loader(yaml_name);
+    ahl_utils::YAMLLoader yaml_loader(yaml_name);
 
     yaml_loader.loadValue("enable_back_propagation", enable_back_propagation_);
     yaml_loader.loadValue("thread_num", thread_num_);
@@ -221,7 +221,7 @@ void Config::init(const std::string& yaml_name)
       throw nn::Exception(src, msg.str());
     }
   }
-  catch(std_utils::Exception& e)
+  catch(ahl_utils::Exception& e)
   {
     throw nn::Exception("nn::Config::init", e.what());
   }

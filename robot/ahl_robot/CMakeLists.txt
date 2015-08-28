@@ -5,7 +5,6 @@ find_package(
   catkin REQUIRED COMPONENTS
     ahl_digital_filter
     roscpp
-    std_utils
     tf2
     tf2_ros
 )
@@ -44,7 +43,6 @@ catkin_package(
   CATKIN_DEPENDS
     ahl_digital_filter
     roscpp
-    std_utils
     tf2
     tf2_ros
   DEPENDS

@@ -36,99 +36,92 @@
  *
  *********************************************************************/
 
-
-#ifndef __STD_UTILS_IO_UTILS_IO_UTILS_HPP
-#define __STD_UTILS_IO_UTILS_IO_UTILS_HPP
-
-#include <iostream>
-#include <fstream>
+#ifndef __AHL_UTILS_STR_UTILS_HPP
+#define __AHL_UTILS_STR_UTILS_HPP
+#include <string>
+#include <sstream>
 #include <vector>
-#include <limits>
-#include <Eigen/Dense>
-#include "std_utils/str_utils.hpp"
 
-namespace std_utils
+namespace ahl_utils
 {
 
-  class IOUtils
+  class StrUtils
   {
   public:
-    static void print(const Eigen::MatrixXd& m);
+    static bool have(const std::string& str, char ch);
+    static bool have(const std::string& str, const std::vector<char>& chs);
+    static bool have(const std::string& str, const std::string& word);
+    static bool isAlphabet(const std::string& str);
 
-    template<class T>
-    static void print(const std::vector<T>& v)
+    static bool convertToBoolean(const std::string& str, bool& dst)
     {
-      std::cout << "[ ";
-      for(unsigned int i = 0; i < v.size(); ++i)
+      std::stringstream ss(str);
+      std::string tmp;
+
+      if(!(ss >> tmp))
       {
-        std::cout << v[i];
-        if(i < v.size() - 1)
-        {
-          std::cout << ", ";
-        }
-      }
-      std::cout << " ]" << std::endl;
-    }
-
-    template<class T>
-    static void print(const std::vector< std::vector<T> >& m)
-    {
-      std::cout << "[ ";
-      for(unsigned int i = 0; i < m.size(); ++i)
-      {
-        for(unsigned int j = 0; j < m[i].size(); ++j)
-        {
-          std::cout << m[i][j];
-          if(j < m[i].size() - 1)
-            std::cout << ", ";
-        }
-        if(i < m.size() - 1)
-          std::cout << std::endl;
-      }
-      std::cout << " ]" << std::endl;
-    }
-
-    static bool getValues(std::ifstream& ifs, Eigen::MatrixXd& dst);
-    static bool getValues(std::ifstream& ifs, std::vector<Eigen::MatrixXd>& dst);
-
-    template<class T>
-    static bool getValues(std::ifstream& ifs, std::vector<T>& dst)
-    {
-      if(!ifs)
         return false;
-
-      std::string str;
-      if(!std::getline(ifs, str))
-        return false;
-
-      return StrUtils::convertToVector(str, dst, ",;: \t");
-    }
-
-    template<class T>
-    static bool getValues(std::ifstream& ifs, std::vector< std::vector<T> >& dst)
-    {
-      dst.clear();
-
-      std::vector<T> tmp;
-      while(IOUtils::getValues(ifs, tmp))
-      {
-        dst.push_back(tmp);
       }
 
-      if(dst.size() == 0)
+      if(tmp == std::string("true") || tmp == std::string("TRUE"))
+      {
+        dst = true;
+      }
+      else if(tmp == std::string("false") || tmp == std::string("FALSE"))
+      {
+        dst = false;
+      }
+      else
+      {
         return false;
+      }
 
       return true;
     }
 
-    static unsigned long getLineNum(std::ifstream& ifs);
+    template <class T>
+    static bool convertToNum(const std::string& str, T& dst)
+    {
+      std::stringstream ss(str);
+      double tmp;
 
+      if(!(ss >> tmp))
+      {
+        return false;
+      }
 
+      dst = static_cast<T>(tmp);
+      return true;
+    }
 
-  private:
+    template <class T>
+    static bool convertToVector(const std::string& str, std::vector<T>& vec, const std::string& delimiters)
+    {
+      std::vector<std::string> words;
+      StrUtils::separate(str, words, delimiters);
 
+      if(words.size() == 0)
+        return false;
+
+      vec.resize(words.size());
+      for(unsigned int i = 0; i < words.size(); ++i)
+      {
+        if(!StrUtils::convertToNum<T>(words[i], vec[i]))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    static bool isIPAddress(const std::string& str);
+    static void removeSpace(std::string& str);
+    static void removeIndent(std::string& str);
+    static void remove(std::string& str, char ch);
+    static void separate(const std::string& str, std::vector<std::string>& words, const std::string& delimiters);
   };
 
 }
 
-#endif /* __STD_UTILS_IO_UTILS_IO_UTILS_HPP */
+#endif /* __AHL_UTILS_STR_UTILS_HPP */

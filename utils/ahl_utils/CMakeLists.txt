@@ -6,14 +6,23 @@ find_package(
     roscpp
 )
 
-#link_directories(
-#  ${catkin_LIBRARY_DIRS}
-#  rt
-#)
+find_package(
+  cmake_modules REQUIRED
+)
+
+find_package(
+  Eigen REQUIRED
+)
+
+link_directories(
+  ${catkin_LIBRARY_DIRS}
+  ${Eigen_LIBRARY_DIRS}
+)
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN_INCLUDE_DIRS}
 )
 
 catkin_package(
@@ -23,17 +32,24 @@ catkin_package(
     ahl_utils
   CATKIN_DEPENDS
     roscpp
+  DEPENDS
+    Eigen
 )
 
 add_library(
   ahl_utils
     src/shared_memory.cpp
+    src/io_utils.cpp
+    src/str_utils.cpp
+    src/yaml_loader.cpp
+    src/yaml_utils.cpp
 )
 
 target_link_libraries(
   ahl_utils
     ${catkin_LIBRARIES}
     rt
+    yaml-cpp
 )
 
 add_executable(

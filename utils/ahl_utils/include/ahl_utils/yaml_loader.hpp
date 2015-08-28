@@ -36,92 +36,73 @@
  *
  *********************************************************************/
 
-#ifndef __STD_UTILS_STR_UTILS_STR_UTILS_HPP
-#define __STD_UTILS_STR_UTILS_STR_UTILS_HPP
-#include <string>
-#include <sstream>
-#include <vector>
+#ifndef __AHL_UTILS_YAML_LOADER_HPP
+#define __AHL_UTILS_YAML_LOADER_HPP
 
-namespace std_utils
+#include <string>
+#include <fstream>
+#include <boost/shared_ptr.hpp>
+#include <yaml-cpp/yaml.h>
+#include <Eigen/Dense>
+#include "ahl_utils/exception.hpp"
+
+namespace ahl_utils
 {
 
-  class StrUtils
+  class YAMLLoader
   {
   public:
-    static bool have(const std::string& str, char ch);
-    static bool have(const std::string& str, const std::vector<char>& chs);
-    static bool have(const std::string& str, const std::string& word);
-    static bool isAlphabet(const std::string& str);
+    YAMLLoader(const std::string& yaml);
 
-    static bool convertToBoolean(const std::string& str, bool& dst)
+    template<class T>
+    bool loadValue(const std::string& tag, T& dst)
     {
-      std::stringstream ss(str);
-      std::string tmp;
-
-      if(!(ss >> tmp))
-      {
+      if(!doc_[tag])
         return false;
-      }
 
-      if(tmp == std::string("true") || tmp == std::string("TRUE"))
+      try
       {
-        dst = true;
+        dst = doc_[tag].as<T>();
       }
-      else if(tmp == std::string("false") || tmp == std::string("FALSE"))
+      catch(YAML::Exception& e)
       {
-        dst = false;
-      }
-      else
-      {
-        return false;
+        throw ahl_utils::Exception("YAMLLoader::loadValue", e.what());
       }
 
       return true;
     }
 
-    template <class T>
-    static bool convertToNum(const std::string& str, T& dst)
+    template<class T>
+    bool loadVector(const std::string& tag, std::vector<T>& dst)
     {
-      std::stringstream ss(str);
-      double tmp;
-
-      if(!(ss >> tmp))
-      {
-        return false;
-      }
-
-      dst = static_cast<T>(tmp);
-      return true;
-    }
-
-    template <class T>
-    static bool convertToVector(const std::string& str, std::vector<T>& vec, const std::string& delimiters)
-    {
-      std::vector<std::string> words;
-      StrUtils::separate(str, words, delimiters);
-
-      if(words.size() == 0)
+      if(!doc_[tag])
         return false;
 
-      vec.resize(words.size());
-      for(unsigned int i = 0; i < words.size(); ++i)
+      try
       {
-        if(!StrUtils::convertToNum<T>(words[i], vec[i]))
+        dst.resize(doc_[tag].size());
+        for(unsigned int i = 0; i < doc_[tag].size(); ++i)
         {
-          return false;
+          dst[i] = doc_[tag][i].as<T>();
         }
       }
+      catch(YAML::Exception& e)
+      {
+        throw ahl_utils::Exception("YAMLLoader::loadVector", e.what());
+      }
 
       return true;
     }
 
-    static bool isIPAddress(const std::string& str);
-    static void removeSpace(std::string& str);
-    static void removeIndent(std::string& str);
-    static void remove(std::string& str, char ch);
-    static void separate(const std::string& str, std::vector<std::string>& words, const std::string& delimiters);
+    bool loadVector(const std::string& tag, Eigen::MatrixXd& dst);
+    bool loadMatrix(const std::string& tag, Eigen::MatrixXd& dst);
+
+  private:
+    std::ifstream ifs_;
+    YAML::Node doc_;
   };
 
+  typedef boost::shared_ptr<YAMLLoader> YAMLLoaderPtr;
 }
 
-#endif /* __STD_UTILS_STR_UTILS_STR_UTILS_HPP */
+#endif /* __AHL_UTILS_YAML_LOADER_HPP */

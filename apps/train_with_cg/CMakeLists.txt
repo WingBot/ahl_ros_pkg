@@ -12,7 +12,7 @@ find_package(
     gl_wrapper
     neural_network
     roscpp
-    std_utils
+    ahl_utils
     tf
 )
 
@@ -51,7 +51,7 @@ catkin_package(
     gl_wrapper
     neural_network
     roscpp
-    std_utils
+    ahl_utils
     tf
   DEPENDS
    Eigen

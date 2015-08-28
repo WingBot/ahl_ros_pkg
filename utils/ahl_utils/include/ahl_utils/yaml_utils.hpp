@@ -36,13 +36,13 @@
  *
  *********************************************************************/
 
-#ifndef __STD_UTILS_YAML_UTILS_HPP
-#define __STD_UTILS_YAML_UTILS_HPP
+#ifndef __AHL_UTILS_YAML_UTILS_HPP
+#define __AHL_UTILS_YAML_UTILS_HPP
 
 #include <string>
 #include <Eigen/Dense>
 
-namespace std_utils
+namespace ahl_utils
 {
 
   class YAMLUtils
@@ -54,4 +54,4 @@ namespace std_utils
 
 }
 
-#endif /* __STD_UTILS_YAML_UTILS_HPP */
+#endif /* __AHL_UTILS_YAML_UTILS_HPP */

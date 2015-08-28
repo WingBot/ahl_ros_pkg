@@ -39,9 +39,9 @@
 #include <cctype>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
-#include "std_utils/str_utils.hpp"
+#include "ahl_utils/str_utils.hpp"
 
-using namespace std_utils;
+using namespace ahl_utils;
 
 bool StrUtils::have(const std::string& str, char ch)
 {

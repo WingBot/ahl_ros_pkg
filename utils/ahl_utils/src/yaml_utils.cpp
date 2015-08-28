@@ -36,10 +36,10 @@
  *
  *********************************************************************/
 
-#include "std_utils/yaml_utils.hpp"
-#include "std_utils/exceptions.hpp"
+#include "ahl_utils/yaml_utils.hpp"
+#include "ahl_utils/exception.hpp"
 
-using namespace std_utils;
+using namespace ahl_utils;
 
 std::string YAMLUtils::getVectorStr(const std::string& tag, const Eigen::MatrixXd& m)
 {
@@ -58,7 +58,7 @@ std::string YAMLUtils::getVectorStr(const std::string& tag, const Eigen::MatrixX
     std::stringstream msg;
     msg << "Eigen::MatrixXd::cols returned value which is bigger than 1." << std::endl
         << "YAMLUtils::VectorStr assumes a vertical vector.";
-    throw std_utils::Exception("YAMLUtils::getVectorStr", msg.str());
+    throw ahl_utils::Exception("YAMLUtils::getVectorStr", msg.str());
   }
 
   msg << m.coeff(0, 0);

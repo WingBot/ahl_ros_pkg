@@ -38,8 +38,8 @@
 
 #include <fstream>
 #include <algorithm>
-#include "std_utils/io_utils.hpp"
-#include "std_utils/exceptions.hpp"
+#include "ahl_utils/io_utils.hpp"
+#include "ahl_utils/exception.hpp"
 #include "neural_network/training_data.hpp"
 #include "neural_network/exceptions.hpp"
 
@@ -164,11 +164,11 @@ void TrainingData::init(const std::string& name_in, const std::string& name_out)
 
   try
   {
-    if(std_utils::IOUtils::getValues(ifs_in, input_) == false)
+    if(ahl_utils::IOUtils::getValues(ifs_in, input_) == false)
     {
       throw std::string(name_in);
     }
-    if(std_utils::IOUtils::getValues(ifs_out, output_) == false)
+    if(ahl_utils::IOUtils::getValues(ifs_out, output_) == false)
     {
       throw std::string(name_out);
     }

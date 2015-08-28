@@ -39,10 +39,10 @@
 #include <iostream>
 #include <gl_wrapper/object/x_object.hpp>
 #include <gl_wrapper/exception/exceptions.hpp>
-#include <std_utils/str_utils.hpp>
+#include <ahl_utils/str_utils.hpp>
 
 using namespace gl_wrapper;
-using namespace std_utils;
+using namespace ahl_utils;
 
 XObject::XObject(const std::string& name)
 {

@@ -12,7 +12,7 @@ find_package(
     dynamic_reconfigure
     std_msgs
     std_srvs
-    std_utils
+    ahl_utils
     roscpp
 )
 
@@ -51,7 +51,7 @@ catkin_package(
     dynamic_reconfigure
     std_msgs
     std_srvs
-    std_utils
+    ahl_utils
     roscpp
   DEPENDS
     Eigen

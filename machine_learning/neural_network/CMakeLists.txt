@@ -7,8 +7,8 @@ project(neural_network)
 
 find_package(
   catkin REQUIRED COMPONENTS
+    ahl_utils
     roscpp
-    std_utils
 )
 
 find_package(
@@ -57,6 +57,7 @@ catkin_package(
   LIBRARIES
     neural_network
   CATKIN_DEPENDS
+    ahl_utils
     roscpp
   DEPENDS
     Eigen

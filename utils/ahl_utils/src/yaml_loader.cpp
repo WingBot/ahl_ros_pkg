@@ -36,9 +36,9 @@
  *
  *********************************************************************/
 
-#include "std_utils/yaml_loader.hpp"
+#include "ahl_utils/yaml_loader.hpp"
 
-using namespace std_utils;
+using namespace ahl_utils;
 
 YAMLLoader::YAMLLoader(const std::string& yaml)
 {
@@ -47,7 +47,7 @@ YAMLLoader::YAMLLoader(const std::string& yaml)
   {
     std::stringstream msg;
     msg << "Could not open \"" << yaml << "\".";
-    throw std_utils::Exception("YAMLLoader::YAMLLoader", msg.str());
+    throw ahl_utils::Exception("YAMLLoader::YAMLLoader", msg.str());
   }
 
   doc_ = YAML::Load(ifs_);
@@ -68,7 +68,7 @@ bool YAMLLoader::loadVector(const std::string& tag, Eigen::MatrixXd& dst)
   }
   catch(YAML::Exception& e)
   {
-    throw std_utils::Exception("YAMLLoader::loadVector", e.what());
+    throw ahl_utils::Exception("YAMLLoader::loadVector", e.what());
   }
 
   return true;
@@ -84,7 +84,7 @@ bool YAMLLoader::loadMatrix(const std::string& tag, Eigen::MatrixXd& dst)
     unsigned int rows = doc_[tag].size();
     if(rows == 0)
     {
-      throw std_utils::Exception("YAMLLoader::loadMatrix", "rows is zero.");
+      throw ahl_utils::Exception("YAMLLoader::loadMatrix", "rows is zero.");
     }
     unsigned int cols = doc_[tag][0].size();
 
@@ -100,7 +100,7 @@ bool YAMLLoader::loadMatrix(const std::string& tag, Eigen::MatrixXd& dst)
   }
   catch(YAML::Exception& e)
   {
-    throw std_utils::Exception("YAMLLoader::loadVector", e.what());
+    throw ahl_utils::Exception("YAMLLoader::loadVector", e.what());
   }
 
   return true;

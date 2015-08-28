@@ -37,9 +37,9 @@
  *********************************************************************/
 
 #include <fstream>
-#include "std_utils/io_utils.hpp"
-#include "std_utils/yaml_utils.hpp"
-#include "std_utils/yaml_loader.hpp"
+#include "ahl_utils/io_utils.hpp"
+#include "ahl_utils/yaml_utils.hpp"
+#include "ahl_utils/yaml_loader.hpp"
 #include "neural_network/scaler.hpp"
 #include "neural_network/exceptions.hpp"
 
@@ -63,7 +63,7 @@ void Scaler::init(const std::string& yaml)
     throw nn::Exception("Scaler::init", msg.str());
   }
 
-  std_utils::YAMLLoaderPtr yaml_loader = std_utils::YAMLLoaderPtr(new std_utils::YAMLLoader(yaml));
+  ahl_utils::YAMLLoaderPtr yaml_loader = ahl_utils::YAMLLoaderPtr(new ahl_utils::YAMLLoader(yaml));
 
   yaml_loader->loadValue("neuron_max", max_);
   yaml_loader->loadValue("neuron_min", min_);
@@ -285,13 +285,13 @@ void Scaler::save(const std::string& yaml)
       << "neuron_min: " << min_ << std::endl
       << std::endl;
 
-  ofs << std_utils::YAMLUtils::getVectorStr("max_in", max_in_);
-  ofs << std_utils::YAMLUtils::getVectorStr("min_in", min_in_);
+  ofs << ahl_utils::YAMLUtils::getVectorStr("max_in", max_in_);
+  ofs << ahl_utils::YAMLUtils::getVectorStr("min_in", min_in_);
 
   ofs << std::endl;
 
-  ofs << std_utils::YAMLUtils::getVectorStr("max_out", max_out_);
-  ofs << std_utils::YAMLUtils::getVectorStr("min_out", min_out_);
+  ofs << ahl_utils::YAMLUtils::getVectorStr("max_out", max_out_);
+  ofs << ahl_utils::YAMLUtils::getVectorStr("min_out", min_out_);
 }
 
 void Scaler::print()
@@ -302,22 +302,22 @@ void Scaler::print()
             << "neuron range : " << range_ << std::endl;
 
   std::cout << "max in :" << std::endl;
-  std_utils::IOUtils::print(max_in_);
+  ahl_utils::IOUtils::print(max_in_);
 
   std::cout << "min in :" << std::endl;
-  std_utils::IOUtils::print(min_in_);
+  ahl_utils::IOUtils::print(min_in_);
 
   std::cout << "range in :" << std::endl;
-  std_utils::IOUtils::print(range_in_);
+  ahl_utils::IOUtils::print(range_in_);
 
   std::cout << "max out :" << std::endl;
-  std_utils::IOUtils::print(max_out_);
+  ahl_utils::IOUtils::print(max_out_);
 
   std::cout << "min out :" << std::endl;
-  std_utils::IOUtils::print(min_out_);
+  ahl_utils::IOUtils::print(min_out_);
 
   std::cout << "range out :" << std::endl;
-  std_utils::IOUtils::print(range_out_);
+  ahl_utils::IOUtils::print(range_out_);
 }
 
 void Scaler::calcMaxMin(const std::vector<Eigen::MatrixXd>& src, Eigen::MatrixXd& max, Eigen::MatrixXd& min)

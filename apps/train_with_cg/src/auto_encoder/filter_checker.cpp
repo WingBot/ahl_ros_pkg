@@ -6,7 +6,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <ros/ros.h>
-#include <std_utils/yaml_loader.hpp>
+#include <ahl_utils/yaml_loader.hpp>
 
 int main(int argc, char** argv)
 {
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
   nh.param<int>("image/height", h, 32);
   nh.param<int>("image/width",  w, 32);
 
-  std_utils::YAMLLoader loader(yaml_name);
+  ahl_utils::YAMLLoader loader(yaml_name);
   Eigen::MatrixXd tmp;
   loader.loadMatrix("weight0", tmp);
 
