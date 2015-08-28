@@ -1,7 +1,7 @@
 ahl_ros_pkg
 ===========
 ahl_ros_pkg, which is a ROS package developed by Daichi Yoshikawa At Home Lab.
-It mainly composes of 3 things as the follow.
+It mainly composes of he following 3 things.
 * Robotics
 * Hand tracking system "[Manipit](http://www.instructables.com/id/Manipit-Hand-motion-tracking-with-painted-gloves/)"
 * Others
