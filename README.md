@@ -44,11 +44,11 @@ Contents
 
 Other video clips
 =================
-* Task space control of mobile manipulator(Kuka YouBot).
+* Task space control of mobile manipulator(Kuka YouBot).   
 [![](http://img.youtube.com/vi/RHdLje50RXQ/0.jpg)](https://www.youtube.com/watch?v=RHdLje50RXQ)
 
-* Task space control of 7 DOF manipulator.
+* Task space control of 7 DOF manipulator.   
 [![](http://img.youtube.com/vi/v_i-LgaJ5WM/0.jpg)](https://www.youtube.com/watch?v=v_i-LgaJ5WM)
 
-* Task space control of 11 DOF manipulator.
+* Task space control of 11 DOF manipulator.   
 [![](http://img.youtube.com/vi/oKqCsFAzx4k/0.jpg)](https://www.youtube.com/watch?v=oKqCsFAzx4k)
