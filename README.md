@@ -1,17 +1,17 @@
 ahl_ros_pkg
 ===========
 ahl_ros_pkg, which is a ROS package developed by Daichi Yoshikawa At Home Lab.
-It mainly composes of 3 things as the follow.
+It mainly composes of he following 3 things.
 * Robotics
 * Hand tracking system "[Manipit](http://www.instructables.com/id/Manipit-Hand-motion-tracking-with-painted-gloves/)"
 * Others
 
 How does it work ?
 ==================
-* Task space control of PR2.
+* Task space control of PR2.                   
 [![](http://img.youtube.com/vi/7pHPHKFTwZs/0.jpg)](https://www.youtube.com/watch?v=7pHPHKFTwZs)
 
-* 7DOF Hand pose tracking using neural network.
+* 7DOF Hand pose tracking using neural network.      
 [![](http://img.youtube.com/vi/nZZZX_Wu5kE/0.jpg)](https://www.youtube.com/watch?v=nZZZX_Wu5kE)
 
 Contents
@@ -44,11 +44,11 @@ Contents
 
 Other video clips
 =================
-* Task space control of mobile manipulator(Kuka YouBot).
+* Task space control of mobile manipulator(Kuka YouBot).   
 [![](http://img.youtube.com/vi/RHdLje50RXQ/0.jpg)](https://www.youtube.com/watch?v=RHdLje50RXQ)
 
-* Task space control of 7 DOF manipulator.
+* Task space control of 7 DOF manipulator.   
 [![](http://img.youtube.com/vi/v_i-LgaJ5WM/0.jpg)](https://www.youtube.com/watch?v=v_i-LgaJ5WM)
 
-* Task space control of 11 DOF manipulator.
+* Task space control of 11 DOF manipulator.   
 [![](http://img.youtube.com/vi/oKqCsFAzx4k/0.jpg)](https://www.youtube.com/watch?v=oKqCsFAzx4k)
