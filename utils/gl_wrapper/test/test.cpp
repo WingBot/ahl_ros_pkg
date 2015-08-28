@@ -25,7 +25,7 @@ void display()
     Material::setMaterial(amb, dif, spe, shine);
     glutSolidTeapot(0.1);
 
-    std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/wrappers/gl_wrapper/blender/";
+    std::string path = "/home/daichi/Work/catkin_ws/src/ahl_ros_pkg/utils/gl_wrapper/blender/";
     static XObjectPtr lwr1 = XObjectPtr(new XObject(path + "lwr07.x"));
     static XObjectPtr lwr2 = XObjectPtr(new XObject(path + "lwr07.x"));
     static XObjectPtr lwr3 = XObjectPtr(new XObject(path + "lwr07.x"));
