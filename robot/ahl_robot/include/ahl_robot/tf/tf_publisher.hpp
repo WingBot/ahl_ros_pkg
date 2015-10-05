@@ -36,6 +36,12 @@
  *
  *********************************************************************/
 
+////////////////////////////////////////////////////
+/// \file tf_publisher.hpp
+/// \brief Declare ahl_robot::TfPublisher class
+/// \author Daichi Yoshikawa
+////////////////////////////////////////////////////
+
 #ifndef __AHL_ROBOT_TF_PUBLISHER_HPP
 #define __AHL_ROBOT_TF_PUBLISHER_HPP
 
@@ -48,14 +54,25 @@
 namespace ahl_robot
 {
 
+  /// Publish tf depending on the state of ahl_robot::Robot
   class TfPublisher
   {
   public:
+    /// Constructor
     TfPublisher();
+
+    /// Publish tf
+    /// \param robot Shared pointer of robot of which you'd like to see the frames
+    /// \param publish_com If true, it publishes frames attached to center of mass of each link
     void publish(const RobotPtr& robot, bool publish_com = true);
   private:
+    /// Publish tf
+    /// \param mnp Shared pointer of manipulator of which you'd like to see the frames
+    /// \param current Current time
+    /// \publish_com If true, it publishes frames attached to center of mass of each link
     void publish(const ManipulatorPtr& mnp, const ros::Time& current, bool publish_com);
 
+    //! Singleton of transform broadcaster
     tf2_ros::TransformBroadcaster& transformBroadcaster();
   };
 

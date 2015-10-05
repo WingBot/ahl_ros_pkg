@@ -120,3 +120,9 @@ void OrientationControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   tau = tau_ = Jw_.transpose() * M;
 }
 
+bool OrientationControl::copyEffectiveMassMatrixTo(Eigen::MatrixXd& lambda)
+{
+  if(!updated_) return false;
+  lambda = lambda_;
+  return true;
+}

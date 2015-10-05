@@ -53,12 +53,15 @@ namespace ahl_ctrl
     virtual void setParam(const Eigen::VectorXd& param) {}
     virtual void setParam(const ParamBasePtr& param) { param_ = param; }
     virtual void setGoal(const Eigen::MatrixXd& dst) {}
+
     virtual void updateModel() {}
-    virtual Eigen::VectorXd& getTorque() { return tau_; }
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau) {}
+
     virtual bool haveNullSpace() { return false; }
     virtual const Eigen::MatrixXd getNullSpace() const { return N_; }
     virtual const std::string& getTargetName() { return mnp_->name; }
+
+    virtual bool copyEffectiveMassMatrixTo(Eigen::MatrixXd& lambda) { return false; }
 
   protected:
     ahl_robot::ManipulatorPtr mnp_;

@@ -43,6 +43,7 @@
 #include "ahl_robot_controller/task/damping.hpp"
 #include "ahl_robot_controller/task/friction_compensation.hpp"
 #include "ahl_robot_controller/task/gravity_compensation.hpp"
+#include "ahl_robot_controller/task/hybrid_control.hpp"
 #include "ahl_robot_controller/task/joint_control.hpp"
 #include "ahl_robot_controller/task/joint_limit.hpp"
 #include "ahl_robot_controller/task/orientation_control.hpp"

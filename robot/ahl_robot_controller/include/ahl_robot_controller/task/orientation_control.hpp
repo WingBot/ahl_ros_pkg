@@ -53,6 +53,7 @@ namespace ahl_ctrl
     virtual void updateModel();
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
     virtual bool haveNullSpace() { return true; }
+    virtual bool copyEffectiveMassMatrixTo(Eigen::MatrixXd& lambda);
 
   private:
     bool updated_;

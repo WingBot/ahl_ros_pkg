@@ -48,11 +48,12 @@ namespace ahl_ctrl
   class PositionControl : public Task
   {
   public:
-    PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh = 0.001, double dt = 0.001);
+    PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh = 0.001);
     virtual void setGoal(const Eigen::MatrixXd& xd);
     virtual void updateModel();
     virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
     virtual bool haveNullSpace() { return true; }
+    virtual bool copyEffectiveMassMatrix(Eigen::MatrixXd& lambda);
 
   private:
     bool updated_;

@@ -64,6 +64,7 @@ add_library(
     src/task/damping.cpp
     src/task/friction_compensation.cpp
     src/task/gravity_compensation.cpp
+    src/task/hybrid_control.cpp
     src/task/joint_limit.cpp
     src/task/joint_control.cpp
     src/task/orientation_control.cpp

@@ -36,49 +36,65 @@
  *
  *********************************************************************/
 
-//////////////////////////////////////////////
-/// \file exception.hpp
-/// \brief Declare ahl_robot::Exception class
-/// \author Daichi Yoshikawa
-//////////////////////////////////////////////
+#ifndef __AHL_ROBOT_CONTROLLER_HYBRID_CONTROL_HPP
+#define __AHL_ROBOT_CONTROLLER_HYBRID_CONTROL_HPP
 
-#ifndef __AHL_ROBOT_EXCEPTION_HPP
-#define __AHL_ROBOT_EXCEPTION_HPP
+#include <ahl_robot/ahl_robot.hpp>
+#include "ahl_robot_controller/task/task.hpp"
+#include "ahl_robot_controller/task/position_control.hpp"
+#include "ahl_robot_controller/task/orientation_control.hpp"
 
-#include <sstream>
-
-namespace ahl_robot
+namespace ahl_ctrl
 {
 
-  /// ahl_robot::Exception
-  class Exception
-  {
+  class HybridControl : public Task
+  {  
   public:
-    /// Constructor
-    /// \param src Name of function which threw exception
-    /// \param msg Description of exception
-    explicit Exception(const std::string& src, const std::string& msg) throw()
-      : src_(src), msg_(msg) {}
-
-    /// Get description of exception
-    /// \return description of exception
-    const char* what() const throw()
+    enum PreDefinedTaskList
     {
-      std::stringstream ss;
-      ss << "ahl_robot::Exception occuered." << std::endl
-                << "  src : " << src_ << std::endl
-                << "  msg : " << msg_;
+      PositionControl,
+      OrientationControl,
+      PreDefinedTaskNum,
+    };
 
-      return ss.str().c_str(); 
-    }
+    HybridControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, const Eigen::Matrix3d& Rf, const Eigen::Matrix3d& Rm, double zero_thresh = 1e-4, double eigen_thresh = 1e-3);
+    virtual void setGoal(const Eigen::MatrixXd& ref); // 12 dimension, xyz, rpy, fxfyfz, mxmymz
+    virtual void updateModel();
+    virtual void computeGeneralizedForce(Eigen::VectorXd& tau);
+    virtual bool haveNullSpace() { return true; }
 
   private:
-    //! Name of function which threw exception
-    std::string src_;
-    //! Description of exception
-    std::string msg_;
+    bool updated_;
+
+    std::map<HybridControl::PreDefinedTaskList, TaskPtr> tasks_;
+
+    unsigned int idx_;
+
+    Eigen::Matrix3d I3_;
+
+    Eigen::VectorXd fd_; // Desired forces and moments (Fx, Fy, Fz, Mx, My, Mz)^T
+    Eigen::Matrix3d Rf_; // Orientation of the frame for force control w.r.t base
+    Eigen::Matrix3d Rm_; // Orientation of the frame for moment control w.r.t base
+
+    double zero_thresh_;
+
+    Eigen::Matrix3d sigma_f_;
+    Eigen::Matrix3d sigma_m_;
+    Eigen::Matrix3d sigma_f_bar_;
+    Eigen::Matrix3d sigma_m_bar_;
+    Eigen::MatrixXd omega_;
+    Eigen::MatrixXd omega_bar_;
+
+    Eigen::Matrix3d Jv_;
+    Eigen::Matrix3d lambda_v_;
+    Eigen::Matrix3d lambda_v_inv_;
+    Eigen::MatrixXd Jv_dyn_inv_;
+    Eigen::Matrix3d Jw_;
+    Eigen::Matrix3d lambda_w_;
+    Eigen::Matrix3d lambda_w_inv_;
+    Eigen::MatrixXd Jw_dyn_inv_;
   };
 
 }
 
-#endif /* __AHL_ROBOT_EXCEPTION_HPP */
+#endif /* __AHL_ROBOT_CONTROLLER_HYBRID_CONTROL_HPP */

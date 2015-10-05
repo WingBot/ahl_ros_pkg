@@ -36,6 +36,12 @@
  *
  *********************************************************************/
 
+/////////////////////////////////////////////////
+/// \file definition.hpp
+/// \brief Declare static const values
+/// \author Daichi Yoshikawa
+/////////////////////////////////////////////////
+
 #ifndef __AHL_ROBOT_DEFINITION_HPP
 #define __AHL_ROBOT_DEFINITION_HPP
 
@@ -45,22 +51,32 @@ namespace ahl_robot
 {
   namespace joint
   {
+    //! Tag for revolute joint w.r.t x axis
     static const std::string REVOLUTE_X  = "revolute_x";
+    //! Tag for revolute joint w.r.t y axis
     static const std::string REVOLUTE_Y  = "revolute_y";
+    //! Tag for revolute joint w.r.t z axis
     static const std::string REVOLUTE_Z  = "revolute_z";
+    //! Tag for prismatic joint w.r.t x axis
     static const std::string PRISMATIC_X = "prismatic_x";
+    //! Tag for prismatic joint w.r.t y axis
     static const std::string PRISMATIC_Y = "prismatic_y";
+    //! Tag for prismatic joint w.r.t z axis
     static const std::string PRISMATIC_Z = "prismatic_z";
+    //! Tag for fixed joint
     static const std::string FIXED       = "fixed";
   }
 
   namespace frame
   {
+    //! Name of global frame
     static const std::string WORLD = "map";
   }
 
   namespace mobility
   {
+    /// \enum
+    /// Mobility type
     enum Type
     {
       SENTRY_LOWER,
@@ -72,12 +88,8 @@ namespace ahl_robot
 
     namespace type
     {
+      //! Tag for mecanum wheel
       static const std::string MECANUM_WHEEL = "mecanum_wheel";
-    }
-
-    namespace command
-    {
-      static const std::string BASE_VELOCITY = "base_velocity";
     }
   }
 }

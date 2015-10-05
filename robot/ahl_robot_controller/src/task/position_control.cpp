@@ -42,7 +42,7 @@
 
 using namespace ahl_ctrl;
 
-PositionControl::PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh, double dt)
+PositionControl::PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std::string& target_link, double eigen_thresh)
   : updated_(false), target_link_(target_link), eigen_thresh_(eigen_thresh)
 {
   mnp_ = mnp;
@@ -58,7 +58,6 @@ PositionControl::PositionControl(const ahl_robot::ManipulatorPtr& mnp, const std
   I_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
   N_ = Eigen::MatrixXd::Identity(mnp_->dof, mnp_->dof);
   error_sum_ = Eigen::Vector3d::Zero();
-  dt_ = dt;
 }
 
 void PositionControl::setGoal(const Eigen::MatrixXd& xd)
@@ -120,4 +119,11 @@ void PositionControl::computeGeneralizedForce(Eigen::VectorXd& tau)
   Eigen::VectorXd F_unit = -param_->getKvTask().block(0, 0, 3, 3) * (Jv_ * mnp_->dq - dxd);
   Eigen::VectorXd F = lambda_ * F_unit;
   tau = tau_ = Jv_.transpose() * F;
+}
+
+bool PositionControl::copyEffectiveMassMatrix(Eigen::MatrixXd& lambda)
+{
+  if(!updated_) return false;
+  lambda = lambda_;
+  return true;
 }

@@ -36,6 +36,12 @@
  *
  *********************************************************************/
 
+/////////////////////////////////////////////////////
+/// \file math.hpp
+/// \brief Declare mathematical method
+/// \author Daichi Yoshikawa
+/////////////////////////////////////////////////////
+
 #ifndef __AHL_ROBOT_MATH_HPP
 #define __AHL_ROBOT_MATH_HPP
 
@@ -46,6 +52,9 @@ namespace ahl_robot
 {
   namespace math
   {
+    /// Compute matrix which convert from quaternion to 3 dimensional vector
+    /// \param q Quaternion
+    /// \param Er Conversion matrix
     void computeEr(const Eigen::Quaternion<double>& q, Eigen::MatrixXd& Er);
     void calculateInverseTransformationMatrix(const Eigen::Matrix4d& src, Eigen::Matrix4d& dst);
     void rpyToRotationMatrix(const std::vector<double>& rpy, Eigen::Matrix3d& mat);

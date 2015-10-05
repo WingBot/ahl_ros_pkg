@@ -36,6 +36,12 @@
  *
  *********************************************************************/
 
+//////////////////////////////////////////
+/// \file ahl_robot.hpp
+/// \brief Include relevant header files
+/// \author Daichi Yoshikawa
+//////////////////////////////////////////
+
 #ifndef __AHL_ROBOT_AHL_ROBOT_HPP
 #define __AHL_ROBOT_AHL_ROBOT_HPP
 
