@@ -36,6 +36,12 @@
  *
  *********************************************************************/
 
+//////////////////////////////////////////////////////////
+/// \file exception.h
+/// \brief declare ahl_gazebo_if::Exception class
+/// \author Daichi Yoshikawa
+//////////////////////////////////////////////////////////
+
 #ifndef __AHL_GAZEBO_INTERFACE_EXCEPTION_HPP
 #define __AHL_GAZEBO_INTERFACE_EXCEPTION_HPP
 
@@ -44,13 +50,19 @@
 namespace ahl_gazebo_if
 {
 
+  /// \brief ahl_gazebo_if::Exception
   class Exception
   {
   public:
+    /// \brief Constructor
+    /// \param src name of function which threw exception
+    /// \param msg description of exception
     Exception(const std::string& src, const std::string& msg) throw()
       : src_(src), msg_(msg)
     {}
 
+    /// \brief get description of exception
+    /// \return description of exception
     const char* what() const throw()
     {
       std::stringstream ss;
@@ -62,7 +74,9 @@ namespace ahl_gazebo_if
     }
 
   private:
+    /// name of function which threw exception
     std::string src_;
+    /// description of exception
     std::string msg_;
   };
 
