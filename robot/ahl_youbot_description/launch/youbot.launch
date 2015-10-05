@@ -6,9 +6,23 @@
   <arg name="init_pos_x" default="0.0"/>
   <arg name="init_pos_y" default="0.0"/>
   <arg name="init_pos_z" default="0.0"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
 
+<!--
   <include file="$(find youbot_gazebo_worlds)/launch/$(arg world).launch">
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+  </include>
+-->
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+    <arg name="world_name" value="worlds/empty.world"/>
   </include>
 
   <param name="robot_description" command="$(find xacro)/xacro.py $(find ahl_youbot_description)/urdf/youbot.urdf"/>
